@@ -4,12 +4,13 @@ import java.util.List;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class Command implements ICommand{
 
+	public static final String COMMAND_NAME = "ai"; 
+	
 	public Command() {
-		System.out.println("test me");
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -20,14 +21,12 @@ public class Command implements ICommand{
 
 	@Override
 	public String getCommandName() {
-		// TODO Auto-generated method stub
-		return null;
+		return COMMAND_NAME;
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender p_71518_1_) {
-		// TODO Auto-generated method stub
-		return null;
+		return "ai <text>";
 	}
 
 	@Override
@@ -37,15 +36,22 @@ public class Command implements ICommand{
 	}
 
 	@Override
-	public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_) {
-		// TODO Auto-generated method stub
-		
+	public void processCommand(ICommandSender icommandsender, String[] astring) {
+		EntityPlayer player;
+        
+        if(icommandsender instanceof EntityPlayer){
+                player = (EntityPlayer)icommandsender;
+                player.addExperience(500);
+        } 
+        else {
+                //icommandsender.sendChatToPlayer("Player Only Command");
+                return;
+        }
 	}
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
