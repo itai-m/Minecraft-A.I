@@ -10,6 +10,8 @@ public class Command implements ICommand{
 
 	public static final String COMMAND_NAME = "ai"; 
 	
+	private ArtificialIntelligence ai;
+	
 	public Command() {
 	}
 	
@@ -36,15 +38,18 @@ public class Command implements ICommand{
 	}
 
 	@Override
-	public void processCommand(ICommandSender icommandsender, String[] astring) {
+	public void processCommand(ICommandSender icommandsender, String[] argu) {
 		EntityPlayer player;
-        
+  
         if(icommandsender instanceof EntityPlayer){
-                player = (EntityPlayer)icommandsender;
-                player.addExperience(500);
+        	if (argu[0].equals("start")){
+        		ai = new ArtificialIntelligence((EntityPlayer)icommandsender);
+        	}
+        	else{
+        		ai.invtTest();
+        	}
         } 
         else {
-                //icommandsender.sendChatToPlayer("Player Only Command");
                 return;
         }
 	}
