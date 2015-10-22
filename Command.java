@@ -45,7 +45,7 @@ public class Command implements ICommand{
         	if (argu[0].equals("start")){
         		ai = new ArtificialIntelligence((EntityPlayer)icommandsender);
         	}
-        	else{
+        	else if (argu[0].equals("test")){
         		ai.invtTest();
         	}
         } 
