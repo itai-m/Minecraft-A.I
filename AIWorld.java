@@ -12,7 +12,18 @@ public class AIWorld{
 		this.world = world;
 	}
 	
+	///Return the nearest block
 	public Vec3 findNearestBlock(){
-		
+		return null;
+	}
+
+	///Get the world
+	public World getWorld() {
+		return world;
+	}
+
+	///Set the world
+	public void setWorld(World world) {
+		this.world = world;
 	}
 }
