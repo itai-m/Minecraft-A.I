@@ -1,5 +1,6 @@
 package com.custommods.ai;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,9 +10,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.minecart.MinecartEvent;
 
 public class ArtificialIntelligence{
+	
+	public static int CANT_HARVEST = -1;
+	public static int CANT_BREAK = -2;
+	
+	
 	private EntityPlayer player;
 	private AIinventory inventory;
 	private AIWorld world;
@@ -24,17 +31,33 @@ public class ArtificialIntelligence{
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
 	}
 	
+	///Function for testing only
 	public void invtTest(){
 		MovingObjectPosition goalMovObj = player.rayTrace(100, 1);
 		Vec3 lookVec = player.getLookVec();
-		System.out.println(lookVec);
 		//MovingObjectPosition mop =  Minecraft.getMinecraft().theWorld.rayTraceBlocks(posVec, lookVec);
 		Block block = Minecraft.getMinecraft().theWorld.getBlock(goalMovObj.blockX, goalMovObj.blockY, goalMovObj.blockZ);
 		int id = Block.getIdFromBlock(block);
 		Item  item = block.getItem(Minecraft.getMinecraft().theWorld, goalMovObj.blockX, goalMovObj.blockY, goalMovObj.blockZ); 
-		inventory.test(block,item);
-		System.out.println(Util.getTimeForDig(null,goalMovObj.hitVec, block, world.getWorld()));
+		//inventory.test(block,item);
+		System.out.println(getTimeToDig(goalMovObj.hitVec, block, world.getWorld()));
 	}
 	
+	///Get the time to dig the block
+	public double getTimeToDig(Vec3 blockLoc,Block block, World world){
+		double blockHardness;
+		if (player.canHarvestBlock(block)){
+			if ((blockHardness = Util.getBlockHardness(blockLoc, block, world)) != -1){
+				double strVsBlock = player.getCurrentPlayerStrVsBlock(block, false);
+				return (blockHardness / strVsBlock);
+			}
+			else{
+				return CANT_BREAK;
+			}
+		}
+		else{
+			return CANT_HARVEST;
+		}
+	}
 	
 }
