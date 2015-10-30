@@ -32,7 +32,8 @@ public class ArtificialIntelligence{
 	}
 	
 	///Function for testing only
-	public void invtTest(){
+	public void invtTest(int i){
+		inventory.test(i);
 		MovingObjectPosition goalMovObj = player.rayTrace(100, 1);
 		Vec3 lookVec = player.getLookVec();
 		//MovingObjectPosition mop =  Minecraft.getMinecraft().theWorld.rayTraceBlocks(posVec, lookVec);
@@ -40,7 +41,7 @@ public class ArtificialIntelligence{
 		int id = Block.getIdFromBlock(block);
 		Item  item = block.getItem(Minecraft.getMinecraft().theWorld, goalMovObj.blockX, goalMovObj.blockY, goalMovObj.blockZ); 
 		//inventory.test(block,item);
-		System.out.println(getTimeToDig(goalMovObj.hitVec, block, world.getWorld()));
+		//System.out.println(getTimeToDig(goalMovObj.hitVec, block, world.getWorld()));
 	}
 	
 	///Get the time to dig the block
