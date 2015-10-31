@@ -15,7 +15,16 @@ public class AIinventory{
 	public final static int PICKAXE = 1;
 	public final static int AXE = 2;
 	public final static int SHOVEL = 3;
+	
 	public final static int NOT_FOUND = -1;
+	
+	public final static int WOOD = 101;
+	public final static int IRON = 102;
+	public final static int STONE = 103;
+	public final static int DIAMOND = 104;
+	public final static int GOLD = 105;
+	
+
 	
 	private InventoryPlayer inventory;
 	
@@ -23,6 +32,8 @@ public class AIinventory{
 	public AIinventory(InventoryPlayer inventory){
 		this.inventory = inventory;
 	}
+	
+	
 	
 	///Consume one item form the inventory, return true if the item was exist, otherwise false
 	public boolean decItem(int itemId){
@@ -54,24 +65,22 @@ public class AIinventory{
 		String toReturn = "";
 		for (int i = 0; i < inventory.mainInventory.length ; i++){
 			if (inventory.mainInventory[i] != null)
-				toReturn += i + ": " + inventory.mainInventory[i].getDisplayName() + "x " + inventory.mainInventory[i].stackSize + "\n";
+				toReturn += i + ": " + inventory.mainInventory[i].getDisplayName() + " x " + inventory.mainInventory[i].stackSize + "\n";
 		}
 		return toReturn;
 	}
 	
 	///Change current item to the item with a giving id, return true if successes otherwise false
-	private boolean changeCurrentItemTo(int id){
+	public boolean changeCurrentItemTo(int id){
 		int index;
 		if ((index = getItemIndex(id)) == NOT_FOUND){
 			return false;
 		}
-		ItemStack other = inventory.mainInventory[index];
-		inventory.mainInventory[index] = inventory.mainInventory[inventory.currentItem];
-		inventory.mainInventory[inventory.currentItem] = other;
+		swap(index, inventory.currentItem);
 		return true;
 	}
 	
-	///Return the index in the inventory of item with the giving id, return -1 if the item dont found
+	///Return the index in the inventory of item with the giving id, if not found return NOT_FOUND
 	public int getItemIndex(int id){
 		for (int i = 0 ; inventory.mainInventory.length > i ; i++){
 			if (inventory.mainInventory[i] != null){
@@ -83,6 +92,28 @@ public class AIinventory{
 		return NOT_FOUND;
 	}
 	
+	///Change current item to the item with a giving name, return true if successes otherwise false
+	public boolean changeCurrentItemTo(String name){
+		int index;
+		if ((index = getItemIndex(name)) == NOT_FOUND){
+			return false;
+		}
+		swap(index, inventory.currentItem);
+		return true;
+	}
+	
+	///Return the index in the inventory of item with the giving name, if not found return NOT_FOUND
+	public int getItemIndex(String name){
+		for (int i = 0 ; inventory.mainInventory.length > i ; i++){
+			if (inventory.mainInventory[i] != null){
+				if (inventory.mainInventory[i].getDisplayName().equals(name)){
+					return i;
+				}
+			}
+		}
+		return NOT_FOUND;
+	}
+		
 	///Use the best tool
 	public void useTool(int toolID){
 		switch (toolID) {
@@ -101,10 +132,37 @@ public class AIinventory{
 		}
 	}
 	
+	///Get best pickaxe from inventory, return the kind of the pickaxe, if not found return NOT_FOUND
+	public int getPickaxe(){
+		if (changeCurrentItemTo("Diamond Pickaxe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Iron Pickaxe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Stone Pickaxe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Golden Pickaxe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Wooden Pickaxe")){
+			return WOOD;
+		}
+		
+		return NOT_FOUND;
+	}
+	
 	///Function for Debug
 	public void test(int j){
 		System.out.println(this.toString());
-		System.out.println(changeCurrentItemTo(3));
+		System.out.println(getPickaxe());
 	}
 	
+	///Swap two item in the inventory
+	private void swap(int x, int y){
+		ItemStack other = inventory.mainInventory[x];
+		inventory.mainInventory[x] = inventory.mainInventory[y];
+		inventory.mainInventory[y] = other;
+	}
 }
