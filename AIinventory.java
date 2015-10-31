@@ -15,6 +15,8 @@ public class AIinventory{
 	public final static int PICKAXE = 1;
 	public final static int AXE = 2;
 	public final static int SHOVEL = 3;
+	public final static int SWORD = 4;
+	public final static int HOE = 5;
 	
 	public final static int NOT_FOUND = -1;
 	
@@ -138,13 +140,13 @@ public class AIinventory{
 			return DIAMOND;
 		}
 		if (changeCurrentItemTo("Iron Pickaxe")){
-			return DIAMOND;
+			return IRON;
 		}
 		if (changeCurrentItemTo("Stone Pickaxe")){
-			return DIAMOND;
+			return STONE;
 		}
 		if (changeCurrentItemTo("Golden Pickaxe")){
-			return DIAMOND;
+			return GOLD;
 		}
 		if (changeCurrentItemTo("Wooden Pickaxe")){
 			return WOOD;
@@ -153,6 +155,90 @@ public class AIinventory{
 		return NOT_FOUND;
 	}
 	
+	///Get best shovel from inventory, return the kind of the shovel, if not found return NOT_FOUND
+	public int getShovel(){
+		if (changeCurrentItemTo("Diamond Shovel")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Iron Shovel")){
+			return IRON;
+		}
+		if (changeCurrentItemTo("Stone Shovel")){
+			return STONE;
+		}
+		if (changeCurrentItemTo("Golden Shovel")){
+			return GOLD;
+		}
+		if (changeCurrentItemTo("Wooden Shovel")){
+			return WOOD;
+		}
+		
+		return NOT_FOUND;
+	}
+	
+	///Get best shovel from inventory, return the kind of the shovel, if not found return NOT_FOUND
+	public int getAxe(){
+		if (changeCurrentItemTo("Diamond Axe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Iron Axe")){
+			return IRON;
+		}
+		if (changeCurrentItemTo("Stone Axe")){
+			return STONE;
+		}
+		if (changeCurrentItemTo("Golden Axe")){
+			return GOLD;
+		}
+		if (changeCurrentItemTo("Wooden Axe")){
+			return WOOD;
+		}
+		
+		return NOT_FOUND;
+	}
+	
+	///Get best hoe from inventory, return the kind of the hoe, if not found return NOT_FOUND
+	public int getHoe(){
+		if (changeCurrentItemTo("Diamond Hoe")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Iron Hoe")){
+			return IRON;
+		}
+		if (changeCurrentItemTo("Stone Hoe")){
+			return STONE;
+		}
+		if (changeCurrentItemTo("Golden Hoe")){
+			return GOLD;
+		}
+		if (changeCurrentItemTo("Wooden Hoe")){
+			return WOOD;
+		}
+		
+		return NOT_FOUND;
+	}
+	
+	///Get best sword from inventory, return the kind of the sword, if not found return NOT_FOUND
+	public int getSword(){
+		if (changeCurrentItemTo("Diamond Sword")){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo("Iron Sword")){
+			return IRON;
+		}
+		if (changeCurrentItemTo("Stone Sword")){
+			return STONE;
+		}
+		if (changeCurrentItemTo("Golden Sword")){
+			return GOLD;
+		}
+		if (changeCurrentItemTo("Wooden Sword")){
+			return WOOD;
+		}
+		
+		return NOT_FOUND;
+	}
+		
 	///Function for Debug
 	public void test(int j){
 		System.out.println(this.toString());
