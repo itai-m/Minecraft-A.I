@@ -31,6 +31,26 @@ public class ArtificialIntelligence{
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
 	}
 	
+	///Handle the get command
+	public void get(String requset){
+		requset = requset.toLowerCase();
+		if (requset.equals("pickaxe")){
+			inventory.getPickaxe();
+		}
+		else if (requset.equals("axe")){
+			inventory.getAxe();
+		}
+		else if (requset.equals("shovel")){
+			inventory.getShovel();
+		}
+		else if (requset.equals("hoe")){
+			inventory.getHoe();
+		}
+		else if (requset.equals("sword")){
+			inventory.getSword();
+		}
+	}
+	
 	///Function for testing only
 	public void invtTest(int i){
 		inventory.test(i);
@@ -60,5 +80,7 @@ public class ArtificialIntelligence{
 			return CANT_HARVEST;
 		}
 	}
+	
+	
 	
 }

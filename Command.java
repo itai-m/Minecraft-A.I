@@ -42,10 +42,14 @@ public class Command implements ICommand{
 		EntityPlayer player;
   
         if(icommandsender instanceof EntityPlayer){
-        	if (argu[0].equals("start")){
+        	String argu0 = argu[0].toLowerCase();
+        	if (argu0.equals("start")){
         		ai = new ArtificialIntelligence((EntityPlayer)icommandsender);
         	}
-        	else if (argu[0].equals("test")){
+        	else if (argu0.equals("get")){
+        		ai.get(argu[1]);
+        	}
+        	else if (argu0.equals("test")){
         		System.out.println((int)(argu[1].charAt(0) - '0'));
         		ai.invtTest((int)(argu[1].charAt(0) - '0'));
         	}
