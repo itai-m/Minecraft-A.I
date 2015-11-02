@@ -50,8 +50,7 @@ public class Command implements ICommand{
         		ai.get(argu[1]);
         	}
         	else if (argu0.equals("test")){
-        		System.out.println((int)(argu[1].charAt(0) - '0'));
-        		ai.invtTest((int)(argu[1].charAt(0) - '0'));
+        		ai.invtTest();
         	}
         } 
         else {

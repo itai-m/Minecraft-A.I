@@ -15,4 +15,8 @@ public class Util{
 		return block.getBlockHardness(world, (int)blockLoc.xCoord, (int)blockLoc.yCoord, (int)blockLoc.zCoord);
 	}
 	
+	///Get heuristic from distance
+	public static double getHeuristic(Vec3 from, Vec3 to){
+		return (from.distanceTo(to));
+	}
 }

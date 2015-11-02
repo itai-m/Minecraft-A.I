@@ -1,6 +1,8 @@
 package com.custommods.ai;
 
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,16 +54,10 @@ public class ArtificialIntelligence{
 	}
 	
 	///Function for testing only
-	public void invtTest(int i){
-		inventory.test(i);
-		MovingObjectPosition goalMovObj = player.rayTrace(100, 1);
-		Vec3 lookVec = player.getLookVec();
-		//MovingObjectPosition mop =  Minecraft.getMinecraft().theWorld.rayTraceBlocks(posVec, lookVec);
-		Block block = Minecraft.getMinecraft().theWorld.getBlock(goalMovObj.blockX, goalMovObj.blockY, goalMovObj.blockZ);
-		int id = Block.getIdFromBlock(block);
-		Item  item = block.getItem(Minecraft.getMinecraft().theWorld, goalMovObj.blockX, goalMovObj.blockY, goalMovObj.blockZ); 
-		//inventory.test(block,item);
-		//System.out.println(getTimeToDig(goalMovObj.hitVec, block, world.getWorld()));
+	public void invtTest(){
+		ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 10,"Gold Ore");
+		for (int i = 0 ; i < blocks.size() ; i++)
+			System.out.println(blocks.get(i));
 	}
 	
 	///Get the time to dig the block
