@@ -55,9 +55,10 @@ public class ArtificialIntelligence{
 	
 	///Function for testing only
 	public void invtTest(){
-		ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 10,"Gold Ore");
+		ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 100,"Gold Ore");
 		for (int i = 0 ; i < blocks.size() ; i++)
 			System.out.println(blocks.get(i));
+		
 	}
 	
 	///Get the time to dig the block
@@ -77,6 +78,17 @@ public class ArtificialIntelligence{
 		}
 	}
 	
+	///Harvest a Block by the player
+	private boolean harvestBlock(String blockName){
+		Vec3 des = world.findNearestBlock(player.getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
+		if (des == null){
+			return false;
+		}
+		else{
+			
+			return true;
+		}
+	}
 	
 	
 }
