@@ -55,9 +55,10 @@ public class ArtificialIntelligence{
 	
 	///Function for testing only
 	public void invtTest(){
-		ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 100,"Gold Ore");
+		harvestBlock("Diamond Ore");
+		/*ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 100,"Gold Ore");
 		for (int i = 0 ; i < blocks.size() ; i++)
-			System.out.println(blocks.get(i));
+			System.out.println(blocks.get(i));*/
 		
 	}
 	
@@ -85,7 +86,6 @@ public class ArtificialIntelligence{
 			return false;
 		}
 		else{
-			
 			return true;
 		}
 	}
