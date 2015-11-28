@@ -2,18 +2,29 @@ package com.custommods.ai;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.mojang.authlib.GameProfile;
+
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameData.GameDataSnapshot;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.minecart.MinecartEvent;
+import tv.twitch.broadcast.GameInfo;
+import tv.twitch.broadcast.GameInfoList;
 
 public class ArtificialIntelligence{
 	
@@ -55,11 +66,7 @@ public class ArtificialIntelligence{
 	
 	///Function for testing only
 	public void invtTest(){
-		harvestBlock("Diamond Ore");
-		/*ArrayList<Vec3> blocks = world.getBlockList(player.getPosition(1), 100,"Gold Ore");
-		for (int i = 0 ; i < blocks.size() ; i++)
-			System.out.println(blocks.get(i));*/
-		
+		harvestBlock("Diamond Ore");		
 	}
 	
 	///Get the time to dig the block

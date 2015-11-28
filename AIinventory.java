@@ -35,7 +35,10 @@ public class AIinventory{
 		this.inventory = inventory;
 	}
 	
-	
+	///Check if in the inventory have the item
+	public boolean haveItem(ItemStack item){
+		return inventory.hasItemStack(item);
+	}
 	
 	///Consume one item form the inventory, return true if the item was exist, otherwise false
 	public boolean decItem(int itemId){
