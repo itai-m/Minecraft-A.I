@@ -37,7 +37,25 @@ public class AIinventory{
 	
 	///Check if in the inventory have the item
 	public boolean haveItem(ItemStack item){
-		return inventory.hasItemStack(item);
+		if (inventory.hasItemStack(item)){
+			return true;
+		}
+		if (!inventory.hasItem(item.getItem())){
+			return false;
+		}
+		int size = 0;
+		int itemID = Item.getIdFromItem(item.getItem());
+		for (int i = 0 ; i < inventory.mainInventory.length ; i++){
+			if ( Item.getIdFromItem(inventory.mainInventory[i].getItem()) == itemID){
+				size += inventory.mainInventory[i].stackSize;
+			}
+		}
+		if (size >= item.stackSize){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	///Consume one item form the inventory, return true if the item was exist, otherwise false
