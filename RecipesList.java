@@ -54,7 +54,7 @@ public class RecipesList {
 					}
 				}
 				else{
-					toReturn.add(recipe.recipeItems[i]);
+					toReturn.add(recipe.recipeItems[i].copy());
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class RecipesList {
 							}
 						}
 						if (!find){
-							toReturn.add((ItemStack) itemInList);
+							toReturn.add((ItemStack) itemInList.copy());
 						}
 					}
 						
@@ -86,7 +86,7 @@ public class RecipesList {
 					}
 				}
 				else{
-					toReturn.add((ItemStack) recipe.getInput()[i]);
+					toReturn.add((ItemStack)(recipe.getInput()[i]));
 				}
 			}
 		}

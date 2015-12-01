@@ -46,10 +46,13 @@ public class AIinventory{
 		int size = 0;
 		int itemID = Item.getIdFromItem(item.getItem());
 		for (int i = 0 ; i < inventory.mainInventory.length ; i++){
-			if ( Item.getIdFromItem(inventory.mainInventory[i].getItem()) == itemID){
-				size += inventory.mainInventory[i].stackSize;
+			if (inventory.mainInventory[i] != null){
+				if ( Item.getIdFromItem(inventory.mainInventory[i].getItem()) == itemID){
+					size += inventory.mainInventory[i].stackSize;
+				}
 			}
 		}
+			
 		if (size >= item.stackSize){
 			return true;
 		}
