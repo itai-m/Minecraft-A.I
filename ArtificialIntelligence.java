@@ -4,6 +4,8 @@ package com.custommods.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.Sys;
+
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -28,18 +30,17 @@ import tv.twitch.broadcast.GameInfoList;
 
 public class ArtificialIntelligence{
 	
-	public static int CANT_HARVEST = -1;
-	public static int CANT_BREAK = -2;
 	
 	
-	private EntityPlayer player;
+	
+	private AIPlayer player;
 	private AIinventory inventory;
 	private AIWorld world;
 	
 	
 	///Constructor
 	public ArtificialIntelligence(EntityPlayer player){
-		this.player = player;
+		this.player = new AIPlayer(player);
 		this.inventory = new AIinventory(player.inventory);
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
 	}
@@ -65,30 +66,14 @@ public class ArtificialIntelligence{
 	}
 	
 	///Function for testing only
-	public void invtTest(){
-		harvestBlock("Diamond Ore");		
+	public void test(){
+		System.out.println(Objective.canCraft(new ItemStack(Item.getItemById(268)), inventory));		
 	}
 	
-	///Get the time to dig the block
-	public double getTimeToDig(Vec3 blockLoc,Block block, World world){
-		double blockHardness;
-		if (player.canHarvestBlock(block)){
-			if ((blockHardness = Util.getBlockHardness(blockLoc, block, world)) != -1){
-				double strVsBlock = player.getCurrentPlayerStrVsBlock(block, false);
-				return (blockHardness / strVsBlock);
-			}
-			else{
-				return CANT_BREAK;
-			}
-		}
-		else{
-			return CANT_HARVEST;
-		}
-	}
 	
 	///Harvest a Block by the player
 	private boolean harvestBlock(String blockName){
-		Vec3 des = world.findNearestBlock(player.getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
+		Vec3 des = world.findNearestBlock(player.getPlayer().getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
 		if (des == null){
 			return false;
 		}
