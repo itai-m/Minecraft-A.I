@@ -61,18 +61,23 @@ public class RecipesList {
 		else if (irecipe instanceof ShapedOreRecipe){
 			ShapedOreRecipe recipe = (ShapedOreRecipe) irecipe;
 			for (int i = 0 ; i < recipe.getInput().length ; i++){
-				if (recipe.getInput()[i] instanceof ArrayList){
+				if (recipe.getInput()[i] == null){
+				
+				}
+				else if (recipe.getInput()[i] instanceof ArrayList){
 					ArrayList<ItemStack> itemList = (ArrayList<ItemStack>)recipe.getInput()[i];
 					for (ItemStack itemInList : itemList) {
-						boolean find = false;
-						for (ItemStack itemStack : toReturn) {
-							if (itemStack.getItem().equals(itemInList.getItem())){
-								find = true;
-								itemStack.stackSize++;
+						if (itemInList !=null){
+							boolean find = false;
+							for (ItemStack itemStack : toReturn) {
+								if (itemStack.getItem().equals(itemInList.getItem())){
+									find = true;
+									itemStack.stackSize++;
+								}
 							}
-						}
-						if (!find){
-							toReturn.add((ItemStack) itemInList.copy());
+							if (!find){
+								toReturn.add((ItemStack) itemInList.copy());
+							}
 						}
 					}
 						

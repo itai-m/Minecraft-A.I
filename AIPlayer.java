@@ -43,4 +43,15 @@ public class AIPlayer {
 			return CANT_HARVEST;
 		}
 	}
+	
+	///Harvest a Block by the player
+		private boolean harvestBlock(String blockName, AIWorld world){
+			Vec3 des = world.findNearestBlock(player.getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
+			if (des == null){
+				return false;
+			}
+			else{
+				return true;
+			}
+		}
 }

@@ -67,20 +67,10 @@ public class ArtificialIntelligence{
 	
 	///Function for testing only
 	public void test(){
-		System.out.println(Objective.canCraft(new ItemStack(Item.getItemById(268)), inventory));		
+		System.out.println("can craft: " + Objective.canCraft(new ItemStack(Item.getItemById(310)), inventory));
+		System.out.println("make portal: " + Objective.canMakePortal(Block.getBlockById(3), inventory));
 	}
 	
-	
-	///Harvest a Block by the player
-	private boolean harvestBlock(String blockName){
-		Vec3 des = world.findNearestBlock(player.getPlayer().getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
-		if (des == null){
-			return false;
-		}
-		else{
-			return true;
-		}
-	}
 	
 	
 }
