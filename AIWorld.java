@@ -72,4 +72,9 @@ public class AIWorld{
 		}
 		return toReturn;
 	}
+	
+	///Check if the block is air
+	public boolean isBlockAir(Vec3 loc){
+		return world.isAirBlock((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
+	}
 }
