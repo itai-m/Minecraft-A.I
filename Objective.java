@@ -3,8 +3,10 @@ package com.custommods.ai;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Vec3;
 
 public class Objective {
 
@@ -36,5 +38,14 @@ public class Objective {
 		ItemStack itemToCheck = new ItemStack(block);
 		itemToCheck.stackSize = 10;
 		return inve.haveItem(itemToCheck);
+	}
+	
+	///Check if the block is in a reach of the player
+	public static boolean nearBlock(AIPlayer player, Vec3 blockLoc){
+		double distance = blockLoc.distanceTo(player.getLocation());
+		if (distance < Minecraft.getMinecraft().playerController.getBlockReachDistance()){
+			return true;
+		}
+		return false;
 	}
 }

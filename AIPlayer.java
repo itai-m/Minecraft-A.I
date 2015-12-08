@@ -88,4 +88,9 @@ public class AIPlayer {
 		}
 		return loc;
 	}
+	
+	///Get the location of the player
+	public Vec3 getLocation(){
+		return player.getPosition(0);
+	}
 }
