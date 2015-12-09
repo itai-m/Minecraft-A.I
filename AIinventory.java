@@ -1,5 +1,7 @@
 package com.custommods.ai;
 
+import java.util.List;
+
 import org.lwjgl.Sys;
 
 import com.sun.org.apache.bcel.internal.generic.INEG;
@@ -37,9 +39,6 @@ public class AIinventory{
 	
 	///Check if in the inventory have the item
 	public boolean haveItem(ItemStack item){
-		if (inventory.hasItemStack(item)){
-			return true;
-		}
 		if (!inventory.hasItem(item.getItem())){
 			return false;
 		}
@@ -52,7 +51,6 @@ public class AIinventory{
 				}
 			}
 		}
-			
 		if (size >= item.stackSize){
 			return true;
 		}
@@ -69,6 +67,32 @@ public class AIinventory{
 	///Consume one item form the inventory, return true if the item was exist, otherwise false
 	public boolean decItem(Item item){
 		return inventory.consumeInventoryItem(item);
+	}
+	
+	///Consume one item form the inventory, return true if the item was exist, otherwise false
+	public boolean decItem(ItemStack itemStack){
+		int stack = itemStack.stackSize;
+		int id = Item.getIdFromItem(itemStack.getItem());
+		for (int i = 0 ; i < inventory.mainInventory.length ; i++){
+			if (inventory.mainInventory[i] != null){
+				if (Item.getIdFromItem(inventory.mainInventory[i].getItem()) == id){
+					if (inventory.mainInventory[i].stackSize < stack){
+						stack -= inventory.mainInventory[i].stackSize;
+						inventory.mainInventory[i] = null;
+					}
+					else{
+						if (inventory.mainInventory[i].stackSize == stack){
+							inventory.mainInventory[i] = null;
+						}
+						else{
+							inventory.mainInventory[i].stackSize -= stack;
+						}
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	///Add an stack item to the inventory, return true if can add the item, otherwise false
@@ -274,5 +298,32 @@ public class AIinventory{
 		ItemStack other = inventory.mainInventory[x];
 		inventory.mainInventory[x] = inventory.mainInventory[y];
 		inventory.mainInventory[y] = other;
+	}
+	
+	///Craft an item in the inventory
+	public boolean craftItem(ItemStack item){
+		List<ItemStack> ingr = RecipesList.getIngredientList(item);
+		if (ingr == null){
+			return false;
+		}
+		if (!Objective.canCraft(item, this)){
+			return false;
+		}
+		for (ItemStack itemStack : ingr) {
+			if (haveItem(itemStack)){
+				if (decItem(itemStack) == false){
+					return false;
+				}
+			}
+			else if (Objective.canCraft(itemStack, this)){
+				if (craftItem(itemStack) == false){
+					return false;
+				}
+			}
+			else{
+				
+			}
+		}
+		return addItem(item);
 	}
 }

@@ -2,6 +2,7 @@ package com.custommods.ai;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -92,5 +93,15 @@ public class AIPlayer {
 	///Get the location of the player
 	public Vec3 getLocation(){
 		return player.getPosition(0);
+	}
+	
+	///Move the player to a point in the world
+	public void moveToPoint(Vec3 loc){
+		
+	}
+	
+	///Craft an item
+	public boolean craftItem (AIinventory inve, String item){
+		return false;
 	}
 }
