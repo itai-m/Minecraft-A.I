@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 
 public class Objective {
-
+	private static double rechDistance = Minecraft.getMinecraft().playerController.getBlockReachDistance();
+	
 	///Check if can Craft an Item
 	public static boolean canCraft(ItemStack item, AIinventory inve){
 		List<ItemStack> items = RecipesList.getIngredientList(item);
@@ -43,9 +44,29 @@ public class Objective {
 	///Check if the block is in a reach of the player
 	public static boolean nearBlock(AIPlayer player, Vec3 blockLoc){
 		double distance = blockLoc.distanceTo(player.getLocation());
-		if (distance < Minecraft.getMinecraft().playerController.getBlockReachDistance()){
+		if (distance < rechDistance){
 			return true;
 		}
 		return false;
+	}
+	
+	///Check if the specific block is near the player
+	public static boolean blockNearPlayer(AIPlayer player, AIWorld world, Block block){
+		Vec3 playerPos = player.getLookPoint(world);
+		Vec3 blockLoc;
+		if ((blockLoc = world.findNearestBlock(playerPos, block, (int)rechDistance + 1)) == null){
+			return false;
+		}
+		return nearBlock(player, blockLoc);
+	}
+	
+	///Check if the specific block is near the player
+	public static boolean blockNearPlayer(AIPlayer player, AIWorld world, int blockId){
+		Vec3 playerPos = player.getLookPoint(world);
+		Vec3 blockLoc;
+		if ((blockLoc = world.findNearestBlock(playerPos, blockId, (int)rechDistance + 1)) == null){
+			return false;
+		}
+		return nearBlock(player, blockLoc);
 	}
 }

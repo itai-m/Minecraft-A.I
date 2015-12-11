@@ -2,6 +2,7 @@ package com.custommods.ai;
 
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.stats.StatBase;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -15,30 +16,40 @@ public class AIWorld{
 		this.world = world;
 	}
 	
-	///Return the nearest block
+	///Return the nearest block by name
 	public Vec3 findNearestBlock(Vec3 startLoc, String Blockname, int max){
+		return findNearestBlock(startLoc, Block.getIdFromBlock(Block.getBlockFromName(Blockname)), max);
+	}
+	
+	///Return the nearest block by block
+	public Vec3 findNearestBlock(Vec3 startLoc, Block block, int max){
+		return findNearestBlock(startLoc, Block.getIdFromBlock(block), max);
+	}
+	
+	///Return the nearest block by ID
+	public Vec3 findNearestBlock(Vec3 startLoc, int blockId, int max){
 		int x = (int) startLoc.xCoord;
 		int y = (int) startLoc.yCoord;
 		int z = (int) startLoc.zCoord;
 		for (int i = 0 ; i < max ; i++){
 			for (int j = -i ; j < i ; j++){
 				for (int k = -i ; k < i ; k++){
-					if (world.getBlock(x + i, y + k, z + j).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)) == blockId){
 						return Vec3.createVectorHelper(x + i, y + k, z + j);
 					}
-					if (world.getBlock(x - i, y + k, z + j).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)) == blockId){
 						return Vec3.createVectorHelper(x - i, y + k, z + j);
 					}
-					if (world.getBlock(x + k, y + i, z + j).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)) == blockId){
 						return Vec3.createVectorHelper(x + k, y + i, z + j);
 					}
-					if (world.getBlock(x + k, y - i, z + j).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)) == blockId){
 						return Vec3.createVectorHelper(x + k, y - i, z + j);
 					}
-					if (world.getBlock(x + k, y + j, z + i).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)) == blockId){
 						return Vec3.createVectorHelper(x + k, y + j, z + i);
 					}
-					if (world.getBlock(x + k, y + j, z - i).getLocalizedName().equals(Blockname)){
+					if (Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)) == blockId){
 						return Vec3.createVectorHelper(x + k, y + j, z - i);
 					}
 				}
@@ -77,4 +88,25 @@ public class AIWorld{
 	public boolean isBlockAir(Vec3 loc){
 		return world.isAirBlock((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
 	}
+	
+	///Get the id of the block by vector
+	public int blockId(Vec3 loc){
+		return Block.getIdFromBlock(world.getBlock((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord));
+	}
+	
+	///Get the id of the block by integers
+	public int blockId(int x, int y, int z){
+		return Block.getIdFromBlock(world.getBlock(x, y, z));
+	}
+	
+	///Get the block by vector
+	public Block getBlock(Vec3 loc){
+		return world.getBlock((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
+	}
+	
+	///Get the block by integers
+	public Block getBlock(int x, int y, int z){
+		return world.getBlock(x, y, z);
+	}
+	
 }
