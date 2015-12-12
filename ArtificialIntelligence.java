@@ -76,6 +76,7 @@ public class ArtificialIntelligence{
 	
 	///Function for testing only
 	public void test(){		
+		player.getPlayer().addChatMessage("Test mode:" + message);
 	}
 	
 	
