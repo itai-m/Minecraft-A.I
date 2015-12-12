@@ -43,11 +43,8 @@ public class Objective {
 	
 	///Check if the block is in a reach of the player
 	public static boolean nearBlock(AIPlayer player, Vec3 blockLoc){
-		double distance = blockLoc.distanceTo(player.getLocation());
-		if (distance < rechDistance){
-			return true;
-		}
-		return false;
+		double distance = blockLoc.distanceTo(player.eyesLoc());
+		return (distance < rechDistance);
 	}
 	
 	///Check if the specific block is near the player
@@ -62,9 +59,9 @@ public class Objective {
 	
 	///Check if the specific block is near the player
 	public static boolean blockNearPlayer(AIPlayer player, AIWorld world, int blockId){
-		Vec3 playerPos = player.getLookPoint(world);
+		Vec3 playerPos = player.eyesLoc();
 		Vec3 blockLoc;
-		if ((blockLoc = world.findNearestBlock(playerPos, blockId, (int)rechDistance + 1)) == null){
+		if ((blockLoc = world.findNearestBlock(playerPos, blockId, (int)rechDistance + 2)) == null){
 			return false;
 		}
 		return nearBlock(player, blockLoc);

@@ -24,6 +24,7 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraftforge.event.entity.minecart.MinecartEvent;
 import tv.twitch.broadcast.GameInfo;
 import tv.twitch.broadcast.GameInfoList;
@@ -65,10 +66,9 @@ public class ArtificialIntelligence{
 		}
 	}
 	
+	
 	///Function for testing only
-	public void test(){
-		System.out.println("can craft: " + Objective.canCraft(new ItemStack(Item.getItemById(310)), inventory));
-		System.out.println("make portal: " + Objective.canMakePortal(Block.getBlockById(3), inventory));
+	public void test(){		
 	}
 	
 	

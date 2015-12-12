@@ -2,6 +2,7 @@ package com.custommods.ai;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -62,7 +63,7 @@ public class AIPlayer {
 	}
 	
 	///Get the Vec3 of the position of the eyes
-	private Vec3 eyesLoc(){
+	public Vec3 eyesLoc(){
 		return player.getPosition(0).addVector(0, player.getEyeHeight(), 0);
 	}
 	
@@ -101,7 +102,10 @@ public class AIPlayer {
 	}
 	
 	///Craft an item
-	public boolean craftItem (AIinventory inve, String item){
-		return false;
+	public boolean craftItem (AIinventory inve, ItemStack item, AIWorld world){
+		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName("crafting_table"))){
+			//TODO: need to go to the crafting_table
+		}
+		return inve.craftItem(item);
 	}
 }
