@@ -2,6 +2,7 @@ package com.custommods.ai;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.Sys;
@@ -21,6 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -64,6 +67,10 @@ public class ArtificialIntelligence{
 		else if (requset.equals("sword")){
 			inventory.getSword();
 		}
+	}
+	
+	///Handle the craft command
+	public void craft(String toCraft){
 	}
 	
 	
