@@ -73,6 +73,12 @@ public class ArtificialIntelligence{
 	///Handle the craft command
 	public void craft(String toCraft){
 		toCraft = toCraft.toLowerCase();
+		if (player.craftItem(inventory, new ItemStack(Block.getBlockFromName(toCraft)), world)){
+			player.sendMessage("Craft Successfully");
+		}
+		else{
+			player.sendMessage("Could not craft");
+		}
 	}
 	
 	

@@ -27,8 +27,10 @@ public class RecipesList {
 	///Get the ShapedRecipes from the list
 	public static IRecipe getRecipes(ItemStack item){
 		for (Object object : list) {
-			if (((IRecipe)object).getRecipeOutput().isItemEqual(item)){
-				return ((IRecipe)object);
+			if (((IRecipe)object).getRecipeOutput()!=null){
+				if (((IRecipe)object).getRecipeOutput().isItemEqual(item)){
+					return ((IRecipe)object);
+				}
 			}
 		}
 		return null;
