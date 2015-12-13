@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -107,5 +108,10 @@ public class AIPlayer {
 			//TODO: need to go to the crafting_table
 		}
 		return inve.craftItem(item);
+	}
+	
+	///Send a message to the player
+	public void sendMessage(String msg){
+		player.addChatComponentMessage(new ChatComponentText(msg));
 	}
 }

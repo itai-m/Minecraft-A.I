@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
@@ -71,12 +72,12 @@ public class ArtificialIntelligence{
 	
 	///Handle the craft command
 	public void craft(String toCraft){
+		toCraft = toCraft.toLowerCase();
 	}
 	
 	
 	///Function for testing only
-	public void test(){		
-		player.getPlayer().addChatMessage("Test mode:" + message);
+	public void test(){
 	}
 	
 	
