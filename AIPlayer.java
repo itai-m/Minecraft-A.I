@@ -133,7 +133,7 @@ public class AIPlayer {
 		Vec3 furnaceLoc = world.findNearestBlock(getLocation(), Block.getBlockFromName(furnacerBlock), (int)UserSetting.rechDistance);
 		inve.decItem(inge);
 		TileEntityFurnace furnaceEntity = world.getFurnaceEntity(furnaceLoc);
-		/*System.out.println(furnaceEntity.getInventoryName());
+		System.out.println(furnaceEntity.getInventoryName());
 		System.out.println(furnaceEntity.getSizeInventory());
 		System.out.println(furnaceEntity.getDistanceFrom(getLocation().xCoord, getLocation().yCoord, getLocation().zCoord));
 		System.out.println(furnaceEntity.getStackInSlot(0));
@@ -142,7 +142,7 @@ public class AIPlayer {
 		System.out.println(furnaceEntity.getInventoryStackLimit());
 		furnaceEntity.setInventorySlotContents(0, new ItemStack(Block.getBlockById(1)));
 		furnaceEntity.setInventorySlotContents(1, new ItemStack(Block.getBlockById(2)));
-		furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));*/
+		furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));
 		
 		
 		

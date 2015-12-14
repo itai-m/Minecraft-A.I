@@ -112,6 +112,8 @@ public class AIWorld{
 	
 	///Get the TileEntityFurnace form the world
 	public TileEntityFurnace getFurnaceEntity(Vec3 loc){
+		System.out.println(loc);
+		System.out.println(world.getTileEntity((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord).getClass());
 		return (TileEntityFurnace)world.getTileEntity((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
 	}
 	

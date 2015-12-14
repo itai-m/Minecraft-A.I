@@ -98,6 +98,11 @@ public class ArtificialIntelligence{
 		player.sendMessage("Command not exist");
 	}
 	
+	///Handle the if the command not exist
+	public void goToPoint(String StrX, String StrY, String StrZ){
+		player.moveToPoint(Vec3.createVectorHelper(Integer.parseInt(StrX), Integer.parseInt(StrY), Integer.parseInt(StrZ)));
+	}
+		
 	///Function for testing only
 	public void test(){
 		
