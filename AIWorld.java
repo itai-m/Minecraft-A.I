@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.stats.StatBase;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -107,6 +108,11 @@ public class AIWorld{
 	///Get the block by integers
 	public Block getBlock(int x, int y, int z){
 		return world.getBlock(x, y, z);
+	}
+	
+	///Get the TileEntityFurnace form the world
+	public TileEntityFurnace getFurnaceEntity(Vec3 loc){
+		return (TileEntityFurnace)world.getTileEntity((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
 	}
 	
 }

@@ -1,9 +1,11 @@
 package com.custommods.ai;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -104,6 +106,9 @@ public class AIPlayer {
 	
 	///Craft an item
 	public boolean craftItem (AIinventory inve, ItemStack item, AIWorld world){
+		if (!Objective.canCraft(item, inve)){
+			return false;
+		}
 		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName("crafting_table"))){
 			//TODO: need to go to the crafting_table
 		}
@@ -113,5 +118,34 @@ public class AIPlayer {
 	///Send a message to the player
 	public void sendMessage(String msg){
 		player.addChatComponentMessage(new ChatComponentText(msg));
+	}
+	
+	///Smelt an item
+	public boolean smeltItem (AIinventory inve, ItemStack item, AIWorld world){
+		String furnacerBlock = "furnace";
+		ItemStack inge;
+		if (((inge = RecipesList.getSmeltingItem(item)) == null) || (inve.haveItem(inge))){
+			return false;
+		}
+		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName(furnacerBlock))){
+			
+		}
+		Vec3 furnaceLoc = world.findNearestBlock(getLocation(), Block.getBlockFromName(furnacerBlock), (int)UserSetting.rechDistance);
+		inve.decItem(inge);
+		TileEntityFurnace furnaceEntity = world.getFurnaceEntity(furnaceLoc);
+		/*System.out.println(furnaceEntity.getInventoryName());
+		System.out.println(furnaceEntity.getSizeInventory());
+		System.out.println(furnaceEntity.getDistanceFrom(getLocation().xCoord, getLocation().yCoord, getLocation().zCoord));
+		System.out.println(furnaceEntity.getStackInSlot(0));
+		System.out.println(furnaceEntity.getStackInSlot(1));
+		System.out.println(furnaceEntity.getStackInSlot(2));
+		System.out.println(furnaceEntity.getInventoryStackLimit());
+		furnaceEntity.setInventorySlotContents(0, new ItemStack(Block.getBlockById(1)));
+		furnaceEntity.setInventorySlotContents(1, new ItemStack(Block.getBlockById(2)));
+		furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));*/
+		
+		
+		
+		return true;
 	}
 }

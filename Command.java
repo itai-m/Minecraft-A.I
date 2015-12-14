@@ -52,8 +52,14 @@ public class Command implements ICommand{
         	else if (argu0.equals("craft")){
         		ai.craft(argu[1]);
         	}
+        	else if (argu0.equals("smelt")){
+        		ai.smelt(argu[1]);
+        	}
         	else if (argu0.equals("test")){
         		ai.test();
+        	}
+        	else{
+        		ai.commandNotExist();
         	}
         } 
         else {

@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
@@ -81,9 +82,25 @@ public class ArtificialIntelligence{
 		}
 	}
 	
+	///Handle the smelt command
+	public void smelt(String toSmelt){
+		toSmelt = toSmelt.toLowerCase();
+		if (player.smeltItem(inventory, new ItemStack(Block.getBlockFromName(toSmelt)), world)){
+			player.sendMessage("Successfully Smelt " + toSmelt);
+		}
+		else{
+			player.sendMessage("Could not smelt " + toSmelt);
+		}
+	}
+	
+	///Handle the if the command not exist
+	public void commandNotExist(){
+		player.sendMessage("Command not exist");
+	}
 	
 	///Function for testing only
 	public void test(){
+		
 	}
 	
 	
