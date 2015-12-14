@@ -2,6 +2,10 @@ package com.custommods.ai;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.lwjgl.Sys;
 
@@ -12,6 +16,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeBookCloning;
 import net.minecraft.item.crafting.RecipesArmorDyes;
@@ -23,6 +28,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipesList {
 	private static List list = CraftingManager.getInstance().getRecipeList();
+	private static Map smeltingList = FurnaceRecipes.smelting().getSmeltingList();
 	
 	///Get the ShapedRecipes from the list
 	public static IRecipe getRecipes(ItemStack item){
@@ -99,6 +105,25 @@ public class RecipesList {
 		}
 		
 		return toReturn;
+	}
+	
+	///Get a item for the smelting
+	public static ItemStack getSmeltingItem(ItemStack input){
+		Iterator iterator = smeltingList.entrySet().iterator();
+        Entry entry;
+
+        do
+        {
+            if (!iterator.hasNext())
+            {
+                return null;
+            }
+
+            entry = (Entry)iterator.next();
+        }
+        while (((ItemStack)entry.getKey()).isItemEqual(input));
+        
+        return (ItemStack)entry.getValue();
 	}
 	
 }
