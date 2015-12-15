@@ -115,17 +115,16 @@ public class AIPlayer {
 	}
 	
 	///Move the player to a point in the world
-	public void moveToPoint(Vec3 dest){
+	public boolean moveToPoint(Vec3 dest){
 		PathFinder pathFinder = new PathFinder(getLocation(), dest, worldInfo);
 		Queue<Step> stepsToGoal = pathFinder.findPath();
-		if (null != stepsToGoal && stepsToGoal.size() > 0){
-			PathSmoother.getInstance().smoothPath(stepsToGoal);
+		if (null == stepsToGoal || stepsToGoal.size() <= 0){
+			return false;
 		}
-		if (null == stepsToGoal){
-			return;
-		}
+		PathSmoother.getInstance().smoothPath(stepsToGoal);
 		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
 		WalkMod.pathNavigator.run();
+		return true;
 	}
 	
 	///Craft an item

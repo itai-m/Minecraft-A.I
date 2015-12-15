@@ -104,7 +104,13 @@ public class ArtificialIntelligence{
 			player.sendMessage("Command not enter currctly");
 		}
 		else{
-			player.moveToPoint(Vec3.createVectorHelper(Integer.parseInt(strX), Integer.parseInt(strY), Integer.parseInt(strZ)));
+			Vec3 dest = Vec3.createVectorHelper(Integer.parseInt(strX), Integer.parseInt(strY), Integer.parseInt(strZ));
+			if (player.moveToPoint(dest)){
+				player.sendMessage("Successfully got to " + dest);
+			}
+			else{
+				player.sendMessage("Could not found a path to the destion");
+			}
 		}
 	}
 		
