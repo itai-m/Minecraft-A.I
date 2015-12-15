@@ -2,7 +2,7 @@ package com.custommods.walkmod;
 
 import net.minecraft.util.Vec3;
 
-abstract class Step {
+public abstract class Step {
 	public static enum StepType{Walk, Jump, Mine, Pole, Bridge, Unassigned};
 	private static final int STEP_COLLIDING_FINE = 6;
 	

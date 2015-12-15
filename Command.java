@@ -55,6 +55,9 @@ public class Command implements ICommand{
         	else if (argu0.equals("smelt")){
         		ai.smelt(argu[1]);
         	}
+        	else if (argu0.equals("goto")){
+        		ai.goToPoint(argu[1], argu[2], argu[3]);
+        	}
         	else if (argu0.equals("test")){
         		ai.test();
         	}

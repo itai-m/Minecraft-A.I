@@ -8,7 +8,7 @@ import net.minecraft.util.Vec3;
 
 
 
-class PathFinder {
+public class PathFinder {
 	private static final int MAX_TOTAL_COST = 300;
 	
 	private Vec3 initPos;

@@ -15,7 +15,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ISpecialArmor;
 
-class MinecraftWorldInfo implements IWorldInfo {
+public class MinecraftWorldInfo implements IWorldInfo {
 	private enum BlockType {
 		SOLID, NON_SOLID, LIQUID
 	};

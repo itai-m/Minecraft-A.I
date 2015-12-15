@@ -99,8 +99,13 @@ public class ArtificialIntelligence{
 	}
 	
 	///Handle the if the command not exist
-	public void goToPoint(String StrX, String StrY, String StrZ){
-		player.moveToPoint(Vec3.createVectorHelper(Integer.parseInt(StrX), Integer.parseInt(StrY), Integer.parseInt(StrZ)));
+	public void goToPoint(String strX, String strY, String strZ){
+		if (strX == null || strY == null || strZ == null){
+			player.sendMessage("Command not enter currctly");
+		}
+		else{
+			player.moveToPoint(Vec3.createVectorHelper(Integer.parseInt(strX), Integer.parseInt(strY), Integer.parseInt(strZ)));
+		}
 	}
 		
 	///Function for testing only

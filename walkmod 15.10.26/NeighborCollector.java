@@ -7,7 +7,7 @@ import com.sun.javafx.geom.Vec3d;
 
 import net.minecraft.util.Vec3;
 
-class NeighborCollector implements IWorldInfo {
+public class NeighborCollector implements IWorldInfo {
 	private IWorldInfo worldInfo;
 	
 	public NeighborCollector(IWorldInfo worldInfo){

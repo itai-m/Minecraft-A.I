@@ -12,7 +12,7 @@ import com.custommods.walkmod.Step.StepType;
 
 import net.minecraft.util.Vec3;
 
-class PathSmoother {
+public class PathSmoother {
 	private static final double PLAYER_WIDTH = 1;
 
 	private static final PathSmoother instance;

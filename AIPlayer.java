@@ -1,5 +1,15 @@
 package com.custommods.ai;
 
+import java.util.Queue;
+
+import com.custommods.walkmod.IWorldInfo;
+import com.custommods.walkmod.MinecraftWorldInfo;
+import com.custommods.walkmod.NeighborCollector;
+import com.custommods.walkmod.PathFinder;
+import com.custommods.walkmod.PathSmoother;
+import com.custommods.walkmod.Step;
+import com.custommods.walkmod.WalkMod;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,9 +27,14 @@ public class AIPlayer {
 	
 	private EntityPlayer player;
 	
+	private IWorldInfo worldInfo;
+	
 	///Constructor
 	public AIPlayer(EntityPlayer player){
 		this.player = player;
+		MinecraftWorldInfo minecraftWorldInfo = MinecraftWorldInfo.getInstance();
+		minecraftWorldInfo.init();
+		worldInfo = new NeighborCollector(minecraftWorldInfo);
 	}
 
 	///Get the player
@@ -100,8 +115,17 @@ public class AIPlayer {
 	}
 	
 	///Move the player to a point in the world
-	public void moveToPoint(Vec3 loc){
-		
+	public void moveToPoint(Vec3 dest){
+		PathFinder pathFinder = new PathFinder(getLocation(), dest, worldInfo);
+		Queue<Step> stepsToGoal = pathFinder.findPath();
+		if (null != stepsToGoal && stepsToGoal.size() > 0){
+			PathSmoother.getInstance().smoothPath(stepsToGoal);
+		}
+		if (null == stepsToGoal){
+			return;
+		}
+		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
+		WalkMod.pathNavigator.run();
 	}
 	
 	///Craft an item
@@ -133,16 +157,25 @@ public class AIPlayer {
 		Vec3 furnaceLoc = world.findNearestBlock(getLocation(), Block.getBlockFromName(furnacerBlock), (int)UserSetting.rechDistance);
 		inve.decItem(inge);
 		TileEntityFurnace furnaceEntity = world.getFurnaceEntity(furnaceLoc);
-		System.out.println(furnaceEntity.getInventoryName());
+		
+		
+		/*System.out.println(furnaceEntity.getInventoryName());
 		System.out.println(furnaceEntity.getSizeInventory());
 		System.out.println(furnaceEntity.getDistanceFrom(getLocation().xCoord, getLocation().yCoord, getLocation().zCoord));
 		System.out.println(furnaceEntity.getStackInSlot(0));
 		System.out.println(furnaceEntity.getStackInSlot(1));
 		System.out.println(furnaceEntity.getStackInSlot(2));
+		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(0));
+		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(1));
+		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(2));
 		System.out.println(furnaceEntity.getInventoryStackLimit());
-		furnaceEntity.setInventorySlotContents(0, new ItemStack(Block.getBlockById(1)));
-		furnaceEntity.setInventorySlotContents(1, new ItemStack(Block.getBlockById(2)));
-		furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));
+		furnaceEntity.setInventorySlotContents(0, new ItemStack(Block.getBlockById(4)));
+		furnaceEntity.setInventorySlotContents(1, new ItemStack(Block.getBlockById(5)));
+		//furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));
+		furnaceEntity.updateContainingBlockInfo();
+		furnaceEntity.updateEntity();
+		System.out.println(furnaceEntity.isUseableByPlayer(player));
+		furnaceEntity.validate();*/
 		
 		
 		
