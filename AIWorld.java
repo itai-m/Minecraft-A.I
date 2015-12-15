@@ -33,8 +33,8 @@ public class AIWorld{
 		int y = (int) startLoc.yCoord;
 		int z = (int) startLoc.zCoord;
 		for (int i = 0 ; i < max ; i++){
-			for (int j = -i ; j < i ; j++){
-				for (int k = -i ; k < i ; k++){
+			for (int j = -i ; j < i + 1 ; j++){
+				for (int k = -i ; k < i + 1 ; k++){
 					if (Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)) == blockId){
 						return Vec3.createVectorHelper(x + i, y + k, z + j);
 					}
