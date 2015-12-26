@@ -58,6 +58,47 @@ public class AIWorld{
 		}
 		return null;
 	}
+	
+	public Vec3 findNearestBlock(Vec3 startLoc, int[] blocksId, int max){
+		int x = (int) startLoc.xCoord;
+		int y = (int) startLoc.yCoord;
+		int z = (int) startLoc.zCoord;
+		for (int i = 0 ; i < max ; i++){
+			for (int j = -i ; j < i + 1 ; j++){
+				for (int k = -i ; k < i + 1 ; k++){
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)), blocksId)){
+						return Vec3.createVectorHelper(x + i, y + k, z + j);
+					}
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)), blocksId)){
+						return Vec3.createVectorHelper(x - i, y + k, z + j);
+					}
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)), blocksId)){
+						return Vec3.createVectorHelper(x + k, y + i, z + j);
+					}
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)), blocksId)){
+						return Vec3.createVectorHelper(x + k, y - i, z + j);
+					}
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)), blocksId)){
+						return Vec3.createVectorHelper(x + k, y + j, z + i);
+					}
+					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)), blocksId)){
+						return Vec3.createVectorHelper(x + k, y + j, z - i);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	///Check if one number is equal to array
+	private boolean arrayEqual (int id, int[] arr){
+		for (int i = 0 ; i < arr.length ; i++){
+			if (id == arr[i]){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	///Get the world
 	public World getWorld() {
@@ -113,6 +154,11 @@ public class AIWorld{
 	///Get the TileEntityFurnace form the world
 	public TileEntityFurnace getFurnaceEntity(Vec3 loc){
 		return (TileEntityFurnace)world.getTileEntity((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
+	}
+	
+	///Harvest a block in the world
+	public void harvestBlock(int entityId, Vec3 loc){
+		world.destroyBlockInWorldPartially(entityId, (int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord, -1);
 	}
 	
 }
