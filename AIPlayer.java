@@ -70,7 +70,7 @@ public class AIPlayer {
 		}
 	}
 	
-	///Harvest a Block by the player
+	/*///Harvest a Block by the player
 	public boolean harvestBlock(int blockId, AIWorld world){
 		int tick = UserSetting.MaxTickesForHarvest;
 		Vec3 des = world.findNearestBlock(player.getPosition(0), blockId, UserSetting.BLOCK_SEARCH_SIZE);
@@ -95,7 +95,7 @@ public class AIPlayer {
 			return false;
 		}
 		
-	}
+	}*/
 		
 	///Place a block in the world
 	public boolean placeBlock(AIWorld world, Vec3 place){
@@ -146,6 +146,16 @@ public class AIPlayer {
 		PathSmoother.getInstance().smoothPath(stepsToGoal);
 		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
 		WalkMod.pathNavigator.run();
+		return true;
+	}
+	
+	///Move the player next to a block 
+	public boolean standNextTo(Vec3 blockLoc, AIWorld world){
+		Vec3 gotoLoc = world.findNearestBlock(blockLoc, UserSetting.AirBlockId, (int)UserSetting.rechDistance);
+		if (gotoLoc == null){
+			return false;
+		}
+		moveToPoint(gotoLoc, world);
 		return true;
 	}
 	
