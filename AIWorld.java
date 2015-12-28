@@ -59,6 +59,7 @@ public class AIWorld{
 		return null;
 	}
 	
+	///Return the nearest block by array of ids
 	public Vec3 findNearestBlock(Vec3 startLoc, int[] blocksId, int max){
 		int x = (int) startLoc.xCoord;
 		int y = (int) startLoc.yCoord;
@@ -90,6 +91,66 @@ public class AIWorld{
 		return null;
 	}
 	
+	///Return the nearest block by array of ids
+	public Vec3[] findNearestBlocks(Vec3 startLoc, int[] blocksId,int stackSize, int max){
+		Vec3[] toReturn = new Vec3[stackSize];
+		findNearestBlocks(toReturn, startLoc, blocksId, 0, max);
+		return toReturn;
+	}
+	
+	///Find a number of blocks near the other block
+	private int findNearestBlocks(Vec3[] list, Vec3 startLoc, int[] blocksId,int stackSize, int max){
+		int x = (int) startLoc.xCoord;
+		int y = (int) startLoc.yCoord;
+		int z = (int) startLoc.zCoord;
+		if (stackSize == list.length){
+			return stackSize;
+		}
+		for (int i = 0 ; i < max ; i++){
+			for (int j = -i ; j < i + 1 ; j++){
+				for (int k = -i ; k < i + 1 ; k++){
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + i, y + k, z + j), list)){
+						list[stackSize++] =  Vec3.createVectorHelper(x + i, y + k, z + j);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x - i, y + k, z + j), list)){
+						list[stackSize++] = Vec3.createVectorHelper(x - i, y + k, z + j);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + i, z + j), list)){
+						list[stackSize++] = Vec3.createVectorHelper(x + k, y + i, z + j);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y - i, z + j), list)){
+						list[stackSize++] = Vec3.createVectorHelper(x + k, y - i, z + j);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z + i), list)){
+						list[stackSize++] = Vec3.createVectorHelper(x + k, y + j, z + i);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z - i), list)){
+						list[stackSize++] = Vec3.createVectorHelper(x + k, y + j, z - i);
+						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
+					}
+				}
+			}
+		}
+		return stackSize;
+	}
+	
+	///Check if one of the Vector is equal of the array
+	private boolean arrayEqual(Vec3 v, Vec3[] arr){
+		for (int i = 0 ; i < arr.length ; i++){
+			if (arr[i]!=null){
+				if (v.distanceTo(arr[i]) == 0){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+		
 	///Check if one number is equal to array
 	private boolean arrayEqual (int id, int[] arr){
 		for (int i = 0 ; i < arr.length ; i++){
