@@ -47,17 +47,13 @@ public class ArtificialIntelligence{
 	private AIPlayer player;
 	private AIinventory inventory;
 	private AIWorld world;
-	private IWorldInfo worldInfo;
+	
 	
 	///Constructor
 	public ArtificialIntelligence(EntityPlayer player){
 		this.player = new AIPlayer(player);
 		this.inventory = new AIinventory(player.inventory);
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
-		
-		MinecraftWorldInfo minecraftWorldInfo = MinecraftWorldInfo.getInstance();
-		minecraftWorldInfo.init();
-		worldInfo = new NeighborCollector(minecraftWorldInfo);
 	}
 	
 	///Handle the get command
@@ -114,7 +110,7 @@ public class ArtificialIntelligence{
 		}
 		else{
 			Vec3 dest = Vec3.createVectorHelper(Integer.parseInt(strX), Integer.parseInt(strY), Integer.parseInt(strZ));
-			if (player.moveToPoint(dest)){
+			if (player.moveToPoint(dest, world)){
 				player.sendMessage("Successfully got to " + dest);
 			}
 			else{

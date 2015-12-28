@@ -137,18 +137,14 @@ public class AIPlayer {
 	}
 	
 	///Move the player to a point in the world
-	public boolean moveToPoint(Vec3 dest, IWorldInfo worldInfo){
-		PathFinder pathFinder = new PathFinder(getLocation(), dest, worldInfo);
-		System.out.println("path");
+	public boolean moveToPoint(Vec3 dest, AIWorld world){
+		PathFinder pathFinder = new PathFinder(getLocation(), dest, world.getWorldInfo());
 		Queue<Step> stepsToGoal = pathFinder.findPath();
-		System.out.println("findPath");
 		if (null == stepsToGoal || stepsToGoal.size() <= 0){
 			return false;
 		}
 		PathSmoother.getInstance().smoothPath(stepsToGoal);
-		System.out.println("smoothPath");
 		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
-		System.out.println("setStepsQueue");
 		WalkMod.pathNavigator.run();
 		return true;
 	}

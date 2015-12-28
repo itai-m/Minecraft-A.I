@@ -1,20 +1,33 @@
 package com.custommods.ai;
 
 import java.util.ArrayList;
+import java.util.Queue;
+
+import com.custommods.walkmod.IWorldInfo;
+import com.custommods.walkmod.MinecraftWorldInfo;
+import com.custommods.walkmod.NeighborCollector;
+import com.custommods.walkmod.PathFinder;
+import com.custommods.walkmod.PathSmoother;
+import com.custommods.walkmod.Step;
 
 import net.minecraft.block.Block;
 import net.minecraft.stats.StatBase;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
 
 public class AIWorld{
 	
 	private World world;
+	private IWorldInfo worldInfo;
 	
 	///Constructor
 	public AIWorld(World world){
 		this.world = world;
+		MinecraftWorldInfo minecraftWorldInfo = MinecraftWorldInfo.getInstance();
+		minecraftWorldInfo.init();
+		worldInfo = new NeighborCollector(minecraftWorldInfo);
 	}
 	
 	///Return the nearest block by name
@@ -170,7 +183,16 @@ public class AIWorld{
 	public void setWorld(World world) {
 		this.world = world;
 	}
-	
+
+	///Get the World Info
+	public IWorldInfo getWorldInfo() {
+		return worldInfo;
+	}
+
+	///Set the World Info
+	public void setWorldInfo(IWorldInfo worldInfo) {
+		this.worldInfo = worldInfo;
+	}
 	
 	///Get list of block of some kind
 	public ArrayList<Vec3> getBlockList(Vec3 StartPos, double distance, String name){
@@ -220,6 +242,17 @@ public class AIWorld{
 	///Harvest a block in the world
 	public void harvestBlock(int entityId, Vec3 loc){
 		world.destroyBlockInWorldPartially(entityId, (int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord, -1);
+	}
+	
+	///Find a path form one point to other point
+	public Queue<Step> findPath(Vec3 startLoc, Vec3 endLoc){
+		PathFinder pathFinder = new PathFinder(startLoc, endLoc, worldInfo);
+		Queue<Step> stepsToGoal = pathFinder.findPath();
+		if (null == stepsToGoal || stepsToGoal.size() <= 0){
+			return null;
+		}
+		PathSmoother.getInstance().smoothPath(stepsToGoal);
+		return stepsToGoal;
 	}
 	
 }
