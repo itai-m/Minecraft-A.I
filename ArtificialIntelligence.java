@@ -1,12 +1,15 @@
 package com.custommods.ai;
 
-
+import com.custommods.walkmod.IWorldInfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.Sys;
 
+import com.custommods.walkmod.IWorldInfo;
+import com.custommods.walkmod.MinecraftWorldInfo;
+import com.custommods.walkmod.NeighborCollector;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -23,6 +26,7 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
@@ -30,6 +34,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenLakes;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.event.entity.minecart.MinecartEvent;
 import tv.twitch.broadcast.GameInfo;
 import tv.twitch.broadcast.GameInfoList;
@@ -42,13 +47,17 @@ public class ArtificialIntelligence{
 	private AIPlayer player;
 	private AIinventory inventory;
 	private AIWorld world;
-	
+	private IWorldInfo worldInfo;
 	
 	///Constructor
 	public ArtificialIntelligence(EntityPlayer player){
 		this.player = new AIPlayer(player);
 		this.inventory = new AIinventory(player.inventory);
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
+		
+		MinecraftWorldInfo minecraftWorldInfo = MinecraftWorldInfo.getInstance();
+		minecraftWorldInfo.init();
+		worldInfo = new NeighborCollector(minecraftWorldInfo);
 	}
 	
 	///Handle the get command
@@ -116,9 +125,17 @@ public class ArtificialIntelligence{
 		
 	///Function for testing only
 	public void test(){
-		
 	}
 	
-	
+	///Get an item
+	private boolean getItem(ItemStack item){
+		if (inventory.haveItem(item)){
+			return true;
+		}
+		else {
+			
+		}
+		return true;
+	}
 	
 }

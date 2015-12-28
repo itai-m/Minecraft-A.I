@@ -12,6 +12,7 @@ import com.custommods.walkmod.WalkMod;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,6 +20,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class AIPlayer {
 
@@ -27,14 +29,13 @@ public class AIPlayer {
 	
 	private EntityPlayer player;
 	
-	private IWorldInfo worldInfo;
+
 	
 	///Constructor
 	public AIPlayer(EntityPlayer player){
 		this.player = player;
-		MinecraftWorldInfo minecraftWorldInfo = MinecraftWorldInfo.getInstance();
-		minecraftWorldInfo.init();
-		worldInfo = new NeighborCollector(minecraftWorldInfo);
+
+		
 	}
 
 	///Get the player
@@ -45,6 +46,11 @@ public class AIPlayer {
 	///Set the player
 	public void setPlayer(EntityPlayer player) {
 		this.player = player;
+	}
+	
+	///Get entity ID
+	public int getEntityID(){
+		return player.getEntityId();
 	}
 	
 	///Get the time to dig the block by the player
@@ -65,14 +71,30 @@ public class AIPlayer {
 	}
 	
 	///Harvest a Block by the player
-	private boolean harvestBlock(String blockName, AIWorld world){
-		Vec3 des = world.findNearestBlock(player.getPosition(0), blockName, UserSetting.BLOCK_SEARCH_SIZE);
+	public boolean harvestBlock(int blockId, AIWorld world){
+		int tick = UserSetting.MaxTickesForHarvest;
+		Vec3 des = world.findNearestBlock(player.getPosition(0), blockId, UserSetting.BLOCK_SEARCH_SIZE);
+		System.out.println(des);
 		if (des == null){
 			return false;
 		}
-		else{
+		if (Objective.blockNearPlayer(this, world, blockId)){
+			System.out.println("test");
+			while (tick > 0 && !world.isBlockAir(des)){
+				Minecraft.getMinecraft().renderEngine.tick();
+				System.out.println(tick);
+				//Minecraft.getMinecraft().playerController.clickBlock((int)des.xCoord, (int)des.yCoord, (int)des.zCoord, 2);
+				Minecraft.getMinecraft().playerController.onPlayerDamageBlock((int)des.xCoord, (int)des.yCoord, (int)des.zCoord, 2);
+				player.swingItem();
+				tick--;
+			}
+			//TODO: harvestBlock
 			return true;
 		}
+		else{
+			return false;
+		}
+		
 	}
 		
 	///Place a block in the world
@@ -115,14 +137,18 @@ public class AIPlayer {
 	}
 	
 	///Move the player to a point in the world
-	public boolean moveToPoint(Vec3 dest){
+	public boolean moveToPoint(Vec3 dest, IWorldInfo worldInfo){
 		PathFinder pathFinder = new PathFinder(getLocation(), dest, worldInfo);
+		System.out.println("path");
 		Queue<Step> stepsToGoal = pathFinder.findPath();
+		System.out.println("findPath");
 		if (null == stepsToGoal || stepsToGoal.size() <= 0){
 			return false;
 		}
 		PathSmoother.getInstance().smoothPath(stepsToGoal);
+		System.out.println("smoothPath");
 		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
+		System.out.println("setStepsQueue");
 		WalkMod.pathNavigator.run();
 		return true;
 	}
