@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import net.minecraft.util.Vec3;
 
-class BridgeStep extends Step{
+public class BridgeStep extends Step{
 
 	public BridgeStep(Step parent, double cost, Vec3 location) {
 		super(parent, cost, location);

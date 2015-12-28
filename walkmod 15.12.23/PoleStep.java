@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import net.minecraft.util.Vec3;
 
-class PoleStep extends Step{
+public class PoleStep extends Step{
 
 	public PoleStep(Step parent, double cost, Vec3 location) {
 		super(parent, cost, location);

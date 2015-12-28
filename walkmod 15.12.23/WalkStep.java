@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import net.minecraft.util.Vec3;
 
-class WalkStep extends Step{
+public class WalkStep extends Step{
 
 	public WalkStep(Step parent, double cost, Vec3 location) {
 		super(parent, cost, location);

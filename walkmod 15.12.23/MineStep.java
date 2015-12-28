@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.Vec3;
 import scala.Int;
 
-class MineStep extends Step{
+public class MineStep extends Step{
 
 	private LinkedList<MineSpot> mineSpots;
 	public String mineType;

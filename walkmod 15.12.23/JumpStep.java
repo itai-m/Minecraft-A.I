@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import net.minecraft.util.Vec3;
 import scala.Int;
 
-class JumpStep extends Step{
+public class JumpStep extends Step{
 
 	public JumpStep(Step parent, double cost, Vec3 location) {
 		super(parent, cost, location);
