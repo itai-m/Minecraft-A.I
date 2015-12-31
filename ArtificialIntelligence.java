@@ -121,6 +121,9 @@ public class ArtificialIntelligence{
 		
 	///Function for testing only
 	public void test(){
+		Logger.debug("Start Test");
+		System.out.println(player.tree(new ItemStack(Block.getBlockById(UserSetting.LogBlockId)), world));
+		Logger.debug("End Test");
 	}
 	
 	///Get an item

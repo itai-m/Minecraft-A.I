@@ -9,11 +9,13 @@ import com.custommods.walkmod.PathFinder;
 import com.custommods.walkmod.PathSmoother;
 import com.custommods.walkmod.Step;
 import com.custommods.walkmod.WalkMod;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -138,12 +140,14 @@ public class AIPlayer {
 	
 	///Move the player to a point in the world
 	public boolean moveToPoint(Vec3 dest, AIWorld world){
+		Logger.debug("Start the Path Finding");
 		PathFinder pathFinder = new PathFinder(getLocation(), dest, world.getWorldInfo());
 		Queue<Step> stepsToGoal = pathFinder.findPath();
 		if (null == stepsToGoal || stepsToGoal.size() <= 0){
 			return false;
 		}
 		PathSmoother.getInstance().smoothPath(stepsToGoal);
+		Logger.debug("Start waking to: " + dest);
 		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
 		WalkMod.pathNavigator.run();
 		return true;
@@ -211,5 +215,15 @@ public class AIPlayer {
 		
 		
 		return true;
+	}
+	
+	///The tree of 
+	public boolean tree(ItemStack item,AIWorld world){
+		if (RecipesList.getRecipes(item)==null){
+			Vec3 blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
+			Logger.debug("Tree: move to the loction of the item: " + item.getDisplayName() + blockLoc);
+			return moveToPoint(blockLoc,world);
+		}
+		return false;
 	}
 }
