@@ -1,5 +1,6 @@
 package com.custommods.ai;
 
+import java.util.List;
 import java.util.Queue;
 
 import com.custommods.walkmod.IWorldInfo;
@@ -9,6 +10,7 @@ import com.custommods.walkmod.PathFinder;
 import com.custommods.walkmod.PathSmoother;
 import com.custommods.walkmod.Step;
 import com.custommods.walkmod.WalkMod;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
 
 import net.minecraft.block.Block;
@@ -36,8 +38,11 @@ public class AIPlayer {
 	///Constructor
 	public AIPlayer(EntityPlayer player){
 		this.player = player;
-
-		
+	}
+	
+	///Copy Constructor
+	public AIPlayer(AIPlayer player){
+		this.player.clonePlayer(player.getPlayer(), true);
 	}
 
 	///Get the player
@@ -153,6 +158,12 @@ public class AIPlayer {
 		return true;
 	}
 	
+	///Do the path
+	public void walkOnPath(Queue<Step> steps){
+		WalkMod.pathNavigator.setStepsQueue(steps);
+		WalkMod.pathNavigator.run();
+	}
+	
 	///Move the player next to a block 
 	public boolean standNextTo(Vec3 blockLoc, AIWorld world){
 		Vec3 gotoLoc = world.findNearestBlock(blockLoc, UserSetting.AirBlockId, (int)UserSetting.rechDistance);
@@ -217,13 +228,65 @@ public class AIPlayer {
 		return true;
 	}
 	
+	///Get an item
+	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
+		WorkPlan plan = new WorkPlan();
+		planTree (item, world, plan);
+		Logger.debug(plan.toString());
+		return doWorkPlan(plan, inve, world);
+	}
+	
 	///The tree of 
-	public boolean tree(ItemStack item,AIWorld world){
-		if (RecipesList.getRecipes(item)==null){
-			Vec3 blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
-			Logger.debug("Tree: move to the loction of the item: " + item.getDisplayName() + blockLoc);
-			return moveToPoint(blockLoc,world);
+	private double planTree(ItemStack item,AIWorld world, WorkPlan plan){
+		List<ItemStack> inger = RecipesList.getIngredientList(item);
+		double craftHeur = 0;
+		double goGetHeur = 0;
+		Vec3 blockLoc;
+		Queue<Step> steps = null;
+		if (inger == null){
+			craftHeur = Util.Max;
 		}
-		return false;
+		else{
+			for (ItemStack itemStack : inger) {
+				craftHeur += planTree(itemStack, world, plan);
+			}
+		}
+		blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
+		if (blockLoc ==null){
+			goGetHeur = Util.Max;
+		}
+		else{
+			
+			steps = world.findPath(getLocation(), blockLoc);
+			goGetHeur = Util.getHeuristic(steps);
+		}
+		if (craftHeur < goGetHeur){
+			Logger.debug("need to craft for: " + item.getDisplayName());
+			plan.add(item);
+			return craftHeur;
+		}
+		else{
+			Logger.debug("need to go for get: " + item.getDisplayName());
+			plan.add(steps);
+			return goGetHeur;
+		}
+	}
+	
+	///Do the workPlan
+	private boolean doWorkPlan(WorkPlan plan, AIinventory inve, AIWorld world){
+		boolean succeeded = true;
+		while (!plan.isEmpty()){
+			Object obj = plan.pullFirst();
+			if (obj instanceof ItemStack){
+				succeeded = succeeded && craftItem(inve, (ItemStack)obj, world);
+			}
+			else if (obj instanceof Queue){
+				walkOnPath((Queue<Step>)obj);
+			}
+			else{
+				
+			}
+		}
+		return succeeded;
 	}
 }
