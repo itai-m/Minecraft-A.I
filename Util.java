@@ -17,6 +17,7 @@ public class Util{
 	public static int MINE = 1;
 	public static int CRAFT = 2;
 	public static int CANT_GET = -1;
+	public static double Max = Integer.MAX_VALUE;
 	
 	///Return the block hardness 
 	public static double getBlockHardness(Vec3 blockLoc,Block block, World world){
@@ -62,11 +63,4 @@ public class Util{
 		return heur;
 	}
 	
-	///The tree of chois
-	public static double tree(ItemStack item){
-		if (RecipesList.getRecipes(item)==null){
-			
-		}
-		return 0;
-	}
 }
