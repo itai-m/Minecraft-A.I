@@ -65,7 +65,12 @@ public class WorkPlan {
 				toReturn += index++ + ": Move to- " + ((Step) ((Queue)object).peek()).getLocation() + "\n";
 			}
 			else{
-				toReturn += "Not Found \n";
+				if (object == null){
+					toReturn += index++ + ": is null \n";
+				}
+				else{
+					toReturn += index++ + ": Not Found: " + object.toString() + "\n";
+				}
 			}
 		}
 		return toReturn;
