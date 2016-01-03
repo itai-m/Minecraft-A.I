@@ -244,29 +244,33 @@ public class AIPlayer {
 		Vec3 blockLoc;
 		Queue<Step> steps = null;
 		if (inger == null){
+			Logger.debug("PlanTree: no craft for " + item.getDisplayName());
 			craftHeur = Util.Max;
 		}
 		else{
 			for (ItemStack itemStack : inger) {
 				craftHeur += planTree(itemStack, world, plan);
+				//craftHeur++;
 			}
 		}
 		blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
 		if (blockLoc ==null){
+			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
 			goGetHeur = Util.Max;
 		}
 		else{
-			
+			Logger.debug("planTree: findPath to " + blockLoc);
 			steps = world.findPath(getLocation(), blockLoc);
 			goGetHeur = Util.getHeuristic(steps);
 		}
+		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);
 		if (craftHeur < goGetHeur){
-			Logger.debug("need to craft for: " + item.getDisplayName());
+			Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 			plan.add(item);
 			return craftHeur;
 		}
 		else{
-			Logger.debug("need to go for get: " + item.getDisplayName());
+			Logger.debug("planTree: need to go get: " + item.getDisplayName());
 			plan.add(steps);
 			return goGetHeur;
 		}
@@ -278,13 +282,16 @@ public class AIPlayer {
 		while (!plan.isEmpty()){
 			Object obj = plan.pullFirst();
 			if (obj instanceof ItemStack){
+				Logger.debug("doWorkPlan: craft - " + ((ItemStack)obj).getDisplayName());
 				succeeded = succeeded && craftItem(inve, (ItemStack)obj, world);
+				Logger.debug("craft: " + ((ItemStack)obj).getDisplayName() + " craft succes: " + succeeded);
 			}
 			else if (obj instanceof Queue){
+				Logger.debug("doWorkPlan: goto");
 				walkOnPath((Queue<Step>)obj);
 			}
 			else{
-				
+				Logger.debug("doWorkPlan: not reguzie");
 			}
 		}
 		return succeeded;
