@@ -97,7 +97,7 @@ public class AIinventory{
 	
 	///Add an stack item to the inventory, return true if can add the item, otherwise false
 	public boolean addItem(ItemStack itemStack){
-		return (inventory.addItemStackToInventory(itemStack));
+		return (inventory.addItemStackToInventory(itemStack.copy()));
 	}
 
 	///Add a block to the inventory, return true if can add the item, otherwise false
@@ -311,12 +311,12 @@ public class AIinventory{
 		}
 		for (ItemStack itemStack : ingr) {
 			if (haveItem(itemStack)){
-				if (decItem(itemStack) == false){
+				if (!decItem(itemStack)){
 					return false;
 				}
 			}
 			else if (Objective.canCraft(itemStack, this)){
-				if (craftItem(itemStack) == false){
+				if (!craftItem(itemStack)){
 					return false;
 				}
 			}
@@ -324,7 +324,7 @@ public class AIinventory{
 				
 			}
 		}
-		return addItem(item);
+		return addItem(RecipesList.getRecipes(item).getRecipeOutput());
 	}
 	
 }

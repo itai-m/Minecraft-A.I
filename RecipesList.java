@@ -34,7 +34,7 @@ public class RecipesList {
 	public static IRecipe getRecipes(ItemStack item){
 		for (Object object : list) {
 			if (((IRecipe)object).getRecipeOutput()!=null){
-				if (((IRecipe)object).getRecipeOutput().isItemEqual(item)){
+				if (Util.isContain(((IRecipe)object).getRecipeOutput(),item)){
 					return ((IRecipe)object);
 				}
 			}
