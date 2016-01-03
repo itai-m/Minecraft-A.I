@@ -63,4 +63,18 @@ public class Util{
 		return heur;
 	}
 	
+	///Check if one item containing the other
+	public static boolean isContain(ItemStack item1, ItemStack item2){
+		if (Item.getIdFromItem(item1.getItem()) == Item.getIdFromItem(item2.getItem())){
+			if (item1.stackSize >= item2.stackSize){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+	}
 }
