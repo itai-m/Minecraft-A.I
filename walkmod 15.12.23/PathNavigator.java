@@ -38,7 +38,7 @@ public class PathNavigator {
 
 	private Queue<Step> steps;
 	private Step currentStep;
-	private boolean run = false;
+	public boolean run = false;
 	private boolean isJumpedFlag = false;
 	private Vec3 targetVec = null;
 	private int pollFlag = 0;
@@ -159,7 +159,7 @@ public class PathNavigator {
 		else if (currentStep instanceof MineStep
 				&& (currentMine != null || ((MineStep) currentStep)
 						.getStepsToMine().size() > 0)) {
-			if (event.side == Side.SERVER){
+			//if (event.side == Side.SERVER){
 				if (null == currentMine)
 					setCurrentBlockToMine(player);
 				World world = event.player.worldObj;
@@ -203,7 +203,7 @@ public class PathNavigator {
 					}
 				}
 				ticks++;
-			}
+			//}
 
 			return;
 		}
@@ -358,4 +358,7 @@ public class PathNavigator {
 
 	}
 
+	public boolean isRun(){
+		return run;
+	}
 }

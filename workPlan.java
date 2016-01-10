@@ -35,18 +35,35 @@ public class WorkPlan {
 	
 	///Remove the last one in the plan
 	public void removeLast(){
-		list.remove(list.lastIndexOf(list));
+		list.remove(list.size()-1);
 	}
 	
-	///Peek the last one in the plan
+	///Peek the first one in the plan
+	public Object peekLast(){
+		return list.get(list.size()-1);
+	}
+	
+	///Pull the first one in the plan
+	public Object pullLast(){
+		Object toReturn  = list.get(list.size()-1);
+		this.removeLast();
+		return toReturn;
+	}
+		
+	///Remove the first one in the plan
+	public void removeFirst(){
+		list.remove(0);
+	}
+	
+	///Peek the first one in the plan
 	public Object peekFirst(){
 		return list.get(0);
 	}
 	
-	///Pull the last one in the plan
+	///Pull the first one in the plan
 	public Object pullFirst(){
 		Object toReturn  = list.get(0);
-		list.remove(0);
+		this.removeFirst();
 		return toReturn;
 	}
 	

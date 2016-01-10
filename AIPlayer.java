@@ -153,8 +153,7 @@ public class AIPlayer {
 		}
 		PathSmoother.getInstance().smoothPath(stepsToGoal);
 		Logger.debug("Start waking to: " + dest);
-		WalkMod.pathNavigator.setStepsQueue(stepsToGoal);
-		WalkMod.pathNavigator.run();
+		walkOnPath(stepsToGoal);
 		return true;
 	}
 	
@@ -162,6 +161,15 @@ public class AIPlayer {
 	public void walkOnPath(Queue<Step> steps){
 		WalkMod.pathNavigator.setStepsQueue(steps);
 		WalkMod.pathNavigator.run();
+		while (WalkMod.pathNavigator.isRun()){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			Logger.debug("running");
+		}
+		Logger.debug("Finished run");
 	}
 	
 	///Move the player next to a block 

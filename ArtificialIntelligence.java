@@ -10,6 +10,7 @@ import org.lwjgl.Sys;
 import com.custommods.walkmod.IWorldInfo;
 import com.custommods.walkmod.MinecraftWorldInfo;
 import com.custommods.walkmod.NeighborCollector;
+import com.custommods.walkmod.WalkMod;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -59,6 +60,7 @@ public class ArtificialIntelligence{
 	///Handle the get command
 	public void get(String requset){
 		requset = requset.toLowerCase();
+		getItem(new ItemStack(Block.getBlockFromName(requset)));
 		if (requset.equals("pickaxe")){
 			inventory.getPickaxe();
 		}
@@ -121,20 +123,14 @@ public class ArtificialIntelligence{
 		
 	///Function for testing only
 	public void test(){
-		Logger.debug("Start Test");
-		System.out.println(player.tree(new ItemStack(Block.getBlockById(UserSetting.LogBlockId)), world));
-		Logger.debug("End Test");
+		Logger.debug("Start Test" + WalkMod.pathNavigator.run);
+		Logger.debug("get: " + player.getItem(new ItemStack(Item.getItemById(4)), world, inventory));
+		Logger.debug("End Test" + WalkMod.pathNavigator.run);
 	}
 	
 	///Get an item
 	private boolean getItem(ItemStack item){
-		if (inventory.haveItem(item)){
-			return true;
-		}
-		else {
-			
-		}
-		return true;
+		return player.getItem(item, world, inventory);
 	}
 	
 }
