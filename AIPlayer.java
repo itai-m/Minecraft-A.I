@@ -1,5 +1,6 @@
 package com.custommods.ai;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -25,6 +26,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import scala.remote;
 
 public class AIPlayer {
 
@@ -239,26 +241,38 @@ public class AIPlayer {
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
 		WorkPlan plan = new WorkPlan();
-		planTree (item, world, plan);
+		planTree (item, world, plan, inve);
 		Logger.debug(plan.toString());
 		return doWorkPlan(plan, inve, world);
 	}
 	
 	///The tree of 
-	private double planTree(ItemStack item,AIWorld world, WorkPlan plan){
+	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve){
 		List<ItemStack> inger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
 		Vec3 blockLoc;
 		Queue<Step> steps = null;
+		if (plan.canUsedItem(item, inve)){
+			Logger.debug("PlanTree: allready have " + item.getDisplayName());
+			plan.add(item);
+			return 0;
+		}
 		if (inger == null){
 			Logger.debug("PlanTree: no craft for " + item.getDisplayName());
 			craftHeur = Util.Max;
 		}
 		else{
+			List usedItems = new ArrayList<ItemStack>();
 			for (ItemStack itemStack : inger) {
-				craftHeur += planTree(itemStack, world, plan);
-				//craftHeur++;
+				double tempHeur = planTree(itemStack, world, plan, inve);
+				craftHeur += tempHeur;
+				if (tempHeur ==  0){
+					usedItems.add(itemStack);
+				}
+			}
+			for (Object object : usedItems) {
+				plan.removeUsedItem((ItemStack) object);
 			}
 		}
 		blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
@@ -297,6 +311,7 @@ public class AIPlayer {
 			else if (obj instanceof Queue){
 				Logger.debug("doWorkPlan: goto");
 				walkOnPath((Queue<Step>)obj);
+				
 			}
 			else{
 				Logger.debug("doWorkPlan: not reguzie");

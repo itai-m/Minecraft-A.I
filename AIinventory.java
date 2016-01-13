@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IChatComponent;
 
 public class AIinventory{
 	
@@ -37,6 +39,21 @@ public class AIinventory{
 		this.inventory = inventory;
 	}
 	
+	///Copy Constructor
+	public AIinventory(AIinventory inve){
+		this.inventory.copyInventory(inve.getInventory());
+	}
+	
+	///Get inventory
+	public InventoryPlayer getInventory() {
+		return inventory;
+	}
+
+	///Set inventory
+	public void setInventory(InventoryPlayer inventory) {
+		this.inventory = inventory;
+	}
+
 	///Check if in the inventory have the item
 	public boolean haveItem(ItemStack item){
 		if (!inventory.hasItem(item.getItem())){
