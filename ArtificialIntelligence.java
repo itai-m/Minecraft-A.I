@@ -58,10 +58,16 @@ public class ArtificialIntelligence{
 	}
 	
 	///Handle the get command
-	public void get(String requset){
+	public boolean get(String requset){
 		requset = requset.toLowerCase();
-		getItem(new ItemStack(Block.getBlockFromName(requset)));
-		if (requset.equals("pickaxe")){
+		ItemStack item = new ItemStack(Block.getBlockFromName(requset)); 
+		Logger.debug(item.getClass().getName());
+		if (item.getItem() == null){
+			return false;
+		}
+		return getItem(item);
+		
+		/*if (requset.equals("pickaxe")){
 			inventory.getPickaxe();
 		}
 		else if (requset.equals("axe")){
@@ -75,7 +81,7 @@ public class ArtificialIntelligence{
 		}
 		else if (requset.equals("sword")){
 			inventory.getSword();
-		}
+		}*/
 	}
 	
 	///Handle the craft command
