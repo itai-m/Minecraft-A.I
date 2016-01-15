@@ -46,6 +46,9 @@ public class Command implements ICommand{
         	if (argu0.equals("start")){
         		ai = new ArtificialIntelligence((EntityPlayer)icommandsender);
         	}
+        	else if (ai == null){
+        		Logger.debug("Need to start the mod");
+        	}
         	else if (argu0.equals("get")){
         		ai.get(argu[1]);
         	}
