@@ -6,6 +6,7 @@ import com.custommods.walkmod.*;
 import com.sun.org.apache.xpath.internal.axes.WalkingIteratorSorted;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
@@ -75,6 +76,17 @@ public class Util{
 		}
 		else{
 			return false;
+		}
+	}
+	
+	///Wait and tick the game
+	public static void waitAndTick(){
+		try {
+			Thread.sleep(200);
+			Minecraft.getMinecraft().getIntegratedServer().tick();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
