@@ -49,11 +49,14 @@ public class Objective {
 	
 	///Check if the specific block is near the player
 	public static boolean blockNearPlayer(AIPlayer player, AIWorld world, Block block){
-		Vec3 playerPos = player.getLookPoint(world);
+		Logger.debug("test2");
+		Vec3 playerPos = player.eyesLoc();
 		Vec3 blockLoc;
+		Logger.debug("test3");
 		if ((blockLoc = world.findNearestBlock(playerPos, block, (int)UserSetting.rechDistance + 1)) == null){
 			return false;
 		}
+		Logger.debug("test4");
 		return nearBlock(player, blockLoc);
 	}
 	

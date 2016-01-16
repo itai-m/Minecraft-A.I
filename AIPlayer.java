@@ -12,8 +12,14 @@ import com.custommods.walkmod.PathSmoother;
 import com.custommods.walkmod.Step;
 import com.custommods.walkmod.WalkMod;
 import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import com.sun.javafx.event.EventHandlerManager;
 import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
 
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.client.Minecraft;
@@ -26,6 +32,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.minecart.MinecartEvent;
+import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
+import net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType;
 import scala.remote;
 
 public class AIPlayer {
@@ -35,6 +44,7 @@ public class AIPlayer {
 	
 	private EntityPlayer player;
 	
+	private boolean doneWalk = false;
 
 	
 	///Constructor
@@ -121,6 +131,9 @@ public class AIPlayer {
 		Vec3 loc = eyesLoc();
 		Vec3 look = player.getLookVec();
 		while (world.isBlockAir(loc)){
+			if (loc.distanceTo(eyesLoc()) > UserSetting.MaxDistanceLook){
+				return null;
+			}
 			loc = loc.addVector(look.xCoord, look.yCoord, look.zCoord);
 		}
 		return loc;
@@ -159,18 +172,33 @@ public class AIPlayer {
 		return true;
 	}
 	
+	@SubscribeEvent
+	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		Logger.debug("tick");
+		if (event.side == Side.SERVER){
+			Logger.debug("server side");
+			doneWalk = false;
+		}
+		else{
+			doneWalk = WalkMod.pathNavigator.isRun();
+		}
+		Logger.debug("doneWalk: " + doneWalk);
+	}
+	
 	///Do the path
 	public void walkOnPath(Queue<Step> steps){
 		WalkMod.pathNavigator.setStepsQueue(steps);
 		WalkMod.pathNavigator.run();
+
 		while (WalkMod.pathNavigator.isRun()){
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Util.waitAndTick();
+			Logger.debug("" + Minecraft.getMinecraft().getIntegratedServer().getTickCounter() + " " + Minecraft.getMinecraft().getIntegratedServer().isServerRunning());
 			Logger.debug("running");
 		}
+		for (int i = 0 ; i < 10 ; i++){
+			Util.waitAndTick();
+		}
+		WalkMod.pathNavigator.stop();
 		Logger.debug("Finished run");
 	}
 	
@@ -255,7 +283,7 @@ public class AIPlayer {
 		Queue<Step> steps = null;
 		if (plan.canUsedItem(item, inve)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
-			plan.add(item);
+			plan.addUsedItem(item);
 			return 0;
 		}
 		if (inger == null){
@@ -306,7 +334,7 @@ public class AIPlayer {
 			if (obj instanceof ItemStack){
 				Logger.debug("doWorkPlan: craft - " + ((ItemStack)obj).getDisplayName());
 				succeeded = succeeded && craftItem(inve, (ItemStack)obj, world);
-				Logger.debug("craft: " + ((ItemStack)obj).getDisplayName() + " craft succes: " + succeeded);
+				Logger.debug("doWorkPlan: craft: " + ((ItemStack)obj).getDisplayName() + " craft succes: " + succeeded);
 			}
 			else if (obj instanceof Queue){
 				Logger.debug("doWorkPlan: goto");
