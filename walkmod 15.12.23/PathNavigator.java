@@ -38,7 +38,7 @@ public class PathNavigator {
 
 	private Queue<Step> steps;
 	private Step currentStep;
-	public boolean run = false;
+	private boolean run = false;
 	private boolean isJumpedFlag = false;
 	private Vec3 targetVec = null;
 	private int pollFlag = 0;
@@ -68,6 +68,7 @@ public class PathNavigator {
 		// this condition is here in order to avoid this code running twice for
 		// each tick
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		//System.out.println(event.side);
 		if (event.phase == TickEvent.Phase.END)
 			return;
 		if (!run)
@@ -76,6 +77,8 @@ public class PathNavigator {
 			run = false;
 			return;
 		}
+		if (steps == null)
+			return;
 		if (null == currentStep) {
 			pollStep(player);
 		}
@@ -159,7 +162,7 @@ public class PathNavigator {
 		else if (currentStep instanceof MineStep
 				&& (currentMine != null || ((MineStep) currentStep)
 						.getStepsToMine().size() > 0)) {
-			//if (event.side == Side.SERVER){
+			if (event.side == Side.SERVER){
 				if (null == currentMine)
 					setCurrentBlockToMine(player);
 				World world = event.player.worldObj;
@@ -203,7 +206,7 @@ public class PathNavigator {
 					}
 				}
 				ticks++;
-			//}
+			}
 
 			return;
 		}
@@ -357,8 +360,9 @@ public class PathNavigator {
 		LineDrawer.getInstance().addStepsToDraw(stepsLinkedList);
 
 	}
-
+	
 	public boolean isRun(){
-		return run;
+		return (run || WalkMod.isWalk);
 	}
+
 }
