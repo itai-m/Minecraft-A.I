@@ -279,8 +279,10 @@ public class AIPlayer {
 		List<ItemStack> inger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
-		Vec3 blockLoc;
+		Vec3[] blocksLoc;
 		Queue<Step> steps = null;
+		List usedItems = new ArrayList<ItemStack>();
+		List allPath = new ArrayList<Queue<Step>>();
 		if (plan.canUsedItem(item, inve)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
 			plan.addUsedItem(item);
@@ -291,7 +293,7 @@ public class AIPlayer {
 			craftHeur = Util.Max;
 		}
 		else{
-			List usedItems = new ArrayList<ItemStack>();
+			usedItems.clear();
 			for (ItemStack itemStack : inger) {
 				double tempHeur = planTree(itemStack, world, plan, inve);
 				craftHeur += tempHeur;
@@ -300,18 +302,28 @@ public class AIPlayer {
 				}
 			}
 			for (Object object : usedItems) {
+				Logger.debug("remove used: " + ((ItemStack) object).getDisplayName());
 				plan.removeUsedItem((ItemStack) object);
 			}
 		}
-		blockLoc = world.findNearestBlock(getLocation(), Item.getIdFromItem(item.getItem()), UserSetting.BLOCK_SEARCH_SIZE);
-		if (blockLoc ==null){
+		blocksLoc = world.findNearestBlocks(getLocation(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
+		if (blocksLoc ==null){
 			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
 			goGetHeur = Util.Max;
 		}
 		else{
-			Logger.debug("planTree: findPath to " + blockLoc);
-			steps = world.findPath(getLocation(), blockLoc);
-			goGetHeur = Util.getHeuristic(steps);
+			Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
+			for (int i = 0 ; i < blocksLoc.length  ; i++){ 
+				Logger.debug("planTree: findPath to " + blocksLoc[i]);
+			}
+			steps = world.findPath(getLocation(), blocksLoc[0]);
+			allPath.add(steps);
+			goGetHeur += Util.getHeuristic(steps);
+			for (int i = 0 ; i < blocksLoc.length -1 ; i++){
+				steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
+				allPath.add(steps);
+				goGetHeur += Util.getHeuristic(steps);
+			}
 		}
 		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);
 		if (craftHeur < goGetHeur){
@@ -321,7 +333,12 @@ public class AIPlayer {
 		}
 		else{
 			Logger.debug("planTree: need to go get: " + item.getDisplayName());
-			plan.add(steps);
+			for (Object object : usedItems) {
+				plan.removeLast();
+			}
+			for (Object object : allPath) {
+				plan.add((Queue<Step>)object);
+			}
 			return goGetHeur;
 		}
 	}
