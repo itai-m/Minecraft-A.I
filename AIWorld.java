@@ -104,10 +104,21 @@ public class AIWorld{
 		return null;
 	}
 	
+	///Return the nearest block by array of id
+	public Vec3[] findNearestBlocks(Vec3 startLoc, int blockId,int stackSize, int max){
+		int[] blocksId = {blockId};
+		return findNearestBlocks(startLoc, blocksId, stackSize, max);
+	}
+		
 	///Return the nearest block by array of ids
 	public Vec3[] findNearestBlocks(Vec3 startLoc, int[] blocksId,int stackSize, int max){
 		Vec3[] toReturn = new Vec3[stackSize];
 		findNearestBlocks(toReturn, startLoc, blocksId, 0, max);
+		for (Vec3 vec3 : toReturn) {
+			if (vec3 == null){
+				return null;
+			}
+		}
 		return toReturn;
 	}
 	
