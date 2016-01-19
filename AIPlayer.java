@@ -266,16 +266,17 @@ public class AIPlayer {
 		return true;
 	}
 	
+	
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
 		WorkPlan plan = new WorkPlan();
-		planTree (item, world, plan, inve);
+		planTree (item, world, plan, inve, getLocation());
 		Logger.debug(plan.toString());
 		return doWorkPlan(plan, inve, world);
 	}
 	
-	///The tree of 
-	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve){
+	///The tree of the plan
+	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, Vec3 playerLoc){
 		List<ItemStack> inger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
@@ -295,7 +296,7 @@ public class AIPlayer {
 		else{
 			usedItems.clear();
 			for (ItemStack itemStack : inger) {
-				double tempHeur = planTree(itemStack, world, plan, inve);
+				double tempHeur = planTree(itemStack, world, plan, inve, playerLoc);
 				craftHeur += tempHeur;
 				if (tempHeur ==  0){
 					usedItems.add(itemStack);
@@ -306,7 +307,7 @@ public class AIPlayer {
 				plan.removeUsedItem((ItemStack) object);
 			}
 		}
-		blocksLoc = world.findNearestBlocks(getLocation(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
+		blocksLoc = world.findNearestBlocks(playerLoc, Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
 		if (blocksLoc ==null){
 			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
 			goGetHeur = Util.Max;
@@ -316,7 +317,7 @@ public class AIPlayer {
 			for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 				Logger.debug("planTree: findPath to " + blocksLoc[i]);
 			}
-			steps = world.findPath(getLocation(), blocksLoc[0]);
+			steps = world.findPath(playerLoc, blocksLoc[0]);
 			allPath.add(steps);
 			goGetHeur += Util.getHeuristic(steps);
 			for (int i = 0 ; i < blocksLoc.length -1 ; i++){
@@ -339,6 +340,7 @@ public class AIPlayer {
 			for (Object object : allPath) {
 				plan.add((Queue<Step>)object);
 			}
+			playerLoc = blocksLoc[blocksLoc.length-1];
 			return goGetHeur;
 		}
 	}
