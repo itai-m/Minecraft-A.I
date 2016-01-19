@@ -8,6 +8,7 @@ import com.custommods.walkmod.Step;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Vec3;
 
 public class WorkPlan {
 
@@ -15,11 +16,13 @@ public class WorkPlan {
 	public static int NOT_FOUND = -1;
 	private List list;
 	private List usedItems;
+	private List locationList;
 	
 	///Constructor
 	public WorkPlan(){
 		this.list = new ArrayList();
 		this.usedItems = new ArrayList<ItemStack>();
+		this.locationList = new ArrayList<ItemStack>();
 	}
 	
 	///Add item to Craft
@@ -63,6 +66,28 @@ public class WorkPlan {
 			}
 		}
 		return false;
+	}
+	
+	///Add location to the locationList
+	public void addLoc(Vec3 loc){
+		locationList.add(loc);
+	}
+	
+	///Peek location from the locationList
+	public Vec3 peekLoc(){
+		return (Vec3) locationList.get(locationList.size()-1);
+	}
+	
+	///Pull location from the locationList
+	public Vec3 pullLoc(){
+		Vec3 toReturn = peekLoc();
+		removeLoc();
+		return toReturn;
+	}
+	
+	///Remove the last form the locationList
+	public void removeLoc(){
+		locationList.remove(locationList.size() - 1);
 	}
 	
 	///Get the number of stack of the item been used, return NOT_FOUND if the item not found
