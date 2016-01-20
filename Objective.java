@@ -25,6 +25,15 @@ public class Objective {
 		return true;
 	}
 	
+	///Check if can smelt an item
+	public static boolean canSmelt(ItemStack item, AIinventory inve){
+		ItemStack result = RecipesList.getSmeltingItem(item);
+		if (result == null){
+			return false;
+		}
+		return inve.haveItem(item);
+	}
+	
 	///Check if the player can harvest block
 	public static boolean canHarvestBlock(AIPlayer player, Block block){
 		return player.getPlayer().canHarvestBlock(block);
