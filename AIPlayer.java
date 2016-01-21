@@ -232,18 +232,22 @@ public class AIPlayer {
 	public boolean smeltItem (AIinventory inve, ItemStack item, AIWorld world){
 		String furnacerBlock = "furnace";
 		ItemStack inge;
-		if (((inge = RecipesList.getSmeltingItem(item)) == null) || (inve.haveItem(inge))){
+		if (Objective.canSmelt(item, inve)){
 			return false;
 		}
 		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName(furnacerBlock))){
-			
+			//TODO: go to get the furnace
 		}
+		inge = RecipesList.getSmeltingItem(item);
+		return inve.smeltItem(item);
+		
+		/*
 		Vec3 furnaceLoc = world.findNearestBlock(getLocation(), Block.getBlockFromName(furnacerBlock), (int)UserSetting.rechDistance);
 		inve.decItem(inge);
 		TileEntityFurnace furnaceEntity = world.getFurnaceEntity(furnaceLoc);
 		
 		
-		/*System.out.println(furnaceEntity.getInventoryName());
+		System.out.println(furnaceEntity.getInventoryName());
 		System.out.println(furnaceEntity.getSizeInventory());
 		System.out.println(furnaceEntity.getDistanceFrom(getLocation().xCoord, getLocation().yCoord, getLocation().zCoord));
 		System.out.println(furnaceEntity.getStackInSlot(0));
@@ -263,7 +267,7 @@ public class AIPlayer {
 		
 		
 		
-		return true;
+		//return true;
 	}
 	
 	
