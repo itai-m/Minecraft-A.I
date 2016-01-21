@@ -344,4 +344,13 @@ public class AIinventory{
 		return addItem(RecipesList.getRecipes(item).getRecipeOutput());
 	}
 	
+	///Smelt an item with no smelt process
+	public boolean smeltItem(ItemStack item){
+		if (!Objective.canSmelt(item, this)){
+			return false;
+		}
+		decItem(RecipesList.getSmeltingItem(item));
+		return addItem(item);
+	}
+	
 }
