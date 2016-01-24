@@ -11,6 +11,7 @@ import com.custommods.walkmod.PathSmoother;
 import com.custommods.walkmod.Step;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.stats.StatBase;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Vec3;
@@ -48,22 +49,22 @@ public class AIWorld{
 		for (int i = 0 ; i < max ; i++){
 			for (int j = -i ; j < i + 1 ; j++){
 				for (int k = -i ; k < i + 1 ; k++){
-					if (Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)) == blockId){
+					if (dropBlockId(x + i, y + k, z + j) == blockId){
 						return Vec3.createVectorHelper(x + i, y + k, z + j);
 					}
-					if (Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)) == blockId){
+					if (dropBlockId(x - i, y + k, z + j) == blockId){
 						return Vec3.createVectorHelper(x - i, y + k, z + j);
 					}
-					if (Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)) == blockId){
+					if (dropBlockId(x + k, y + i, z + j) == blockId){
 						return Vec3.createVectorHelper(x + k, y + i, z + j);
 					}
-					if (Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)) == blockId){
+					if (dropBlockId(x + k, y - i, z + j) == blockId){
 						return Vec3.createVectorHelper(x + k, y - i, z + j);
 					}
-					if (Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)) == blockId){
+					if (dropBlockId(x + k, y + j, z + i) == blockId){
 						return Vec3.createVectorHelper(x + k, y + j, z + i);
 					}
-					if (Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)) == blockId){
+					if (dropBlockId(x + k, y + j, z - i) == blockId){
 						return Vec3.createVectorHelper(x + k, y + j, z - i);
 					}
 				}
@@ -80,22 +81,22 @@ public class AIWorld{
 		for (int i = 0 ; i < max ; i++){
 			for (int j = -i ; j < i + 1 ; j++){
 				for (int k = -i ; k < i + 1 ; k++){
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)), blocksId)){
+					if (arrayEqual(dropBlockId(x + i, y + k, z + j), blocksId)){
 						return Vec3.createVectorHelper(x + i, y + k, z + j);
 					}
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)), blocksId)){
+					if (arrayEqual(dropBlockId(x - i, y + k, z + j), blocksId)){
 						return Vec3.createVectorHelper(x - i, y + k, z + j);
 					}
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)), blocksId)){
+					if (arrayEqual(dropBlockId(x + k, y + i, z + j), blocksId)){
 						return Vec3.createVectorHelper(x + k, y + i, z + j);
 					}
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)), blocksId)){
+					if (arrayEqual(dropBlockId(x + k, y - i, z + j), blocksId)){
 						return Vec3.createVectorHelper(x + k, y - i, z + j);
 					}
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)), blocksId)){
+					if (arrayEqual(dropBlockId(x + k, y + j, z + i), blocksId)){
 						return Vec3.createVectorHelper(x + k, y + j, z + i);
 					}
-					if (arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)), blocksId)){
+					if (arrayEqual(dropBlockId(x + k, y + j, z - i), blocksId)){
 						return Vec3.createVectorHelper(x + k, y + j, z - i);
 					}
 				}
@@ -133,27 +134,27 @@ public class AIWorld{
 		for (int i = 0 ; i < max ; i++){
 			for (int j = -i ; j < i + 1 ; j++){
 				for (int k = -i ; k < i + 1 ; k++){
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + i, y + k, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + i, y + k, z + j), list)){
+					if ((arrayEqual(dropBlockId(x + i, y + k, z + j), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + i, y + k, z + j), list)){
 						list[stackSize++] =  Vec3.createVectorHelper(x + i, y + k, z + j);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x - i, y + k, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x - i, y + k, z + j), list)){
+					if ((arrayEqual(dropBlockId(x - i, y + k, z + j), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x - i, y + k, z + j), list)){
 						list[stackSize++] = Vec3.createVectorHelper(x - i, y + k, z + j);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + i, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + i, z + j), list)){
+					if ((arrayEqual(dropBlockId(x + k, y + i, z + j), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + i, z + j), list)){
 						list[stackSize++] = Vec3.createVectorHelper(x + k, y + i, z + j);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y - i, z + j)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y - i, z + j), list)){
+					if ((arrayEqual(dropBlockId(x + k, y - i, z + j), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y - i, z + j), list)){
 						list[stackSize++] = Vec3.createVectorHelper(x + k, y - i, z + j);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z + i)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z + i), list)){
+					if ((arrayEqual(dropBlockId(x + k, y + j, z + i), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z + i), list)){
 						list[stackSize++] = Vec3.createVectorHelper(x + k, y + j, z + i);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
-					if ((arrayEqual(Block.getIdFromBlock(world.getBlock(x + k, y + j, z - i)), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z - i), list)){
+					if ((arrayEqual(dropBlockId(x + k, y + j, z - i), blocksId)) && !arrayEqual(Vec3.createVectorHelper(x + k, y + j, z - i), list)){
 						list[stackSize++] = Vec3.createVectorHelper(x + k, y + j, z - i);
 						return (findNearestBlocks(list, startLoc, blocksId, stackSize, max));
 					}
@@ -233,6 +234,16 @@ public class AIWorld{
 	///Get the id of the block by integers
 	public int blockId(int x, int y, int z){
 		return Block.getIdFromBlock(world.getBlock(x, y, z));
+	}
+	
+	///Get the id of the block drop
+	public int dropBlockId(Vec3 loc){
+		return dropBlockId((int)loc.xCoord, (int)loc.yCoord, (int)loc.zCoord);
+	}
+	
+	///Get the id of the block drop
+	public int dropBlockId(int x, int y, int z){
+		return Item.getIdFromItem(Item.getItemFromBlock(world.getBlock(x, y, z)));
 	}
 	
 	///Get the block by vector
