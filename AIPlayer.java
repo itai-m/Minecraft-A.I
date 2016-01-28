@@ -280,7 +280,7 @@ public class AIPlayer {
 		return doWorkPlan(plan, inve, world);
 	}
 	
-	///The tree of the plan
+	///The tree  of the plan
 	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve){
 		List<ItemStack> inger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
@@ -301,16 +301,15 @@ public class AIPlayer {
 		}
 		else{
 			usedItems.clear();
+			gotoNum = plan.countLoc();
 			for (ItemStack itemStack : inger) {
 				double tempHeur = planTree(itemStack, world, plan, inve);
 				craftHeur += tempHeur;
 				if (tempHeur ==  0){
 					usedItems.add(itemStack);
 				}
-				else{
-					gotoNum++;
-				}
 			}
+			gotoNum = gotoNum - plan.countLoc();
 			for (Object object : usedItems) {
 				Logger.debug("remove used: " + ((ItemStack) object).getDisplayName());
 				plan.removeUsedItem((ItemStack) object);
