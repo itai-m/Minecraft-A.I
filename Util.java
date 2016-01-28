@@ -5,9 +5,12 @@ import java.util.Queue;
 import com.custommods.walkmod.*;
 import com.sun.org.apache.xpath.internal.axes.WalkingIteratorSorted;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.Vec3;
@@ -40,22 +43,22 @@ public class Util{
 	
 	///Calculating the Heuristic from the path
 	public static double getHeuristic(Queue<Step> path){
-		double heur = 0;
+		double heur = 1;
 		for (Step step : path) {
 			if (step instanceof WalkStep){
-				
+				heur += 1;
 			}
 			else if (step instanceof PoleStep){
-				
+				heur += 1;
 			}
 			else if (step instanceof MineStep){
-				
+				heur += 1;
 			}
 			else if (step instanceof JumpStep){
-				
+				heur += 1;
 			}
 			else if (step instanceof BridgeStep){
-				
+				heur += 1;
 			}
 			else{
 				
@@ -77,6 +80,26 @@ public class Util{
 		else{
 			return false;
 		}
+	}
+	
+	///Check if one item is id equal to other item id
+	public static boolean idItemEqual(ItemStack item1, ItemStack item2){
+		return (Item.getIdFromItem(item1.getItem()) == Item.getIdFromItem(item2.getItem()));
+	}
+	
+	///Get ItemStack for string
+	public static ItemStack getItemStack(String name){
+		Object obj = Item.itemRegistry.getObject(name);
+		if (obj instanceof Item){
+			return new ItemStack((Item)obj);
+		}
+		if (obj instanceof ItemBlock){
+			return new ItemStack((ItemBlock)obj);
+		}
+		else{
+			Logger.debug("in getItemStack didnt found: " + name);
+		}
+		return null;
 	}
 	
 	///Wait and tick the game
