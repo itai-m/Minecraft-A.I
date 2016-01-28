@@ -90,6 +90,11 @@ public class WorkPlan {
 		locationList.remove(locationList.size() - 1);
 	}
 	
+	///Count the number of location
+	public int countLoc(){
+		return locationList.size();
+	}
+	
 	///Get the number of stack of the item been used, return NOT_FOUND if the item not found
 	public int getStackInUsed(ItemStack item){
 		int conter = 0;
