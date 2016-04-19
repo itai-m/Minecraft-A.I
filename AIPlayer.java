@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ChatComponentText;
@@ -285,6 +286,7 @@ public class AIPlayer {
 		List<ItemStack> inger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
+		ItemStack tempTool;
 		Vec3[] blocksLoc;
 		int gotoNum = 0;
 		Queue<Step> steps = null;
@@ -314,6 +316,9 @@ public class AIPlayer {
 				Logger.debug("remove used: " + ((ItemStack) object).getDisplayName());
 				plan.removeUsedItem((ItemStack) object);
 			}
+		}
+		if ((tempTool = Util.getMinToolToCraft(item) ) != null){
+			goGetHeur = planTree( tempTool, world, plan, inve);
 		}
 		blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
 		if (blocksLoc ==null){

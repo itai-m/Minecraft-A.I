@@ -108,9 +108,9 @@ public class RecipesList {
 	}
 	
 	///Get a item for the smelting
-	public static ItemStack getSmeltingItem(ItemStack input){
+	public static ItemStack getSmeltingItem(ItemStack outPut){
 		Iterator iterator = smeltingList.entrySet().iterator();
-        Entry entry;
+        Entry entry = null;
 
         do
         {
@@ -119,11 +119,17 @@ public class RecipesList {
                 return null;
             }
 
+            if (entry != null){
+            	Logger.debug("key: " + ((ItemStack)entry.getKey()).getDisplayName());
+            	Logger.debug(((ItemStack)entry.getValue()).getDisplayName());
+            	Logger.debug(outPut.getDisplayName());
+            }
             entry = (Entry)iterator.next();
         }
-        while (((ItemStack)entry.getKey()).isItemEqual(input));
+        while (!Util.idItemEqual(outPut, (ItemStack)entry.getValue()));
+        //while (Item.getIdFromItem(((ItemStack)entry.getKey()).getItem()) == Item.getIdFromItem(input.getItem()));
         
-        return (ItemStack)entry.getValue();
+        return (ItemStack)entry.getKey();
 	}
 	
 }

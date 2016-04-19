@@ -112,4 +112,10 @@ public class Util{
 			e.printStackTrace();
 		}
 	}
+	
+	///Get the min tool to craft
+	public static ItemStack getMinToolToCraft(ItemStack item){
+		
+		return null;
+	}
 }
