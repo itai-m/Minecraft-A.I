@@ -9,6 +9,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -115,7 +116,10 @@ public class Util{
 	
 	///Get the min tool to craft
 	public static ItemStack getMinToolToCraft(ItemStack item){
-		
+		ItemStack woodenAxe = getItemStack("wooden_axe");
+		int harverstLevel = item.getItem().getHarvestLevel(item, "wooden");
+		//if (item.getItem().canHarvestBlock(Block.getBlockFromItem(item.getItem()), ))
+		Logger.debug("" + harverstLevel);
 		return null;
 	}
 }
