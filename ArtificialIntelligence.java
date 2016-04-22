@@ -132,7 +132,7 @@ public class ArtificialIntelligence{
 	///Function for testing only
 	public void test(){
 		Logger.debug("Start Test");
-		Logger.debug("get: " + player.getItem(new ItemStack(Item.getItemById(4)), world, inventory));
+		Logger.debug("get: " + Util.getMinToolToCraft(new ItemStack(Item.getItemById(4))));
 		Logger.debug("End Test");
 	}
 	
