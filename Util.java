@@ -116,11 +116,25 @@ public class Util{
 	
 	///Get the min tool to craft
 	public static ItemStack getMinToolToCraft(ItemStack item){
-		ItemStack woodenAxe = getItemStack("wooden_axe");
-		int harverstLevel = item.getItem().getHarvestLevel(item, "Stone");
-		Logger.debug(" t " + item.getItem().canHarvestBlock(Block.getBlockFromItem(Item.getItemById(1)),new ItemStack(Item.getItemById(278))) );
-		//if (item.getItem().canHarvestBlock(Block.getBlockFromItem(item.getItem()), ))
-		Logger.debug("h " + harverstLevel);
-		return null;
+		String toolname = "";
+		int toolLevel = Block.getBlockFromItem(item.getItem()).getHarvestLevel(0);
+		switch(toolLevel){
+		case(0):
+			toolname = "Wood";
+			break;
+		case(1):
+			toolname = "Stone";
+			break;
+		case (2):
+			toolname = "Iron";
+			break;
+		case (3):
+			toolname = "Diamond";
+			break;
+		default:
+			return null;	
+		}
+		toolname += "_" + Block.getBlockFromItem(item.getItem()).getHarvestTool(0);
+		return getItemStack(toolname);
 	}
 }

@@ -62,7 +62,7 @@ public class Command implements ICommand{
         		ai.goToPoint(argu[1], argu[2], argu[3]);
         	}
         	else if (argu0.equals("test")){
-        		ai.test();
+        		ai.test(argu[1]);
         	}
         	else{
         		ai.commandNotExist();

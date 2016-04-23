@@ -130,9 +130,14 @@ public class ArtificialIntelligence{
 	}
 		
 	///Function for testing only
-	public void test(){
-		Logger.debug("Start Test");
-		Logger.debug("get: " + Util.getMinToolToCraft(new ItemStack(Item.getItemById(4))));
+	public void test(String numberS){
+		if (numberS == null){
+			numberS = "0";
+		}
+		int number = Integer.parseInt(numberS);
+		
+		Logger.debug("Start Test whit " + numberS);
+		Logger.debug("get: " + Util.getMinToolToCraft(new ItemStack(Item.getItemById(number))).getDisplayName());
 		Logger.debug("End Test");
 	}
 	
