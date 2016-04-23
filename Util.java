@@ -120,16 +120,16 @@ public class Util{
 		int toolLevel = Block.getBlockFromItem(item.getItem()).getHarvestLevel(0);
 		switch(toolLevel){
 		case(0):
-			toolname = "Wood";
+			toolname = "wooden";
 			break;
 		case(1):
-			toolname = "Stone";
+			toolname = "stone";
 			break;
 		case (2):
-			toolname = "Iron";
+			toolname = "iron";
 			break;
 		case (3):
-			toolname = "Diamond";
+			toolname = "diamond";
 			break;
 		default:
 			return null;	
