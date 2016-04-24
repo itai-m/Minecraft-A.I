@@ -137,7 +137,7 @@ public class ArtificialIntelligence{
 		int number = Integer.parseInt(numberS);
 		
 		Logger.debug("Start Test whit " + number);
-		Logger.debug("get: " + Util.getMinToolToCraft(new ItemStack(Item.getItemById(number))).getDisplayName());
+		Logger.debug("get: " + "");
 		Logger.debug("End Test");
 	}
 	

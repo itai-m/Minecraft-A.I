@@ -47,7 +47,7 @@ public class PathNavigator {
 	private MineSpot currentMine = null;
 
 	private boolean isBridgeStep = false;
-
+	private long timeTo = 0;
 	static {
 		instance = new PathNavigator();
 	}
@@ -319,12 +319,17 @@ public class PathNavigator {
 	}
 
 	private void pollStep(EntityPlayer player) {
+
 		currentStep = steps.poll();
 		if (null != currentStep)
 			targetVec = currentStep.getLocation();
 		// System.out.println((targetVec.xCoord - player.posX) + ", " +
 		// (targetVec.yCoord - player.posY) + ", " + (targetVec.zCoord -
 		// player.posZ));
+		System.out.println("time: " + (System.currentTimeMillis() - timeTo));
+		if (currentStep != null)
+			System.out.println("step: " + currentStep.getClass());
+		timeTo = System.currentTimeMillis();
 		if (currentStep instanceof JumpStep)
 			isJumpedFlag = true;
 		if (currentStep instanceof BridgeStep) {

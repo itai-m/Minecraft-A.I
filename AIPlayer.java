@@ -193,8 +193,8 @@ public class AIPlayer {
 
 		while (WalkMod.pathNavigator.isRun()){
 			Util.waitAndTick();
-			Logger.debug("" + Minecraft.getMinecraft().getIntegratedServer().getTickCounter() + " " + Minecraft.getMinecraft().getIntegratedServer().isServerRunning());
-			Logger.debug("running");
+			//Logger.debug("" + Minecraft.getMinecraft().getIntegratedServer().getTickCounter() + " " + Minecraft.getMinecraft().getIntegratedServer().isServerRunning());
+			//Logger.debug("running");
 		}
 		for (int i = 0 ; i < 10 ; i++){
 			Util.waitAndTick();

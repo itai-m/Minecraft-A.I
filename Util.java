@@ -47,25 +47,31 @@ public class Util{
 		double heur = 1;
 		for (Step step : path) {
 			if (step instanceof WalkStep){
-				heur += 1;
+				heur += 2;
 			}
 			else if (step instanceof PoleStep){
-				heur += 1;
+				heur += 5;
 			}
 			else if (step instanceof MineStep){
-				heur += 1;
+				heur += mineHeuristic((MineStep)step);
 			}
 			else if (step instanceof JumpStep){
-				heur += 1;
+				heur += 5;
 			}
 			else if (step instanceof BridgeStep){
-				heur += 1;
+				heur += 10;
 			}
 			else{
 				
 			}
 		}
 		return heur;
+	}
+	
+	///Calculating the Heuristic of one mine step
+	private static double mineHeuristic(MineStep step){
+		
+		return 1;
 	}
 	
 	///Check if one item containing the other
@@ -117,7 +123,11 @@ public class Util{
 	///Get the min tool to craft
 	public static ItemStack getMinToolToCraft(ItemStack item){
 		String toolname = "";
-		int toolLevel = Block.getBlockFromItem(item.getItem()).getHarvestLevel(0);
+		Block blockItem = Block.getBlockFromItem(item.getItem());
+		if (blockItem.getBlockHardness(null, 0, 0, 0) < 1){
+			return null;
+		}
+		int toolLevel = blockItem.getHarvestLevel(0);
 		switch(toolLevel){
 		case(0):
 			toolname = "wooden";
@@ -134,7 +144,7 @@ public class Util{
 		default:
 			return null;	
 		}
-		toolname += "_" + Block.getBlockFromItem(item.getItem()).getHarvestTool(0);
+		toolname += "_" + blockItem.getHarvestTool(0);
 		return getItemStack(toolname);
 	}
 }
