@@ -137,7 +137,13 @@ public class ArtificialIntelligence{
 		int number = Integer.parseInt(numberS);
 		
 		Logger.debug("Start Test whit " + number);
-		Logger.debug("get: " + "");
+		ItemStack item = Util.getMinToolToCraft(new ItemStack(Item.getItemById(number)));
+		if (item == null){
+			Logger.debug("no need tool");
+		}
+		else{
+			Logger.debug("get: " + item.getDisplayName());
+		}
 		Logger.debug("End Test");
 	}
 	

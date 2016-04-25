@@ -317,9 +317,9 @@ public class AIPlayer {
 				plan.removeUsedItem((ItemStack) object);
 			}
 		}
-		if ((tempTool = Util.getMinToolToCraft(item) ) != null){
-			goGetHeur = planTree( tempTool, world, plan, inve);
-		}
+		//if ((tempTool = Util.getMinToolToCraft(item) ) != null){
+		//	goGetHeur = planTree( tempTool, world, plan, inve);
+		//}
 		blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
 		if (blocksLoc ==null){
 			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
@@ -332,11 +332,11 @@ public class AIPlayer {
 			}
 			steps = world.findPath(plan.peekLoc(), blocksLoc[0]);
 			allPath.add(steps);
-			goGetHeur += Util.getHeuristic(steps);
+			goGetHeur += Util.getHeuristic(steps, inve);
 			for (int i = 0 ; i < blocksLoc.length -1 ; i++){
 				steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
 				allPath.add(steps);
-				goGetHeur += Util.getHeuristic(steps);
+				goGetHeur += Util.getHeuristic(steps, inve);
 			}
 		}
 		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);

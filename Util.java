@@ -43,7 +43,7 @@ public class Util{
 	}
 	
 	///Calculating the Heuristic from the path
-	public static double getHeuristic(Queue<Step> path){
+	public static double getHeuristic(Queue<Step> path, AIinventory inv){
 		double heur = 1;
 		for (Step step : path) {
 			if (step instanceof WalkStep){
@@ -53,7 +53,7 @@ public class Util{
 				heur += 5;
 			}
 			else if (step instanceof MineStep){
-				heur += mineHeuristic((MineStep)step);
+				heur += mineHeuristic((MineStep)step, inv);
 			}
 			else if (step instanceof JumpStep){
 				heur += 5;
@@ -69,7 +69,7 @@ public class Util{
 	}
 	
 	///Calculating the Heuristic of one mine step
-	private static double mineHeuristic(MineStep step){
+	private static double mineHeuristic(MineStep step, AIinventory inv){
 		
 		return 1;
 	}
