@@ -292,11 +292,13 @@ public class AIPlayer {
 		Queue<Step> steps = null;
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
+		//Check if the player already have the item
 		if (plan.canUsedItem(item, inve)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
 			plan.addUsedItem(item);
 			return 0;
 		}
+		//Check if the item can made by crafting
 		if (inger == null){
 			Logger.debug("PlanTree: no craft for " + item.getDisplayName());
 			craftHeur = Util.Max;
@@ -317,10 +319,13 @@ public class AIPlayer {
 				plan.removeUsedItem((ItemStack) object);
 			}
 		}
+		//Check if need an tool to mine
 		//if ((tempTool = Util.getMinToolToCraft(item) ) != null){
 		//	goGetHeur = planTree( tempTool, world, plan, inve);
 		//}
+		//Find the nearest blocks of this kind
 		blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
+		//Check if there is a block near the player
 		if (blocksLoc ==null){
 			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
 			goGetHeur = Util.Max;
@@ -340,6 +345,7 @@ public class AIPlayer {
 			}
 		}
 		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);
+		//Check if the item need to craft or to get
 		if (craftHeur < goGetHeur){
 			Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 			plan.add(item);
