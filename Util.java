@@ -9,6 +9,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class Util{
 	
@@ -23,6 +25,7 @@ public class Util{
 	public static int CRAFT = 2;
 	public static int CANT_GET = -1;
 	public static double Max = Integer.MAX_VALUE;
+	public static int EMPTY_ID = 0;
 	
 	///Return the block hardness 
 	public static double getBlockHardness(Vec3 blockLoc,Block block, World world){
@@ -124,8 +127,8 @@ public class Util{
 	public static ItemStack getMinToolToCraft(ItemStack item){
 		String toolname = "";
 		Block blockItem = Block.getBlockFromItem(item.getItem());
-		if (blockItem.getBlockHardness(null, 0, 0, 0) < 1){
-			return null;
+		if (blockItem.getMaterial().isToolNotRequired()){
+			return new ItemStack(Item.getItemById(0));
 		}
 		int toolLevel = blockItem.getHarvestLevel(0);
 		switch(toolLevel){

@@ -52,6 +52,9 @@ public class Command implements ICommand{
         	else if (argu0.equals("get")){
         		ai.get(argu[1]);
         	}
+        	else if (argu0.equals("getbyid")){
+        		ai.get(argu[1]);
+        	}
         	else if (argu0.equals("craft")){
         		ai.craft(argu[1]);
         	}

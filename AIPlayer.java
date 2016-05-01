@@ -320,9 +320,15 @@ public class AIPlayer {
 			}
 		}
 		//Check if need an tool to mine
-		//if ((tempTool = Util.getMinToolToCraft(item) ) != null){
-		//	goGetHeur = planTree( tempTool, world, plan, inve);
-		//}
+		if ((tempTool = Util.getMinToolToCraft(item) ) != null){
+			if (!Util.idItemEqual(tempTool, new ItemStack(Item.getItemById(Util.EMPTY_ID)))){
+				Logger.debug("tool need to mine " + item.getDisplayName() + "is: " + tempTool.getDisplayName());
+				goGetHeur = planTree( tempTool, world, plan, inve);
+			}
+		}
+		else{
+			goGetHeur = Util.Max;
+		}
 		//Find the nearest blocks of this kind
 		blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
 		//Check if there is a block near the player
