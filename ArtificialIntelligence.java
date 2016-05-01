@@ -42,13 +42,9 @@ import tv.twitch.broadcast.GameInfoList;
 
 public class ArtificialIntelligence{
 	
-	
-	
-	
 	private AIPlayer player;
 	private AIinventory inventory;
 	private AIWorld world;
-	
 	
 	///Constructor
 	public ArtificialIntelligence(EntityPlayer player){
@@ -59,16 +55,9 @@ public class ArtificialIntelligence{
 	
 	///Handle the get command
 	public boolean get(String requset){
-		ItemStack item;
-		try{
-			int id = Integer.parseInt(requset);
-			item = new ItemStack(Item.getItemById(id));
-		}
-		catch(NumberFormatException e){
-			requset = requset.toLowerCase();
-			item = new ItemStack(Block.getBlockFromName(requset));
-		}
+		ItemStack item = Util.getItemStack(requset);
 		if (item.getItem() == null){
+			player.sendMessage("Could not get " + requset);
 			return false;
 		}
 		return getItem(item);
@@ -76,9 +65,9 @@ public class ArtificialIntelligence{
 	
 	///Handle the craft command
 	public void craft(String toCraft){
-		toCraft = toCraft.toLowerCase();
-		if (player.craftItem(inventory, new ItemStack(Block.getBlockFromName(toCraft)), world)){
-			player.sendMessage("Successfully Craft " + toCraft);
+		ItemStack item = Util.getItemStack(toCraft);
+		if (item!=null && player.craftItem(inventory, item, world)){
+			player.sendMessage("Successfully Craft " + item.getDisplayName());
 		}
 		else{
 			player.sendMessage("Could not craft " + toCraft);
@@ -141,5 +130,6 @@ public class ArtificialIntelligence{
 	private boolean getItem(ItemStack item){
 		return player.getItem(item, world, inventory);
 	}
+	
 	
 }

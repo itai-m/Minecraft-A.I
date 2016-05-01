@@ -97,19 +97,26 @@ public class Util{
 		return (Item.getIdFromItem(item1.getItem()) == Item.getIdFromItem(item2.getItem()));
 	}
 	
-	///Get ItemStack for string
+	///Get ItemStack for string (id or name)
 	public static ItemStack getItemStack(String name){
-		Object obj = Item.itemRegistry.getObject(name);
-		if (obj instanceof Item){
-			return new ItemStack((Item)obj);
+		try{
+			int id = Integer.parseInt(name);
+			return new ItemStack(Item.getItemById(id));
 		}
-		if (obj instanceof ItemBlock){
-			return new ItemStack((ItemBlock)obj);
+		catch(NumberFormatException e){
+			name.toLowerCase();
+			Object obj = Item.itemRegistry.getObject(name);
+			if (obj instanceof Item){
+				return new ItemStack((Item)obj);
+			}
+			if (obj instanceof ItemBlock){
+				return new ItemStack((ItemBlock)obj);
+			}
+			else{
+				Logger.debug("in getItemStack didnt found: " + name);
+			}
+			return null;
 		}
-		else{
-			Logger.debug("in getItemStack didnt found: " + name);
-		}
-		return null;
 	}
 	
 	///Wait and tick the game
@@ -128,7 +135,7 @@ public class Util{
 		String toolname = "";
 		Block blockItem = Block.getBlockFromItem(item.getItem());
 		if (blockItem.getMaterial().isToolNotRequired()){
-			return new ItemStack(Item.getItemById(0));
+			return new ItemStack(Item.getItemById(EMPTY_ID));
 		}
 		int toolLevel = blockItem.getHarvestLevel(0);
 		switch(toolLevel){

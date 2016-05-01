@@ -287,7 +287,7 @@ public class AIPlayer {
 		double craftHeur = 0;
 		double goGetHeur = 0;
 		ItemStack tempTool;
-		Vec3[] blocksLoc;
+		Vec3[] blocksLoc = null;
 		int gotoNum = 0;
 		Queue<Step> steps = null;
 		List usedItems = new ArrayList<ItemStack>();
@@ -320,37 +320,42 @@ public class AIPlayer {
 			}
 		}
 		//Check if need an tool to mine
-		if ((tempTool = Util.getMinToolToCraft(item) ) != null){
+		if ((tempTool = Util.getMinToolToCraft(item) ) == null){
+			goGetHeur = Util.Max;
+		}
+		else{
 			if (!Util.idItemEqual(tempTool, new ItemStack(Item.getItemById(Util.EMPTY_ID)))){
 				Logger.debug("tool need to mine " + item.getDisplayName() + "is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve);
 			}
-		}
-		else{
-			goGetHeur = Util.Max;
-		}
-		//Find the nearest blocks of this kind
-		blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
-		//Check if there is a block near the player
-		if (blocksLoc ==null){
-			Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
-			goGetHeur = Util.Max;
-		}
-		else{
-			Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
-			for (int i = 0 ; i < blocksLoc.length  ; i++){ 
-				Logger.debug("planTree: findPath to " + blocksLoc[i]);
+			//Find the nearest blocks of this kind
+			blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE);
+			//Check if there is a block near the player
+			if (blocksLoc ==null){
+				Logger.debug("PlanTree: there is no block for " + item.getDisplayName());
+				goGetHeur = Util.Max;
 			}
-			steps = world.findPath(plan.peekLoc(), blocksLoc[0]);
-			allPath.add(steps);
-			goGetHeur += Util.getHeuristic(steps, inve);
-			for (int i = 0 ; i < blocksLoc.length -1 ; i++){
-				steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
+			else{
+				Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
+				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
+					Logger.debug("planTree: findPath to " + blocksLoc[i]);
+				}
+				steps = world.findPath(plan.peekLoc(), blocksLoc[0]);
 				allPath.add(steps);
 				goGetHeur += Util.getHeuristic(steps, inve);
+				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
+					steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
+					allPath.add(steps);
+					goGetHeur += Util.getHeuristic(steps, inve);
+				}
 			}
 		}
+		
 		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);
+		if (craftHeur >= Util.Max && goGetHeur >= Util.Max){
+			Logger.debug("planTree: can't find a way to get: " + item.getDisplayName());
+			return Util.Max;
+		}
 		//Check if the item need to craft or to get
 		if (craftHeur < goGetHeur){
 			Logger.debug("planTree: need to craft for: " + item.getDisplayName());
