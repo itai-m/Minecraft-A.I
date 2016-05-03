@@ -326,9 +326,9 @@ public class PathNavigator {
 		// System.out.println((targetVec.xCoord - player.posX) + ", " +
 		// (targetVec.yCoord - player.posY) + ", " + (targetVec.zCoord -
 		// player.posZ));
-		System.out.println("time: " + (System.currentTimeMillis() - timeTo));
+		//System.out.println("time: " + (System.currentTimeMillis() - timeTo));
 		if (currentStep != null)
-			System.out.println("step: " + currentStep.getClass());
+			//System.out.println("step: " + currentStep.getClass());
 		timeTo = System.currentTimeMillis();
 		if (currentStep instanceof JumpStep)
 			isJumpedFlag = true;
