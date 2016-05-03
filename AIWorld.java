@@ -2,6 +2,7 @@ package com.custommods.ai;
 
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Random;
 
 import com.custommods.walkmod.IWorldInfo;
 import com.custommods.walkmod.MinecraftWorldInfo;
@@ -269,7 +270,8 @@ public class AIWorld{
 	
 	///Get the id of the block drop
 	public int dropBlockId(int x, int y, int z){
-		return Item.getIdFromItem(Item.getItemFromBlock(world.getBlock(x, y, z)));
+		return Item.getIdFromItem(world.getBlock(x, y, z).getItemDropped(0, new Random(), 0));
+		//return Item.getIdFromItem(Item.getItemFromBlock(world.getBlock(x, y, z)));
 	}
 	
 	///Get the block by vector

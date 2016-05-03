@@ -4,6 +4,7 @@ import com.custommods.walkmod.IWorldInfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.lwjgl.Sys;
 
@@ -54,13 +55,17 @@ public class ArtificialIntelligence{
 	}
 	
 	///Handle the get command
-	public boolean get(String requset){
+	public void get(String requset){
 		ItemStack item = Util.getItemStack(requset);
 		if (item.getItem() == null){
-			player.sendMessage("Could not get " + requset);
-			return false;
+			player.sendMessage("There is no item named " + requset);
 		}
-		return getItem(item);
+		else if (getItem(item)){
+			player.sendMessage("Successfully Get " + item.getDisplayName());
+		}
+		else{
+			player.sendMessage("Could not craft " + item.getDisplayName());
+		}
 	}
 	
 	///Handle the craft command
@@ -113,15 +118,13 @@ public class ArtificialIntelligence{
 		if (numberS == null){
 			numberS = "0";
 		}
-		int number = Integer.parseInt(numberS);
-		
-		Logger.debug("Start Test whit " + number);
-		ItemStack item = Util.getMinToolToCraft(new ItemStack(Item.getItemById(number)));
+		ItemStack item = Util.getItemStack(numberS);
+		Logger.debug("Start Test whit " + numberS);
 		if (item == null){
-			Logger.debug("no need tool");
+			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("get: " + item.getDisplayName());
+			Logger.debug("drop: " + Block.getBlockFromItem(item.getItem()).getItemDropped(0, new Random(), 0).getUnlocalizedName());
 		}
 		Logger.debug("End Test");
 	}
