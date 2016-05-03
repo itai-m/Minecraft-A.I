@@ -95,6 +95,18 @@ public class WorkPlan {
 		return locationList.size();
 	}
 	
+	///Return array of all the location in the location list
+	public Vec3[] GetLoctionArr(){
+		Vec3[] toReturn = new Vec3[locationList.size()];
+		int conter = 0;
+		for (Object object : locationList) {
+			if (object instanceof Vec3){
+				toReturn[conter++] = (Vec3)object;
+			}
+		}
+		return toReturn;
+	}
+	
 	///Get the number of stack of the item been used, return NOT_FOUND if the item not found
 	public int getStackInUsed(ItemStack item){
 		int conter = 0;
@@ -105,7 +117,7 @@ public class WorkPlan {
 				}
 			}
 		}
-		if (conter == 0){
+		if (conter != 0){
 			return conter;
 		}
 		return NOT_FOUND;

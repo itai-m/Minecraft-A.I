@@ -113,15 +113,20 @@ public class AIWorld{
 	
 	///Return the nearest block by array of ids without skip block in the skipList
 	public Vec3[] findNearestBlocks(Vec3 startLoc, int[] blocksId,int stackSize, int max, Vec3[] skipList){
-		Vec3[] toReturn = new Vec3[stackSize + skipList.length];
-		for (int i = 0 ; i < skipList.length ; i++){
-			toReturn[i] = skipList[i];
+		int skipListSize = skipList.length;
+		Vec3[] tempLocation = new Vec3[stackSize + skipListSize];
+		Vec3[] toReturn = new Vec3[stackSize];
+		for (int i = 0 ; i < skipListSize ; i++){
+			tempLocation[i] = skipList[i];
 		}
-		findNearestBlocks(toReturn, startLoc, blocksId, skipList.length, max);
-		for (Vec3 vec3 : toReturn) {
+		findNearestBlocks(tempLocation, startLoc, blocksId, skipListSize, max);
+		for (Vec3 vec3 : tempLocation) {
 			if (vec3 == null){
 				return null;
 			}
+		}
+		for (int i = 0 ; i < stackSize ; i++){
+			toReturn[i] = tempLocation [skipListSize + i];
 		}
 		return toReturn;
 	}

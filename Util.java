@@ -97,7 +97,7 @@ public class Util{
 		return (Item.getIdFromItem(item1.getItem()) == Item.getIdFromItem(item2.getItem()));
 	}
 	
-	///Get ItemStack for string (id or name)
+	///Get ItemStack form string (id or name)
 	public static ItemStack getItemStack(String name){
 		try{
 			int id = Integer.parseInt(name);
@@ -117,6 +117,11 @@ public class Util{
 			}
 			return null;
 		}
+	}
+	
+	///Get ItemStack form id
+	public static ItemStack getItemStack(int id){
+		return new ItemStack(Item.getItemById(id));
 	}
 	
 	///Wait and tick the game
