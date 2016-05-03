@@ -105,6 +105,27 @@ public class AIWorld{
 		return null;
 	}
 	
+	///Return the nearest block by array of id without skip block in the skipList
+	public Vec3[] findNearestBlocks(Vec3 startLoc, int blockId,int stackSize, int max, Vec3[] skipList){
+		int[] blocksId = {blockId};
+		return findNearestBlocks(startLoc, blocksId, stackSize, max, skipList);
+	}
+	
+	///Return the nearest block by array of ids without skip block in the skipList
+	public Vec3[] findNearestBlocks(Vec3 startLoc, int[] blocksId,int stackSize, int max, Vec3[] skipList){
+		Vec3[] toReturn = new Vec3[stackSize + skipList.length];
+		for (int i = 0 ; i < skipList.length ; i++){
+			toReturn[i] = skipList[i];
+		}
+		findNearestBlocks(toReturn, startLoc, blocksId, skipList.length, max);
+		for (Vec3 vec3 : toReturn) {
+			if (vec3 == null){
+				return null;
+			}
+		}
+		return toReturn;
+	}
+	
 	///Return the nearest block by array of id
 	public Vec3[] findNearestBlocks(Vec3 startLoc, int blockId,int stackSize, int max){
 		int[] blocksId = {blockId};
