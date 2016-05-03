@@ -12,26 +12,36 @@ import net.minecraft.util.Vec3;
 
 public class WorkPlan {
 
-	public static enum type {smelt, craft};
+	public static enum Type {smelt, craft, tool, moveto};
 	public static int NOT_FOUND = -1;
 	private List list;
+	private List typeList;
 	private List usedItems;
 	private List locationList;
 	
 	///Constructor
 	public WorkPlan(){
 		this.list = new ArrayList();
+		this.typeList = new ArrayList<Type>();
 		this.usedItems = new ArrayList<ItemStack>();
 		this.locationList = new ArrayList<ItemStack>();
 	}
 	
 	///Add item to Craft
 	public void add (ItemStack item){
+		typeList.add(Type.craft);
 		list.add(item);
+	}
+	
+	///Add an object
+	public void addCraft(Object object, Type type){
+		typeList.add(type);
+		list.add(object);
 	}
 	
 	///Add Queue of steps
 	public void add (Queue<Step> steps){
+		typeList.add(Type.moveto);
 		list.add(steps);
 	}
 	
@@ -136,12 +146,18 @@ public class WorkPlan {
 	
 	///Remove the last one in the plan
 	public void removeLast(){
+		typeList.remove(typeList.size()-1);
 		list.remove(list.size()-1);
 	}
 	
 	///Peek the first one in the plan
 	public Object peekLast(){
 		return list.get(list.size()-1);
+	}
+	
+	//Peek the first type in the list
+	public Type peekType(){
+		return (Type) typeList.get(typeList.size()-1);
 	}
 	
 	///Pull the first one in the plan
@@ -153,12 +169,18 @@ public class WorkPlan {
 		
 	///Remove the first one in the plan
 	public void removeFirst(){
+		typeList.remove(0);
 		list.remove(0);
 	}
 	
 	///Peek the first one in the plan
 	public Object peekFirst(){
 		return list.get(0);
+	}
+	
+	///Peek the first Type in the plan
+	public Type peekFirstType(){
+		return (Type) typeList.get(0);
 	}
 	
 	///Pull the first one in the plan
@@ -175,19 +197,25 @@ public class WorkPlan {
 		if (list.isEmpty()){
 			return "Plan is empty";
 		}
-		for (Object object : list) {
-			if (object instanceof ItemStack){
-				toReturn += index++ + ": Craft- " + ((ItemStack) object).getDisplayName() + "\n";
+		for (int i = 0 ; i < list.size() ; i++) {
+			if (list.get(i) instanceof ItemStack){
+				toReturn += index++ + ": Craft- " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
 			}
-			else if (object instanceof Queue){
-				toReturn += index++ + ": Move to- " + ((Step) ((Queue)object).peek()).getLocation() + "\n";
+			else if (list.get(i) instanceof Queue){
+				toReturn += index++ + ": Move to- " + ((Step) ((Queue)list.get(i)).peek()).getLocation() + "\n";
+			}
+			else if (typeList.get(i) == Type.smelt){
+				toReturn += index++ + ": smelt - " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
+			}
+			else if (typeList.get(i) == Type.tool){
+				toReturn += index++ + ": Swhich to tool- " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
 			}
 			else{
-				if (object == null){
+				if (list.get(i) == null){
 					toReturn += index++ + ": is null \n";
 				}
 				else{
-					toReturn += index++ + ": Not Found: " + object.toString() + "\n";
+					toReturn += index++ + ": Not Found: " + list.get(i).toString() + "\n";
 				}
 			}
 		}
