@@ -31,7 +31,7 @@ public class Objective {
 		if (result == null){
 			return false;
 		}
-		return inve.haveItem(item);
+		return inve.haveItem(result);
 	}
 	
 	///Check if the player can harvest block

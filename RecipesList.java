@@ -120,9 +120,9 @@ public class RecipesList {
             }
 
             if (entry != null){
-            	Logger.debug("key: " + ((ItemStack)entry.getKey()).getDisplayName());
-            	Logger.debug(((ItemStack)entry.getValue()).getDisplayName());
-            	Logger.debug(outPut.getDisplayName());
+            	//Logger.debug("key: " + ((ItemStack)entry.getKey()).getDisplayName());
+            	//Logger.debug(((ItemStack)entry.getValue()).getDisplayName());
+            	//Logger.debug(outPut.getDisplayName());
             }
             entry = (Entry)iterator.next();
         }
