@@ -182,20 +182,16 @@ public class AIinventory{
 	}
 		
 	///Use the best tool
-	public void useTool(int toolID){
+	public int useTool(int toolID){
 		switch (toolID) {
 		case PICKAXE:
-		
-			break;
+			return getPickaxe();
 		case AXE:
-			
-			break;
+			return getAxe();
 		case SHOVEL:
-			
-			break;
-
+			return getShovel();
 		default:
-			break;
+			return NOT_FOUND;
 		}
 	}
 	

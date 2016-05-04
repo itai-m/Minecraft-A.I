@@ -34,7 +34,7 @@ public class WorkPlan {
 	}
 	
 	///Add an object
-	public void addCraft(Object object, Type type){
+	public void add(Object object, Type type){
 		typeList.add(type);
 		list.add(object);
 	}
@@ -190,6 +190,7 @@ public class WorkPlan {
 		return toReturn;
 	}
 	
+
 	///Return the string with all the plan
 	public String toString(){
 		String toReturn = "";
@@ -198,7 +199,7 @@ public class WorkPlan {
 			return "Plan is empty";
 		}
 		for (int i = 0 ; i < list.size() ; i++) {
-			if (list.get(i) instanceof ItemStack){
+			if (typeList.get(i) == Type.craft){
 				toReturn += index++ + ": Craft- " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
 			}
 			else if (list.get(i) instanceof Queue){

@@ -11,6 +11,7 @@ import com.custommods.walkmod.PathFinder;
 import com.custommods.walkmod.PathSmoother;
 import com.custommods.walkmod.Step;
 import com.custommods.walkmod.WalkMod;
+import com.mojang.realmsclient.dto.McoServer.WorldType;
 import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import com.sun.javafx.event.EventHandlerManager;
 import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
@@ -37,6 +38,7 @@ import net.minecraftforge.event.entity.minecart.MinecartEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType;
 import scala.remote;
+import scala.annotation.meta.param;
 
 public class AIPlayer {
 
@@ -284,7 +286,7 @@ public class AIPlayer {
 	
 	///The tree  of the plan
 	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, InventoryTree inveTree){
-		List<ItemStack> inger = RecipesList.getIngredientList(item);
+		List<ItemStack> craftInger = RecipesList.getIngredientList(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
 		ItemStack tempTool;
@@ -295,6 +297,7 @@ public class AIPlayer {
 		InventoryTree goInveTree;
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
+		boolean needTool = false;
 		
 		//Check if the player already have the item
 		if (plan.canUsedItem(item, inve)){
@@ -305,7 +308,7 @@ public class AIPlayer {
 		}
 		
 		//Check if the item can made by crafting
-		if (inger == null){
+		if (craftInger == null){
 			Logger.debug("PlanTree: no craft for " + item.getDisplayName());
 			craftHeur = Util.Max;
 		}
@@ -313,7 +316,7 @@ public class AIPlayer {
 			usedItems.clear();
 			gotoNum = plan.countLoc();
 			craftInveTree = inveTree.AddChild(item, 0);
-			for (ItemStack itemStack : inger) {
+			for (ItemStack itemStack : craftInger) {
 				double tempHeur = planTree(itemStack, world, plan, inve, craftInveTree);
 				craftHeur += tempHeur;
 				if (tempHeur ==  0){
@@ -336,6 +339,8 @@ public class AIPlayer {
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID))){
 				Logger.debug("tool need to mine " + item.getDisplayName() + "is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve, goInveTree);
+				needTool = true;
+				
 			}
 			
 			//Find the nearest blocks of this kind
@@ -382,6 +387,9 @@ public class AIPlayer {
 			for (Object object : usedItems) {
 				plan.removeLast();
 			}
+			if (needTool){
+				plan.add(tempTool, WorkPlan.Type.tool);
+			}
 			for (Object object : allPath) {
 				plan.add((Queue<Step>)object);
 			}
@@ -394,16 +402,25 @@ public class AIPlayer {
 	private boolean doWorkPlan(WorkPlan plan, AIinventory inve, AIWorld world){
 		boolean succeeded = true;
 		while (!plan.isEmpty()){
+			WorkPlan.Type type = plan.peekFirstType();
 			Object obj = plan.pullFirst();
-			if (obj instanceof ItemStack){
+			if (type == WorkPlan.Type.craft){
 				Logger.debug("doWorkPlan: craft - " + ((ItemStack)obj).getDisplayName());
 				succeeded = succeeded && craftItem(inve, (ItemStack)obj, world);
-				Logger.debug("doWorkPlan: craft: " + ((ItemStack)obj).getDisplayName() + " craft succes: " + succeeded);
+				Logger.debug("doWorkPlan: craft: " + ((ItemStack)obj).getDisplayName() + " craft success: " + succeeded);
 			}
 			else if (obj instanceof Queue){
 				Logger.debug("doWorkPlan: goto");
 				walkOnPath((Queue<Step>)obj);
-				
+			}
+			else if (type == WorkPlan.Type.tool){
+				Logger.debug("doWorkPlan: use tool:" + ((ItemStack)obj).getDisplayName() );
+				inve.useTool(AIinventory.PICKAXE);
+			}
+			else if (type == WorkPlan.Type.smelt){
+				Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
+				succeeded = succeeded && inve.smeltItem(((ItemStack)obj));
+				Logger.debug("doWorkPlan: smelt: " + ((ItemStack)obj).getDisplayName() + " smelt success: " + succeeded);
 			}
 			else{
 				Logger.debug("doWorkPlan: not reguzie");

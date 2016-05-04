@@ -57,7 +57,7 @@ public class ArtificialIntelligence{
 	///Handle the get command
 	public void get(String requset){
 		ItemStack item = Util.getItemStack(requset);
-		if (item.getItem() == null){
+		if (item == null){
 			player.sendMessage("There is no item named " + requset);
 		}
 		else if (getItem(item)){
@@ -124,7 +124,11 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("drop: " + Block.getBlockFromItem(item.getItem()).getItemDropped(0, new Random(), 0).getUnlocalizedName());
+			List<ItemStack> inger = RecipesList.getIngredientList(item);
+			Logger.debug("list: ");
+			for (ItemStack itemStack : inger) {
+				Logger.debug(Item.getIdFromItem(itemStack.getItem())+ " ");
+			}
 		}
 		Logger.debug("End Test");
 	}
