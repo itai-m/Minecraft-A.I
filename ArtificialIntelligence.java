@@ -81,15 +81,13 @@ public class ArtificialIntelligence{
 	
 	///Handle the smelt command
 	public void smelt(String toSmelt){
-		toSmelt = toSmelt.toLowerCase();
-		Logger.debug(Util.getItemStack(toSmelt).getDisplayName());
-		//Logger.debug("" + GameRegistry.findItemStack("", toSmelt, 1));
-		/*if (player.smeltItem(inventory, new ItemStack(Block.getBlockFromName(toSmelt)), world)){
+		ItemStack item = Util.getItemStack(toSmelt);
+		if (player.smeltItem(inventory, item, world)){
 			player.sendMessage("Successfully Smelt " + toSmelt);
 		}
 		else{
 			player.sendMessage("Could not smelt " + toSmelt);
-		}*/
+		}
 	}
 	
 	///Handle the if the command not exist

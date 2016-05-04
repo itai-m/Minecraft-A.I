@@ -234,14 +234,12 @@ public class AIPlayer {
 	///Smelt an item
 	public boolean smeltItem (AIinventory inve, ItemStack item, AIWorld world){
 		String furnacerBlock = "furnace";
-		ItemStack inge;
-		if (Objective.canSmelt(item, inve)){
+		if (!Objective.canSmelt(item, inve)){
 			return false;
 		}
 		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName(furnacerBlock))){
 			//TODO: go to get the furnace
 		}
-		inge = RecipesList.getSmeltingItem(item);
 		return inve.smeltItem(item);
 		
 		/*
@@ -287,6 +285,7 @@ public class AIPlayer {
 	///The tree  of the plan
 	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, InventoryTree inveTree){
 		List<ItemStack> craftInger = RecipesList.getIngredientList(item);
+		ItemStack smeltInger = RecipesList.getSmeltingItem(item);
 		double craftHeur = 0;
 		double goGetHeur = 0;
 		ItemStack tempTool;
@@ -298,6 +297,7 @@ public class AIPlayer {
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
 		boolean needTool = false;
+		boolean needToSmelt = false;
 		
 		//Check if the player already have the item
 		if (plan.canUsedItem(item, inve)){
@@ -307,8 +307,16 @@ public class AIPlayer {
 			return 0;
 		}
 		
+		//Check if the item can made by melting
+		if (smeltInger !=null){
+			Logger.debug("PlanTree: can use smetl to get " + item.getDisplayName());
+			craftInveTree = inveTree.AddChild(item, 0);
+			craftHeur = planTree(smeltInger, world, plan, inve, craftInveTree);
+			needToSmelt = true;
+		}
+		
 		//Check if the item can made by crafting
-		if (craftInger == null){
+		else if (craftInger == null){
 			Logger.debug("PlanTree: no craft for " + item.getDisplayName());
 			craftHeur = Util.Max;
 		}
@@ -375,8 +383,14 @@ public class AIPlayer {
 		
 		//Check if the item need to craft or to get
 		if (craftHeur < goGetHeur){
-			Logger.debug("planTree: need to craft for: " + item.getDisplayName());
-			plan.add(item);
+			if (needToSmelt){
+				Logger.debug("planTree: need to smelt for: " + item.getDisplayName());
+				plan.add(item, WorkPlan.Type.smelt);
+			}
+			else{
+				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
+				plan.add(item, WorkPlan.Type.craft);
+			}
 			for (int i = 0 ; i < gotoNum ; i++){
 				plan.removeLoc();
 			}
@@ -419,7 +433,7 @@ public class AIPlayer {
 			}
 			else if (type == WorkPlan.Type.smelt){
 				Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
-				succeeded = succeeded && inve.smeltItem(((ItemStack)obj));
+				succeeded = succeeded && smeltItem(inve, (ItemStack)obj, world);
 				Logger.debug("doWorkPlan: smelt: " + ((ItemStack)obj).getDisplayName() + " smelt success: " + succeeded);
 			}
 			else{
