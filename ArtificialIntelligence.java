@@ -122,11 +122,14 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			List<ItemStack> inger = RecipesList.getIngredientList(item);
-			Logger.debug("list: ");
-			for (ItemStack itemStack : inger) {
-				Logger.debug(Item.getIdFromItem(itemStack.getItem())+ " ");
+			Logger.debug("");
+			//Block test = Block.getBlockFromItem(item.getItem());
+			/*if (test == null){
+				Logger.debug("test: null");
 			}
+			else{
+				Logger.debug("test: " + test.getLocalizedName());
+			}*/
 		}
 		Logger.debug("End Test");
 	}

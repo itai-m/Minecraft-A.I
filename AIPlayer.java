@@ -26,6 +26,9 @@ import net.minecraft.block.BlockFurnace;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
@@ -311,6 +314,7 @@ public class AIPlayer {
 		if (smeltInger !=null){
 			Logger.debug("PlanTree: can use smetl to get " + item.getDisplayName());
 			craftInveTree = inveTree.AddChild(item, 0);
+			smeltInger.stackSize = item.stackSize;
 			craftHeur = planTree(smeltInger, world, plan, inve, craftInveTree);
 			needToSmelt = true;
 		}
@@ -345,7 +349,7 @@ public class AIPlayer {
 		else{
 			goInveTree = inveTree.AddChild(item, 0);
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID))){
-				Logger.debug("tool need to mine " + item.getDisplayName() + "is: " + tempTool.getDisplayName());
+				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve, goInveTree);
 				needTool = true;
 				
@@ -430,6 +434,18 @@ public class AIPlayer {
 			else if (type == WorkPlan.Type.tool){
 				Logger.debug("doWorkPlan: use tool:" + ((ItemStack)obj).getDisplayName() );
 				inve.useTool(AIinventory.PICKAXE);
+				/*if (obj instanceof ItemPickaxe){
+					inve.useTool(AIinventory.PICKAXE);
+				}
+				else if (obj instanceof ItemAxe){
+					inve.useTool(AIinventory.AXE);
+				}
+				else if (obj instanceof ItemSpade){
+					inve.useTool(AIinventory.SHOVEL);
+				}
+				else{
+					Logger.debug("doWorkPlan: item not found to use.");
+				}*/
 			}
 			else if (type == WorkPlan.Type.smelt){
 				Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
