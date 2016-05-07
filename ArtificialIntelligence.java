@@ -23,6 +23,9 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
@@ -123,13 +126,19 @@ public class ArtificialIntelligence{
 		}
 		else{
 			Logger.debug("");
-			//Block test = Block.getBlockFromItem(item.getItem());
-			/*if (test == null){
-				Logger.debug("test: null");
+			if (item.getItem() instanceof ItemPickaxe){
+				player.sendMessage("picaxe");
+			}
+			else if (item.getItem() instanceof ItemAxe){
+				player.sendMessage("ItemAxe");
+			}
+			else if (item.getItem() instanceof ItemSpade){
+				player.sendMessage("ItemSpade");
 			}
 			else{
-				Logger.debug("test: " + test.getLocalizedName());
-			}*/
+				player.sendMessage(item.getClass().toString());
+				Logger.debug("doWorkPlan: item not found to use.");
+			}
 		}
 		Logger.debug("End Test");
 	}

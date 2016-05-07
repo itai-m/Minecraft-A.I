@@ -433,19 +433,18 @@ public class AIPlayer {
 			}
 			else if (type == WorkPlan.Type.tool){
 				Logger.debug("doWorkPlan: use tool:" + ((ItemStack)obj).getDisplayName() );
-				inve.useTool(AIinventory.PICKAXE);
-				/*if (obj instanceof ItemPickaxe){
+				if (((ItemStack)obj).getItem() instanceof ItemPickaxe){
 					inve.useTool(AIinventory.PICKAXE);
 				}
-				else if (obj instanceof ItemAxe){
+				else if (((ItemStack)obj).getItem() instanceof ItemAxe){
 					inve.useTool(AIinventory.AXE);
 				}
-				else if (obj instanceof ItemSpade){
+				else if (((ItemStack)obj).getItem() instanceof ItemSpade){
 					inve.useTool(AIinventory.SHOVEL);
 				}
 				else{
 					Logger.debug("doWorkPlan: item not found to use.");
-				}*/
+				}
 			}
 			else if (type == WorkPlan.Type.smelt){
 				Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
