@@ -125,20 +125,7 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("");
-			if (item.getItem() instanceof ItemPickaxe){
-				player.sendMessage("picaxe");
-			}
-			else if (item.getItem() instanceof ItemAxe){
-				player.sendMessage("ItemAxe");
-			}
-			else if (item.getItem() instanceof ItemSpade){
-				player.sendMessage("ItemSpade");
-			}
-			else{
-				player.sendMessage(item.getClass().toString());
-				Logger.debug("doWorkPlan: item not found to use.");
-			}
+			Util.toolForItem(item);
 		}
 		Logger.debug("End Test");
 	}

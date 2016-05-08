@@ -27,6 +27,11 @@ public class Util{
 	public static double Max = Integer.MAX_VALUE;
 	public static int EMPTY_ID = 0;
 	
+	public static String PICAXE_NAME = "pickaxe";
+	public static String SHOVEL_NAME = "shovel";
+	public static String AXE_NAME = "axe";
+	
+	
 	///Return the block hardness 
 	public static double getBlockHardness(Vec3 blockLoc,Block block, World world){
 		return block.getBlockHardness(world, (int)blockLoc.xCoord, (int)blockLoc.yCoord, (int)blockLoc.zCoord);
@@ -163,5 +168,19 @@ public class Util{
 		return getItemStack(toolname);
 	}
 	
-	
+	///Get the tool for the block
+	public static int toolForItem(ItemStack item){
+		String tool = Block.getBlockFromItem(item.getItem()).getHarvestTool(0);
+		if (tool == null){
+			return CANT_GET;
+		}
+		if (tool.compareTo(PICAXE_NAME) == 0){
+			return AIinventory.PICKAXE;
+		} else if (tool.compareTo(SHOVEL_NAME) == 0){
+			return AIinventory.SHOVEL;
+		} else if (tool.compareTo(AXE_NAME) == 0){
+			return AIinventory.AXE;
+		} 
+		return CANT_GET;
+	}
 }

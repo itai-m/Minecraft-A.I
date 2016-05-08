@@ -274,6 +274,21 @@ public class AIPlayer {
 		//return true;
 	}
 	
+	///Return the tool type
+	private int getToolType(ItemStack item){
+		if (item.getItem() instanceof ItemPickaxe){
+			return AIinventory.PICKAXE;
+		}
+		else if (item.getItem() instanceof ItemAxe){
+			return AIinventory.AXE;
+		}
+		else if (item.getItem() instanceof ItemSpade){
+			return AIinventory.SHOVEL;
+		}
+		else{
+			return AIinventory.NOT_FOUND;
+		}
+	}
 	
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
@@ -300,6 +315,7 @@ public class AIPlayer {
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
 		boolean needTool = false;
+		int toolKind = -1;
 		boolean needToSmelt = false;
 		
 		//Check if the player already have the item
@@ -348,11 +364,14 @@ public class AIPlayer {
 		}
 		else{
 			goInveTree = inveTree.AddChild(item, 0);
+			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID))){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve, goInveTree);
-				needTool = true;
-				
+				toolKind = getToolType(tempTool);
+			}
+			else if ((toolKind = Util.toolForItem(item)) == Util.CANT_GET){
+				needTool = false;
 			}
 			
 			//Find the nearest blocks of this kind
@@ -406,7 +425,7 @@ public class AIPlayer {
 				plan.removeLast();
 			}
 			if (needTool){
-				plan.add(tempTool, WorkPlan.Type.tool);
+				plan.add(toolKind, WorkPlan.Type.tool);
 			}
 			for (Object object : allPath) {
 				plan.add((Queue<Step>)object);
@@ -432,15 +451,9 @@ public class AIPlayer {
 				walkOnPath((Queue<Step>)obj);
 			}
 			else if (type == WorkPlan.Type.tool){
-				Logger.debug("doWorkPlan: use tool:" + ((ItemStack)obj).getDisplayName() );
-				if (((ItemStack)obj).getItem() instanceof ItemPickaxe){
-					inve.useTool(AIinventory.PICKAXE);
-				}
-				else if (((ItemStack)obj).getItem() instanceof ItemAxe){
-					inve.useTool(AIinventory.AXE);
-				}
-				else if (((ItemStack)obj).getItem() instanceof ItemSpade){
-					inve.useTool(AIinventory.SHOVEL);
+				Logger.debug("doWorkPlan: use tool: " + obj);
+				if ((Integer)obj != AIinventory.NOT_FOUND){
+					inve.useTool((Integer)obj);
 				}
 				else{
 					Logger.debug("doWorkPlan: item not found to use.");

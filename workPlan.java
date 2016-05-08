@@ -209,7 +209,20 @@ public class WorkPlan {
 				toReturn += index++ + ": smelt - " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
 			}
 			else if (typeList.get(i) == Type.tool){
-				toReturn += index++ + ": Swhich to tool- " + ((ItemStack) list.get(i)).getDisplayName() + "\n";
+				switch ((Integer)list.get(i)) {
+				case AIinventory.AXE:
+					toReturn += index++ + ": Swhich to tool- axe \n";
+					break;
+				case AIinventory.PICKAXE:
+					toReturn += index++ + ": Swhich to tool- picaxe \n";
+					break;
+				case AIinventory.SHOVEL:
+					toReturn += index++ + ": Swhich to tool- shovel \n";
+					break;
+				default:
+					toReturn += index++ + ": Swhich to tool- ERROR: no tool \n";
+					break;
+				}
 			}
 			else{
 				if (list.get(i) == null){
