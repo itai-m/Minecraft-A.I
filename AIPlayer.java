@@ -295,7 +295,9 @@ public class AIPlayer {
 		InventoryTree inveTree = new InventoryTree(new ItemStack(Item.getItemById(Util.EMPTY_ID)), 0);
 		WorkPlan plan = new WorkPlan();
 		plan.addLoc(getLocation());
-		planTree (item, world, plan, inve, inveTree);
+		if (planTree (item, world, plan, inve, inveTree) == Util.Max){
+			return false;
+		}
 		Logger.debug(plan.toString());
 		return doWorkPlan(plan, inve, world);
 	}
@@ -438,6 +440,9 @@ public class AIPlayer {
 	///Do the workPlan
 	private boolean doWorkPlan(WorkPlan plan, AIinventory inve, AIWorld world){
 		boolean succeeded = true;
+		if (plan.isEmpty()){
+			return false;
+		}
 		while (!plan.isEmpty()){
 			WorkPlan.Type type = plan.peekFirstType();
 			Object obj = plan.pullFirst();
