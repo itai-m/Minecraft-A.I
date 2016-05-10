@@ -296,6 +296,7 @@ public class AIPlayer {
 		WorkPlan plan = new WorkPlan();
 		plan.addLoc(getLocation());
 		if (planTree (item, world, plan, inve, inveTree) == Util.Max){
+			Logger.debug("Cant get this item", Logger.LOG);
 			return false;
 		}
 		Logger.debug(plan.toString());
