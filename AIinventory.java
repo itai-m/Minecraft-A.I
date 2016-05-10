@@ -30,7 +30,35 @@ public class AIinventory{
 	public final static int DIAMOND = 104;
 	public final static int GOLD = 105;
 	
-
+	public final int WOODEN_SWORD = 268;
+	public final int WOODEN_SHOVEL = 269;
+	public final int WOODEN_PICKAXE = 270;
+	public final int WOODEN_AXE = 271;
+	public final int WOODEN_HOE = 290;
+	
+	public final int STONE_SWORD = 272;
+	public final int STONE_SHOVEL = 273;
+	public final int STONE_PICKAXE = 274;
+	public final int STONE_AXE = 275;
+	public final int STONE_HOE = 291;
+	
+	public final int IRON_SWORD = 267;
+	public final int IRON_SHOVEL = 256;
+	public final int IRON_PICKAXE = 257;
+	public final int IRON_AXE = 258;
+	public final int IRON_HOE = 292;
+	
+	public final int GOLDEN_SWORD = 283;
+	public final int GOLDEN_SHOVEL = 284;
+	public final int GOLDEN_PICKAXE = 285;
+	public final int GOLDEN_AXE = 286;
+	public final int GOLDEN_HOE = 294;
+	
+	public final int DIAMOND_SWORD = 276;
+	public final int DIAMOND_SHOVEL = 277;
+	public final int DIAMOND_PICKAXE = 278;
+	public final int DIAMOND_AXE = 279;
+	public final int DIAMOND_HOE = 293;
 	
 	private InventoryPlayer inventory;
 	
@@ -74,6 +102,11 @@ public class AIinventory{
 		else{
 			return false;
 		}
+	}
+	
+	///Check if in the inventory have the item by id
+	public boolean haveItem(int id){
+		return inventory.hasItem(Item.getItemById(id));
 	}
 	
 	///Consume one item form the inventory, return true if the item was exist, otherwise false
@@ -180,137 +213,209 @@ public class AIinventory{
 		}
 		return NOT_FOUND;
 	}
+	
+	
 		
 	///Use the best tool
 	public int useTool(int toolID){
 		switch (toolID) {
 		case PICKAXE:
-			return getPickaxe();
+			return usePickaxe();
 		case AXE:
-			return getAxe();
+			return useAxe();
 		case SHOVEL:
-			return getShovel();
+			return useShovel();
 		default:
 			return NOT_FOUND;
 		}
 	}
 	
-	///Get best pickaxe from inventory, return the kind of the pickaxe, if not found return NOT_FOUND
-	public int getPickaxe(){
-		if (changeCurrentItemTo("Diamond Pickaxe")){
+	///Get the kind of the best pickaxe
+	public int getBestPickaxe(){
+		if (haveItem(DIAMOND_PICKAXE)){
 			return DIAMOND;
 		}
-		if (changeCurrentItemTo("Iron Pickaxe")){
+		if (haveItem(IRON_PICKAXE)){
 			return IRON;
 		}
-		if (changeCurrentItemTo("Stone Pickaxe")){
+		if (haveItem(STONE_PICKAXE)){
 			return STONE;
 		}
-		if (changeCurrentItemTo("Golden Pickaxe")){
+		if (haveItem(GOLDEN_PICKAXE)){
 			return GOLD;
 		}
-		if (changeCurrentItemTo("Wooden Pickaxe")){
+		if (haveItem(WOODEN_PICKAXE)){
+			return WOOD;
+		}
+		return NOT_FOUND;
+	}
+	
+	///Use best pickaxe from inventory, return the kind of the pickaxe, if not found return NOT_FOUND
+	public int usePickaxe(){
+		int pickaxeKind = getBestPickaxe();
+		switch (pickaxeKind) {
+		case DIAMOND:
+			changeCurrentItemTo(DIAMOND_PICKAXE);
+			break;
+		case IRON:
+			changeCurrentItemTo(IRON_PICKAXE);
+			break;
+		case STONE:
+			changeCurrentItemTo(STONE_PICKAXE);
+			break;
+		case GOLD:
+			changeCurrentItemTo(GOLDEN_PICKAXE);
+			break;
+		case WOOD:
+			changeCurrentItemTo(WOODEN_PICKAXE);
+			break;
+		default:
+			break;
+		}
+		return pickaxeKind;
+	}
+	
+	///Get the kind of the best Shovel
+	public int getBestShovel(){
+		if (haveItem(DIAMOND_SHOVEL)){
+			return DIAMOND;
+		}
+		if (haveItem(IRON_SHOVEL)){
+			return IRON;
+		}
+		if (haveItem(STONE_SHOVEL)){
+			return STONE;
+		}
+		if (haveItem(GOLDEN_SHOVEL)){
+			return GOLD;
+		}
+		if (haveItem(WOODEN_SHOVEL)){
+			return WOOD;
+		}
+		return NOT_FOUND;
+	}
+	
+	///Use best shovel from inventory, return the kind of the shovel, if not found return NOT_FOUND
+	public int useShovel(){
+		int kind = getBestShovel();
+		switch (kind) {
+		case DIAMOND:
+			changeCurrentItemTo(DIAMOND_SHOVEL);
+			break;
+		case IRON:
+			changeCurrentItemTo(IRON_SHOVEL);
+			break;
+		case STONE:
+			changeCurrentItemTo(STONE_SHOVEL);
+			break;
+		case GOLD:
+			changeCurrentItemTo(GOLDEN_SHOVEL);
+			break;
+		case WOOD:
+			changeCurrentItemTo(WOODEN_SHOVEL);
+			break;
+		default:
+			break;
+		}
+		return kind;
+	}
+	
+	
+	///Get the kind of the best axe
+	public int getBestAxe(){
+		if (haveItem(DIAMOND_AXE)){
+			return DIAMOND;
+		}
+		if (haveItem(IRON_AXE)){
+			return IRON;
+		}
+		if (haveItem(STONE_AXE)){
+			return STONE;
+		}
+		if (haveItem(GOLDEN_AXE)){
+			return GOLD;
+		}
+		if (haveItem(WOODEN_AXE)){
+			return WOOD;
+		}
+		return NOT_FOUND;
+	}
+		
+	///Get best axe from inventory, return the kind of the axe, if not found return NOT_FOUND
+	public int useAxe(){
+		int kind = getBestShovel();
+		switch (kind) {
+		case DIAMOND:
+			changeCurrentItemTo(DIAMOND_AXE);
+			break;
+		case IRON:
+			changeCurrentItemTo(IRON_AXE);
+			break;
+		case STONE:
+			changeCurrentItemTo(STONE_AXE);
+			break;
+		case GOLD:
+			changeCurrentItemTo(GOLDEN_AXE);
+			break;
+		case WOOD:
+			changeCurrentItemTo(WOODEN_AXE);
+			break;
+		default:
+			break;
+		}
+		return kind;
+	}
+	
+	///Use best hoe from inventory, return the kind of the hoe, if not found return NOT_FOUND
+	public int useHoe(){
+		if (changeCurrentItemTo(DIAMOND_HOE)){
+			return DIAMOND;
+		}
+		if (changeCurrentItemTo(IRON_HOE)){
+			return IRON;
+		}
+		if (changeCurrentItemTo(STONE_HOE)){
+			return STONE;
+		}
+		if (changeCurrentItemTo(GOLDEN_HOE)){
+			return GOLD;
+		}
+		if (changeCurrentItemTo(WOODEN_HOE)){
 			return WOOD;
 		}
 		
 		return NOT_FOUND;
 	}
 	
-	///Get best shovel from inventory, return the kind of the shovel, if not found return NOT_FOUND
-	public int getShovel(){
-		if (changeCurrentItemTo("Diamond Shovel")){
+	///Use best sword from inventory, return the kind of the sword, if not found return NOT_FOUND
+	public int useSword(){
+		if (changeCurrentItemTo(DIAMOND_SWORD)){
 			return DIAMOND;
 		}
-		if (changeCurrentItemTo("Iron Shovel")){
+		if (changeCurrentItemTo(IRON_SWORD)){
 			return IRON;
 		}
-		if (changeCurrentItemTo("Stone Shovel")){
+		if (changeCurrentItemTo(STONE_SWORD)){
 			return STONE;
 		}
-		if (changeCurrentItemTo("Golden Shovel")){
+		if (changeCurrentItemTo(GOLDEN_SWORD)){
 			return GOLD;
 		}
-		if (changeCurrentItemTo("Wooden Shovel")){
-			return WOOD;
-		}
-		
-		return NOT_FOUND;
-	}
-	
-	///Get best shovel from inventory, return the kind of the shovel, if not found return NOT_FOUND
-	public int getAxe(){
-		if (changeCurrentItemTo("Diamond Axe")){
-			return DIAMOND;
-		}
-		if (changeCurrentItemTo("Iron Axe")){
-			return IRON;
-		}
-		if (changeCurrentItemTo("Stone Axe")){
-			return STONE;
-		}
-		if (changeCurrentItemTo("Golden Axe")){
-			return GOLD;
-		}
-		if (changeCurrentItemTo("Wooden Axe")){
-			return WOOD;
-		}
-		
-		return NOT_FOUND;
-	}
-	
-	///Get best hoe from inventory, return the kind of the hoe, if not found return NOT_FOUND
-	public int getHoe(){
-		if (changeCurrentItemTo("Diamond Hoe")){
-			return DIAMOND;
-		}
-		if (changeCurrentItemTo("Iron Hoe")){
-			return IRON;
-		}
-		if (changeCurrentItemTo("Stone Hoe")){
-			return STONE;
-		}
-		if (changeCurrentItemTo("Golden Hoe")){
-			return GOLD;
-		}
-		if (changeCurrentItemTo("Wooden Hoe")){
-			return WOOD;
-		}
-		
-		return NOT_FOUND;
-	}
-	
-	///Get best sword from inventory, return the kind of the sword, if not found return NOT_FOUND
-	public int getSword(){
-		if (changeCurrentItemTo("Diamond Sword")){
-			return DIAMOND;
-		}
-		if (changeCurrentItemTo("Iron Sword")){
-			return IRON;
-		}
-		if (changeCurrentItemTo("Stone Sword")){
-			return STONE;
-		}
-		if (changeCurrentItemTo("Golden Sword")){
-			return GOLD;
-		}
-		if (changeCurrentItemTo("Wooden Sword")){
+		if (changeCurrentItemTo(WOODEN_SWORD)){
 			return WOOD;
 		}
 		
 		return NOT_FOUND;
 	}
 		
-	///Function for Debug
-	public void test(int j){
-		System.out.println(this.toString());
-		System.out.println(getPickaxe());
-	}
 	
 	///Swap two item in the inventory
 	private void swap(int x, int y){
-		ItemStack other = inventory.mainInventory[x];
-		inventory.mainInventory[x] = inventory.mainInventory[y];
-		inventory.mainInventory[y] = other;
+		if (x != y){
+			ItemStack other = inventory.mainInventory[x];
+			inventory.mainInventory[x] = inventory.mainInventory[y];
+			inventory.mainInventory[y] = other;
+		}
 	}
 	
 	///Craft an item in the inventory

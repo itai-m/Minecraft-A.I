@@ -124,6 +124,22 @@ public class Util{
 		}
 	}
 	
+	///Get id form string (id or name)
+	public static int getIdByName(String name){
+		name.toLowerCase();
+		Object obj = Item.itemRegistry.getObject(name);
+		if (obj instanceof Item){
+			return Item.getIdFromItem((Item)obj);
+		}
+		if (obj instanceof ItemBlock){
+			return Item.getIdFromItem(((ItemBlock)obj));
+		}
+		else{
+			Logger.debug("in getItemStack didnt found: " + name);
+		}
+		return CANT_GET;
+	}
+	
 	///Get ItemStack form id
 	public static ItemStack getItemStack(int id){
 		return new ItemStack(Item.getItemById(id));
