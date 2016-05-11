@@ -9,6 +9,7 @@ import com.sun.org.apache.bcel.internal.generic.INEG;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
@@ -24,11 +25,15 @@ public class AIinventory{
 	
 	public final static int NOT_FOUND = -1;
 	
-	public final static int WOOD = 101;
-	public final static int IRON = 102;
-	public final static int STONE = 103;
-	public final static int DIAMOND = 104;
-	public final static int GOLD = 105;
+	public final static int WOOD = 0;
+	public final static int IRON = 2;
+	public final static int STONE = 1;
+	public final static int DIAMOND = 3;
+	public final static int GOLD = 4;
+	
+	public static final String PICAXE_NAME = Util.PICAXE_NAME;
+	public static final String SHOVEL_NAME = Util.SHOVEL_NAME;
+	public static final String AXE_NAME = Util.AXE_NAME;
 	
 	public final int WOODEN_SWORD = 268;
 	public final int WOODEN_SHOVEL = 269;
@@ -230,6 +235,23 @@ public class AIinventory{
 		}
 	}
 	
+	///Check if its have better tool
+	public boolean betterTool(ItemStack item){
+		String tool = "";
+		int toolLevel;
+		for (String key : item.getItem().getToolClasses(item) )
+			 tool= key;
+		toolLevel = item.getItem().getHarvestLevel(item, tool);
+		if (tool.contains(PICAXE_NAME)){
+			return (toolLevel <= getBestPickaxe());
+		} else if (tool.contains(SHOVEL_NAME)){
+			return (toolLevel <= getBestShovel());
+		} else if (tool.contains(AXE_NAME)){
+			return (toolLevel <= getBestAxe());
+		} 
+		return false;
+	}
+	
 	///Get the kind of the best pickaxe
 	public int getBestPickaxe(){
 		if (haveItem(DIAMOND_PICKAXE)){
@@ -249,6 +271,7 @@ public class AIinventory{
 		}
 		return NOT_FOUND;
 	}
+	
 	
 	///Use best pickaxe from inventory, return the kind of the pickaxe, if not found return NOT_FOUND
 	public int usePickaxe(){

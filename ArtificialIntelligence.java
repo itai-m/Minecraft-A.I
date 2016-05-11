@@ -125,7 +125,7 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Util.toolForItem(item);
+			Logger.debug("test: " + inventory.betterTool(item));
 		}
 		Logger.debug("End Test");
 	}

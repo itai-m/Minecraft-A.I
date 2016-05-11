@@ -27,9 +27,9 @@ public class Util{
 	public static double Max = Integer.MAX_VALUE;
 	public static int EMPTY_ID = 0;
 	
-	public static String PICAXE_NAME = "pickaxe";
-	public static String SHOVEL_NAME = "shovel";
-	public static String AXE_NAME = "axe";
+	public static final String PICAXE_NAME = "pickaxe";
+	public static final String SHOVEL_NAME = "shovel";
+	public static final String AXE_NAME = "axe";
 	
 	
 	///Return the block hardness 
@@ -135,7 +135,7 @@ public class Util{
 			return Item.getIdFromItem(((ItemBlock)obj));
 		}
 		else{
-			Logger.debug("in getItemStack didnt found: " + name);
+			Logger.debug("in getIdByName didnt found: " + name);
 		}
 		return CANT_GET;
 	}

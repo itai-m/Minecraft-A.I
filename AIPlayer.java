@@ -368,7 +368,7 @@ public class AIPlayer {
 		else{
 			goInveTree = inveTree.AddChild(item, 0);
 			needTool = true;
-			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID))){
+			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve, goInveTree);
 				toolKind = getToolType(tempTool);
