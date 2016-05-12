@@ -15,18 +15,17 @@ public class WorkTreePlan {
 	
 	///Constructor
 	public WorkTreePlan(Object todo, Type type){
-		this.type = type;
-		this.todo = todo;
+		set(todo,type);
 		this.childs = new ArrayList<WorkTreePlan>();
 	}
 	
 	///Constructor
 	public WorkTreePlan(){
-		this.type = Type.nothing;
+		set(Type.nothing);
 		this.childs = new ArrayList<WorkTreePlan>();
 	}
 	
-	//Add child, return the child if succeed otherwise null
+	///Add child, return the child if succeed otherwise null
 	public WorkTreePlan addChild(Object todo, Type type){
 		WorkTreePlan child = new WorkTreePlan(todo, type);
 		if (childs.add(child)){
@@ -35,9 +34,33 @@ public class WorkTreePlan {
 		return null;
 	}
 	
+	///Add child, return the child if succeed otherwise null
+	public WorkTreePlan addChild(WorkTreePlan treePlan){
+		if (childs.add(treePlan)){
+			return treePlan;
+		}
+		return null;
+	}
+	
+	///Set the object
+	public void set(Object todo){
+		this.todo = todo;
+	}
+	
+	///Set the type
+	public void set(Type type){
+		this.type = type;
+	}
+	
+	///Set the object and type
+	public void set(Object todo, Type type){
+		set(type);
+		set(todo);
+	}
+	
 	///Return a string with the tree to the childs
 	public String toString(){
-		return print("", false);
+		return "\n" + print("", true);
 	}
 	
 	private String print(String indent, boolean lastChild){
@@ -70,13 +93,13 @@ public class WorkTreePlan {
 		case tool:
 			switch ((Integer)todo) {
 			case AIinventory.AXE:
-				return "Swhich to tool- axe \n";
+				return "Swhich to tool- axe";
 			case AIinventory.PICKAXE:
-				return "Swhich to tool- picaxe \n";
+				return "Swhich to tool- picaxe";
 			case AIinventory.SHOVEL:
-				return "Swhich to tool- shovel \n";
+				return "Swhich to tool- shovel";
 			default:
-				return "Swhich to tool- ERROR: no tool \n";
+				return "Swhich to tool- ERROR: no tool";
 			}
 		case craft:
 			return "Craft- " + ((ItemStack) todo).getDisplayName();
