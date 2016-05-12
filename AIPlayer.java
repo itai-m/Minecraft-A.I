@@ -292,10 +292,10 @@ public class AIPlayer {
 	
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
-		InventoryTree inveTree = new InventoryTree(new ItemStack(Item.getItemById(Util.EMPTY_ID)), 0);
+		WorkTreePlan workTreePlan = new WorkTreePlan();
 		WorkPlan plan = new WorkPlan();
 		plan.addLoc(getLocation());
-		if (planTree (item, world, plan, inve, inveTree) == Util.Max){
+		if (planTree (item, world, plan, inve, workTreePlan) == Util.Max){
 			Logger.debug("Cant get this item", Logger.LOG);
 			return false;
 		}
@@ -304,7 +304,7 @@ public class AIPlayer {
 	}
 	
 	///The tree  of the plan
-	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, InventoryTree inveTree){
+	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, WorkTreePlan workTreePlan){
 		List<ItemStack> craftInger = RecipesList.getIngredientList(item);
 		ItemStack smeltInger = RecipesList.getSmeltingItem(item);
 		double craftHeur = 0;
@@ -313,8 +313,8 @@ public class AIPlayer {
 		Vec3[] blocksLoc = null;
 		int gotoNum = 0;
 		Queue<Step> steps = null;
-		InventoryTree craftInveTree;
-		InventoryTree goInveTree;
+		WorkTreePlan craftTree = null;
+		WorkTreePlan togoTree = null;
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
 		boolean needTool = false;
@@ -324,7 +324,6 @@ public class AIPlayer {
 		//Check if the player already have the item
 		if (plan.canUsedItem(item, inve)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
-			inveTree.AddChild(item, -item.stackSize);
 			plan.addUsedItem(item);
 			return 0;
 		}
@@ -332,9 +331,8 @@ public class AIPlayer {
 		//Check if the item can made by melting
 		if (smeltInger !=null){
 			Logger.debug("PlanTree: can use smetl to get " + item.getDisplayName());
-			craftInveTree = inveTree.AddChild(item, 0);
 			smeltInger.stackSize = item.stackSize;
-			craftHeur = planTree(smeltInger, world, plan, inve, craftInveTree);
+			craftHeur = planTree(smeltInger, world, plan, inve, craftTree);
 			needToSmelt = true;
 		}
 		
@@ -346,9 +344,8 @@ public class AIPlayer {
 		else{
 			usedItems.clear();
 			gotoNum = plan.countLoc();
-			craftInveTree = inveTree.AddChild(item, 0);
 			for (ItemStack itemStack : craftInger) {
-				double tempHeur = planTree(itemStack, world, plan, inve, craftInveTree);
+				double tempHeur = planTree(itemStack, world, plan, inve, craftTree);
 				craftHeur += tempHeur;
 				if (tempHeur ==  0){
 					usedItems.add(itemStack);
@@ -366,11 +363,10 @@ public class AIPlayer {
 			goGetHeur = Util.Max;
 		}
 		else{
-			goInveTree = inveTree.AddChild(item, 0);
 			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-				goGetHeur = planTree( tempTool, world, plan, inve, goInveTree);
+				goGetHeur = planTree( tempTool, world, plan, inve, togoTree);
 				toolKind = getToolType(tempTool);
 			}
 			else if ((toolKind = Util.toolForItem(item)) == Util.CANT_GET){
