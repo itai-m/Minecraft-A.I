@@ -89,7 +89,12 @@ public class WorkTreePlan {
 		case nothing:
 			return "Nothing";
 		case moveTo:
-			return "Moving to a point: " + ((Vec3)todo).toString();
+			Vec3[] loctions = (Vec3[])todo;
+			String toReturn = "Moving to a points: ";
+			for (Vec3 vec3 : loctions) {
+				toReturn += vec3.toString() + " ";
+			}
+			return toReturn;
 		case tool:
 			switch ((Integer)todo) {
 			case AIinventory.AXE:

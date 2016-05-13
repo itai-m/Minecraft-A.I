@@ -300,7 +300,9 @@ public class AIPlayer {
 			return false;
 		}
 		Logger.debug(plan.toString());
-		return doWorkPlan(plan, inve, world);
+		Logger.debug(workTreePlan.toString(), Logger.LOG);
+		//return doWorkPlan(plan, inve, world);
+		return false;
 	}
 	
 	///The tree  of the plan
@@ -313,8 +315,9 @@ public class AIPlayer {
 		Vec3[] blocksLoc = null;
 		int gotoNum = 0;
 		Queue<Step> steps = null;
-		WorkTreePlan craftTree = null;
-		WorkTreePlan togoTree = null;
+		WorkTreePlan craftTree = new WorkTreePlan(item, WorkTreePlan.Type.craft);
+		WorkTreePlan togoTree = new WorkTreePlan(null, WorkTreePlan.Type.moveTo);
+		WorkTreePlan smeltTree = new WorkTreePlan(item, WorkTreePlan.Type.smeltStart);
 		List usedItems = new ArrayList<ItemStack>();
 		List allPath = new ArrayList<Queue<Step>>();
 		boolean needTool = false;
@@ -332,7 +335,7 @@ public class AIPlayer {
 		if (smeltInger !=null){
 			Logger.debug("PlanTree: can use smetl to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
-			craftHeur = planTree(smeltInger, world, plan, inve, craftTree);
+			craftHeur = planTree(smeltInger, world, plan, inve, smeltTree);
 			needToSmelt = true;
 		}
 		
@@ -364,7 +367,7 @@ public class AIPlayer {
 		}
 		else{
 			needTool = true;
-			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && inve.betterTool(item)){
+			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool, world, plan, inve, togoTree);
 				toolKind = getToolType(tempTool);
@@ -408,10 +411,12 @@ public class AIPlayer {
 			if (needToSmelt){
 				Logger.debug("planTree: need to smelt for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.smelt);
+				workTreePlan.addChild(smeltTree);
 			}
 			else{
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.craft);
+				workTreePlan.addChild(craftTree);
 			}
 			for (int i = 0 ; i < gotoNum ; i++){
 				plan.removeLoc();
@@ -429,6 +434,11 @@ public class AIPlayer {
 			for (Object object : allPath) {
 				plan.add((Queue<Step>)object);
 			}
+			togoTree.set(blocksLoc);
+			workTreePlan.addChild(togoTree);
+			if (needTool){
+				workTreePlan.addChild(toolKind, WorkTreePlan.Type.tool);
+			}
 			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
 			return goGetHeur;
 		}
@@ -437,9 +447,6 @@ public class AIPlayer {
 	///Do the workPlan
 	private boolean doWorkPlan(WorkPlan plan, AIinventory inve, AIWorld world){
 		boolean succeeded = true;
-		if (plan.isEmpty()){
-			return false;
-		}
 		while (!plan.isEmpty()){
 			WorkPlan.Type type = plan.peekFirstType();
 			Object obj = plan.pullFirst();

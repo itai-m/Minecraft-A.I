@@ -67,7 +67,7 @@ public class ArtificialIntelligence{
 			player.sendMessage("Successfully Get " + item.getDisplayName());
 		}
 		else{
-			player.sendMessage("Could not craft " + item.getDisplayName());
+			player.sendMessage("Could not get " + item.getDisplayName());
 		}
 	}
 	

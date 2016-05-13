@@ -22,7 +22,7 @@ public class Logger {
 				System.out.println("ERROR: " + text);
 				break;
 			case LOG:
-				System.out.println("ERROR: " + text);
+				System.out.println("Log: " + text);
 				break;
 			default:
 				debug("could not find the debug type", ERROR);
