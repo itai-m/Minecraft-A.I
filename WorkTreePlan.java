@@ -11,8 +11,18 @@ public class WorkTreePlan {
 	public static enum Type {smeltStart, smeltEnd, craft, tool, moveTo, nothing};
 	private Type type;
 	private Object todo;
-	private List childs;
+	private List childs;	
 	
+	///Get the type of the object
+	public Type getType() {
+		return type;
+	}
+
+	///Get the object that need to do
+	public Object getTodo() {
+		return todo;
+	}
+
 	///Constructor
 	public WorkTreePlan(Object todo, Type type){
 		set(todo,type);
@@ -42,6 +52,16 @@ public class WorkTreePlan {
 		return null;
 	}
 	
+	///Get the number of children
+	public int childrenLenght(){
+		return childs.size();
+	}
+	
+	///Get child in location
+	public WorkTreePlan getChild(int index){
+		return (WorkTreePlan) childs.get(index);
+	}
+	
 	///Set the object
 	public void set(Object todo){
 		this.todo = todo;
@@ -58,11 +78,12 @@ public class WorkTreePlan {
 		set(todo);
 	}
 	
-	///Return a string with the tree to the childs
+	///Return a string with the tree to the children
 	public String toString(){
 		return "\n" + print("", true);
 	}
 	
+	//Return a string of a tree
 	private String print(String indent, boolean lastChild){
 		String toReturn = "";
 		toReturn += indent;
@@ -84,6 +105,7 @@ public class WorkTreePlan {
 	    return toReturn;
 	}
 	
+	///Return one insteps in the tree
 	private String printByType(){
 		switch (type) {
 		case nothing:
@@ -109,9 +131,9 @@ public class WorkTreePlan {
 		case craft:
 			return "Craft- " + ((ItemStack) todo).getDisplayName();
 		case smeltEnd:
-			return "Start smelting- " + ((ItemStack) todo).getDisplayName();
-		case smeltStart:
 			return "End smelting- " + ((ItemStack) todo).getDisplayName();
+		case smeltStart:
+			return "Start smelting- " + ((ItemStack) todo).getDisplayName();
 		default:
 			return "Error: Type is worng"; 
 		}

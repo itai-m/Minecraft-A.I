@@ -302,7 +302,7 @@ public class AIPlayer {
 		Logger.debug(plan.toString());
 		Logger.debug(workTreePlan.toString(), Logger.LOG);
 		//return doWorkPlan(plan, inve, world);
-		return false;
+		return doWorkTreePlan(workTreePlan, inve, world);
 	}
 	
 	///The tree  of the plan
@@ -333,7 +333,7 @@ public class AIPlayer {
 		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
-			Logger.debug("PlanTree: can use smetl to get " + item.getDisplayName());
+			Logger.debug("PlanTree: can use smelt to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
 			craftHeur = planTree(smeltInger, world, plan, inve, smeltTree);
 			needToSmelt = true;
@@ -366,16 +366,20 @@ public class AIPlayer {
 			goGetHeur = Util.Max;
 		}
 		else{
+			WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool);
 			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-				goGetHeur = planTree( tempTool, world, plan, inve, togoTree);
+				goGetHeur = planTree( tempTool, world, plan, inve, toolTree);
 				toolKind = getToolType(tempTool);
 			}
 			else if ((toolKind = Util.toolForItem(item)) == Util.CANT_GET){
 				needTool = false;
 			}
-			
+			if (needTool){
+				toolTree.set(toolKind);
+				togoTree.addChild(toolTree);
+			}
 			//Find the nearest blocks of this kind
 			blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE, plan.GetLoctionArr());
 			
@@ -385,7 +389,15 @@ public class AIPlayer {
 				goGetHeur = Util.Max;
 			}
 			else{
-				Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
+				Logger.debug("planTree: blocks ammunt: " + blocksLoc.length);
+				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
+					Logger.debug("planTree: goto block to " + blocksLoc[i]);
+				}
+				goGetHeur += Util.getHeuristic(plan.peekLoc(), blocksLoc[0]);
+				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
+					goGetHeur += Util.getHeuristic(blocksLoc[i], blocksLoc[i+1]);
+				}
+				/*Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
 				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 					Logger.debug("planTree: findPath to " + blocksLoc[i]);
 				}
@@ -396,7 +408,7 @@ public class AIPlayer {
 					steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
 					allPath.add(steps);
 					goGetHeur += Util.getHeuristic(steps, inve);
-				}
+				}*/
 			}
 		}
 		
@@ -428,20 +440,63 @@ public class AIPlayer {
 			for (Object object : usedItems) {
 				plan.removeLast();
 			}
-			if (needTool){
+			/*if (needTool){
 				plan.add(toolKind, WorkPlan.Type.tool);
-			}
+			}*/
 			for (Object object : allPath) {
 				plan.add((Queue<Step>)object);
 			}
 			togoTree.set(blocksLoc);
 			workTreePlan.addChild(togoTree);
-			if (needTool){
+			/*if (needTool){
 				workTreePlan.addChild(toolKind, WorkTreePlan.Type.tool);
-			}
+			}*/
 			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
 			return goGetHeur;
 		}
+	}
+	
+	///Do the WorkTreePlan
+	private boolean doWorkTreePlan(WorkTreePlan plan, AIinventory inve, AIWorld world){
+		boolean succeded = true;
+		for (int i = plan.childrenLenght() - 1; i >= 0 ; i--){
+			succeded = succeded && doWorkTreePlan(plan.getChild(i), inve, world);
+		}
+		succeded = succeded && doNodeInWorkTree(plan.getTodo(), plan.getType(), inve, world);
+		return succeded;
+	}
+	
+	///Do one node in the WorkTreePlan
+	private boolean doNodeInWorkTree(Object obj, WorkTreePlan.Type type, AIinventory inve, AIWorld world){
+		switch (type) {
+		case nothing:
+			return true;
+		case smeltEnd:
+			return true;
+		case smeltStart:
+			Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
+			return smeltItem(inve, (ItemStack)obj, world);
+		case craft:
+			Logger.debug("craft - " + ((ItemStack)obj).getDisplayName());
+			return craftItem(inve, (ItemStack)obj, world);
+		case tool:
+			Logger.debug("use tool: " + obj, Logger.LOG);
+			if ((Integer)obj != AIinventory.NOT_FOUND){
+				inve.useTool((Integer)obj);
+			}
+			return true;
+		case moveTo:
+			Vec3[] loctaion = (Vec3[])obj;
+			boolean succeeded = true;
+			for (Vec3 vec3 : loctaion) {
+				Logger.debug("Move to: " + vec3, Logger.LOG);
+				succeeded = succeeded && moveToPoint(vec3, world);
+			}
+			return succeeded;
+		default:
+			break;
+		}
+		return false;
 	}
 	
 	///Do the workPlan
