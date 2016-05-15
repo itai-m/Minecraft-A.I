@@ -87,6 +87,19 @@ public class AIinventory{
 		this.inventory = inventory;
 	}
 
+	///Return the number of stack of an item
+	public int stackSize(ItemStack item){
+		int size = 0;
+		int itemID = Item.getIdFromItem(item.getItem());
+		for (int i = 0 ; i < inventory.mainInventory.length ; i++){
+			if (inventory.mainInventory[i] != null){
+				if ( Item.getIdFromItem(inventory.mainInventory[i].getItem()) == itemID){
+					size += inventory.mainInventory[i].stackSize;
+				}
+			}
+		}
+		return size;
+	}
 	///Check if in the inventory have the item
 	public boolean haveItem(ItemStack item){
 		if (!inventory.hasItem(item.getItem())){

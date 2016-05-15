@@ -11,7 +11,11 @@ public class WorkTreePlan {
 	public static enum Type {smeltStart, smeltEnd, craft, tool, moveTo, nothing};
 	private Type type;
 	private Object todo;
-	private List childs;	
+	private List childs;
+	private WorkTreePlan parent = null;
+	private List invetoryChange;
+	
+	private static AIWorld world = null;
 	
 	///Get the type of the object
 	public Type getType() {
@@ -27,12 +31,85 @@ public class WorkTreePlan {
 	public WorkTreePlan(Object todo, Type type){
 		set(todo,type);
 		this.childs = new ArrayList<WorkTreePlan>();
+		this.invetoryChange = new ArrayList<ItemStack>();
+	}
+	
+	///Constructor
+	public WorkTreePlan(Object todo, Type type, WorkTreePlan parent){
+		set(todo,type);
+		this.childs = new ArrayList<WorkTreePlan>();
+		this.invetoryChange = new ArrayList<ItemStack>();
+		setParent(parent);
 	}
 	
 	///Constructor
 	public WorkTreePlan(){
 		set(Type.nothing);
+		this.todo = null;
 		this.childs = new ArrayList<WorkTreePlan>();
+		this.invetoryChange = new ArrayList<ItemStack>();
+	}
+	
+	///Constructor
+	public WorkTreePlan(String text){
+		set(Type.nothing);
+		set(text);
+		this.childs = new ArrayList<WorkTreePlan>();
+		this.invetoryChange = new ArrayList<ItemStack>();
+	}
+	
+	///Add a item that need to be used
+	public void AddUseItem(ItemStack item){
+		invetoryChange.add(item);
+	}
+	
+	///Get the parent
+	public WorkTreePlan getParent(){
+		return parent;
+	}
+	
+	///Check if already have the item
+	public boolean haveItem(AIinventory inve, ItemStack item){
+		int inventoryStack = inve.stackSize(item);
+		int treeStack = StackInTree(item);
+		if (inventoryStack + treeStack >= item.stackSize){
+			return true;
+		}
+		return false;
+	}
+	
+	///Stack Size of an item in all the tree
+	private int StackInTree(ItemStack item){
+		WorkTreePlan tempParent = this;
+		while (tempParent.getParent() != null){
+			tempParent = getParent();
+		}
+		return stackSize(tempParent, item);
+	}
+	
+	///Get stack form the tree
+	private int stackSize(WorkTreePlan plan, ItemStack item){
+		int toReturn = 0;
+		for (Object object : invetoryChange) {
+			if (Util.idItemEqual(item, (ItemStack)object)){
+				toReturn += ((ItemStack)object).stackSize;
+			}
+		}
+		for (Object object : childs) {
+			toReturn += stackSize((WorkTreePlan)object, item);
+		}
+		return toReturn;
+	}
+	
+	///Set the world
+	public void setWorld(AIWorld world){
+		Logger.debug(world.toString(), Logger.LOG);
+		this.world = world;
+	}
+	
+	///Set the parent of this
+	public void setParent(WorkTreePlan parent){
+		this.parent = parent;
 	}
 	
 	///Add child, return the child if succeed otherwise null
@@ -83,6 +160,14 @@ public class WorkTreePlan {
 		return "\n" + print("", true);
 	}
 	
+	///Return the id of the block in the todo, otherwise return Util.CANT_GET
+	public int blockId(){
+		if (todo instanceof Vec3[] && world != null){
+			return world.dropBlockId(((Vec3[])todo)[0]);
+		}
+		return Util.CANT_GET;
+	}
+	
 	//Return a string of a tree
 	private String print(String indent, boolean lastChild){
 		String toReturn = "";
@@ -109,10 +194,22 @@ public class WorkTreePlan {
 	private String printByType(){
 		switch (type) {
 		case nothing:
-			return "Nothing";
+			if(todo == null){
+				return "Nothing";
+			}
+			else{
+				return "Get - " + todo;
+			}
 		case moveTo:
 			Vec3[] loctions = (Vec3[])todo;
-			String toReturn = "Moving to a points: ";
+			int blockid = blockId();
+			String toReturn = "";
+			if (blockid != Util.CANT_GET){
+				toReturn = "Moving to a points to get " + Util.getItemStack(blockid).getDisplayName() + ": ";
+			}
+			else{
+				toReturn = "Moving to a points: ";
+			}
 			for (Vec3 vec3 : loctions) {
 				toReturn += vec3.toString() + " ";
 			}

@@ -292,8 +292,9 @@ public class AIPlayer {
 	
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
-		WorkTreePlan workTreePlan = new WorkTreePlan();
+		WorkTreePlan workTreePlan = new WorkTreePlan(item.getDisplayName());
 		WorkPlan plan = new WorkPlan();
+		workTreePlan.setWorld(world);
 		plan.addLoc(getLocation());
 		if (planTree (item, world, plan, inve, workTreePlan) == Util.Max){
 			Logger.debug("Cant get this item", Logger.LOG);
@@ -303,7 +304,7 @@ public class AIPlayer {
 		Logger.debug(workTreePlan.toString(), Logger.LOG);
 		//return doWorkPlan(plan, inve, world);
 		return doWorkTreePlan(workTreePlan, inve, world);
-	}
+	} 
 	
 	///The tree  of the plan
 	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, WorkTreePlan workTreePlan){
@@ -314,12 +315,10 @@ public class AIPlayer {
 		ItemStack tempTool;
 		Vec3[] blocksLoc = null;
 		int gotoNum = 0;
-		Queue<Step> steps = null;
-		WorkTreePlan craftTree = new WorkTreePlan(item, WorkTreePlan.Type.craft);
-		WorkTreePlan togoTree = new WorkTreePlan(null, WorkTreePlan.Type.moveTo);
-		WorkTreePlan smeltTree = new WorkTreePlan(item, WorkTreePlan.Type.smeltStart);
+		WorkTreePlan craftTree = new WorkTreePlan(item, WorkTreePlan.Type.craft, workTreePlan);
+		WorkTreePlan togoTree = new WorkTreePlan(null, WorkTreePlan.Type.moveTo, workTreePlan);
+		WorkTreePlan smeltTree = new WorkTreePlan(item, WorkTreePlan.Type.smeltStart, workTreePlan);
 		List usedItems = new ArrayList<ItemStack>();
-		List allPath = new ArrayList<Queue<Step>>();
 		boolean needTool = false;
 		int toolKind = -1;
 		boolean needToSmelt = false;
@@ -366,7 +365,7 @@ public class AIPlayer {
 			goGetHeur = Util.Max;
 		}
 		else{
-			WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool);
+			WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool, togoTree);
 			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
@@ -443,9 +442,6 @@ public class AIPlayer {
 			/*if (needTool){
 				plan.add(toolKind, WorkPlan.Type.tool);
 			}*/
-			for (Object object : allPath) {
-				plan.add((Queue<Step>)object);
-			}
 			togoTree.set(blocksLoc);
 			workTreePlan.addChild(togoTree);
 			/*if (needTool){
