@@ -313,11 +313,13 @@ public class AIPlayer {
 		double craftHeur = 0;
 		double goGetHeur = 0;
 		ItemStack tempTool;
+		ItemStack tempBlock;
 		Vec3[] blocksLoc = null;
 		int gotoNum = 0;
 		WorkTreePlan craftTree = new WorkTreePlan(item, WorkTreePlan.Type.craft, workTreePlan);
 		WorkTreePlan togoTree = new WorkTreePlan(null, WorkTreePlan.Type.moveTo, workTreePlan);
 		WorkTreePlan smeltTree = new WorkTreePlan(item, WorkTreePlan.Type.smeltStart, workTreePlan);
+		WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool, togoTree);
 		List usedItems = new ArrayList<ItemStack>();
 		boolean needTool = false;
 		int toolKind = -1;
@@ -360,12 +362,17 @@ public class AIPlayer {
 			}
 		}
 		
+		//Check if the item have no block and assign block to him
+		/*if (Item.getIdFromItem(item.getItem()) == null){
+			tempBlock = Item(item.getItem());
+		}*/
+		
 		//Check if need an tool to mine
 		if ((tempTool = Util.getMinToolToCraft(item) ) == null){
 			goGetHeur = Util.Max;
 		}
 		else{
-			WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool, togoTree);
+			
 			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
@@ -388,6 +395,17 @@ public class AIPlayer {
 				goGetHeur = Util.Max;
 			}
 			else{
+				
+				//second check for the tool need to the mining
+				if (!needTool){
+					tempTool = Util.getMinToolToCraft(world.getBlock(blocksLoc[0]));
+					if (!inve.betterTool(item)){
+						Logger.debug("PlanTree: second check - tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
+						goGetHeur = planTree( tempTool, world, plan, inve, toolTree);
+						toolTree.set(getToolType(tempTool));
+						togoTree.addChild(toolTree);
+					}
+				}
 				Logger.debug("planTree: blocks ammunt: " + blocksLoc.length);
 				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 					Logger.debug("planTree: goto block to " + blocksLoc[i]);

@@ -158,8 +158,12 @@ public class Util{
 	
 	///Get the min tool to craft
 	public static ItemStack getMinToolToCraft(ItemStack item){
+		return getMinToolToCraft(Block.getBlockFromItem(item.getItem()));
+	}
+	
+	///Get the min tool to craft
+	public static ItemStack getMinToolToCraft(Block blockItem){
 		String toolname = "";
-		Block blockItem = Block.getBlockFromItem(item.getItem());
 		if (blockItem.getMaterial().isToolNotRequired()){
 			return new ItemStack(Item.getItemById(EMPTY_ID));
 		}

@@ -252,8 +252,9 @@ public class AIinventory{
 	public boolean betterTool(ItemStack item){
 		String tool = "";
 		int toolLevel;
-		for (String key : item.getItem().getToolClasses(item) )
+		for (String key : item.getItem().getToolClasses(item) ){
 			 tool= key;
+		}
 		toolLevel = item.getItem().getHarvestLevel(item, tool);
 		if (tool.contains(PICAXE_NAME)){
 			return (toolLevel <= getBestPickaxe());

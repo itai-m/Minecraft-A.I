@@ -125,7 +125,10 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("test: " + inventory.betterTool(item));
+			int id = Item.getIdFromItem(item.getItem());
+			Logger.debug("Test: " + item.getItem().getMetadata(0) , Logger.LOG);
+			Logger.debug("Test: " + Item.getItemFromBlock(Block.getBlockFromItem(item.getItem())), Logger.LOG);
+			//Logger.debug("test: " + Util.toolForItem(item) + " " + Util.getMinToolToCraft(item));
 		}
 		Logger.debug("End Test");
 	}
