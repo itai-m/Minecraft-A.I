@@ -17,6 +17,9 @@ public class WorkTreePlan {
 	
 	private static AIWorld world = null;
 	
+	private final boolean USE_ITEM_PRINT = false;
+	private final boolean OBJECT_PRINT = true;
+	
 	///Get the type of the object
 	public Type getType() {
 		return type;
@@ -63,6 +66,13 @@ public class WorkTreePlan {
 		invetoryChange.add(item);
 	}
 	
+	///Add a item that need to be used
+	public void AddUseItem(ItemStack item, int stack){
+		ItemStack tempItem = new ItemStack(item.getItem());
+		tempItem.stackSize = stack;
+		AddUseItem(tempItem);
+	}
+		
 	///Get the parent
 	public WorkTreePlan getParent(){
 		return parent;
@@ -157,7 +167,7 @@ public class WorkTreePlan {
 	
 	///Return a string with the tree to the children
 	public String toString(){
-		return "\n" + print("", true);
+		return "\n" + print("", true, OBJECT_PRINT) + "\n" + print("", true, USE_ITEM_PRINT);
 	}
 	
 	///Return the id of the block in the todo, otherwise return Util.CANT_GET
@@ -169,7 +179,7 @@ public class WorkTreePlan {
 	}
 	
 	//Return a string of a tree
-	private String print(String indent, boolean lastChild){
+	private String print(String indent, boolean lastChild, boolean whoToPrint){
 		String toReturn = "";
 		toReturn += indent;
 	    if (lastChild)
@@ -182,10 +192,15 @@ public class WorkTreePlan {
 	    	toReturn += "|-";
 	        indent += "| ";
 	    }
-	    toReturn += printByType() + "\n";
+	    if (whoToPrint){
+	    	toReturn += printByType() + "\n";
+	    }
+	    else{
+	    	toReturn += printUseItem() + "\n";
+	    }
 	
 	    for (int i = 0; i < childs.size() ; i++){
-	    	toReturn += ((WorkTreePlan) childs.get(i)).print(indent, i == childs.size() - 1);
+	    	toReturn += ((WorkTreePlan) childs.get(i)).print(indent, i == childs.size() - 1, whoToPrint);
 	    }
 	    return toReturn;
 	}
@@ -234,6 +249,15 @@ public class WorkTreePlan {
 		default:
 			return "Error: Type is worng"; 
 		}
+	}
+	
+	///Print the used item
+	public String printUseItem(){
+		String toReturn = "";
+		for (Object object : invetoryChange) {
+			toReturn += ((ItemStack)object).getDisplayName() + "- Size:" + ((ItemStack)object).stackSize + ", ";
+		}
+		return toReturn;
 	}
 	
 }

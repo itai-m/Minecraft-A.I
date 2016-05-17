@@ -132,4 +132,9 @@ public class RecipesList {
         return (ItemStack)entry.getKey();
 	}
 	
+	///Get the result item for the smelting
+	public static ItemStack getSmeltingResult(ItemStack item){
+		return FurnaceRecipes.smelting().getSmeltingResult(item);
+	}
+	
 }

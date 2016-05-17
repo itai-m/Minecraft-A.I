@@ -328,6 +328,7 @@ public class AIPlayer {
 		//Check if the player already have the item
 		if (plan.canUsedItem(item, inve)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
+			workTreePlan.AddUseItem(item, -item.stackSize );
 			plan.addUsedItem(item);
 			return 0;
 		}
@@ -361,11 +362,6 @@ public class AIPlayer {
 				plan.removeUsedItem((ItemStack) object);
 			}
 		}
-		
-		//Check if the item have no block and assign block to him
-		/*if (Item.getIdFromItem(item.getItem()) == null){
-			tempBlock = Item(item.getItem());
-		}*/
 		
 		//Check if need an tool to mine
 		if ((tempTool = Util.getMinToolToCraft(item) ) == null){
@@ -406,6 +402,7 @@ public class AIPlayer {
 						togoTree.addChild(toolTree);
 					}
 				}
+				
 				Logger.debug("planTree: blocks ammunt: " + blocksLoc.length);
 				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 					Logger.debug("planTree: goto block to " + blocksLoc[i]);
@@ -414,18 +411,6 @@ public class AIPlayer {
 				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
 					goGetHeur += Util.getHeuristic(blocksLoc[i], blocksLoc[i+1]);
 				}
-				/*Logger.debug("planTree: findPath lenght: " + blocksLoc.length);
-				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
-					Logger.debug("planTree: findPath to " + blocksLoc[i]);
-				}
-				steps = world.findPath(plan.peekLoc(), blocksLoc[0]);
-				allPath.add(steps);
-				goGetHeur += Util.getHeuristic(steps, inve);
-				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
-					steps = world.findPath(blocksLoc[i], blocksLoc[i+1]);
-					allPath.add(steps);
-					goGetHeur += Util.getHeuristic(steps, inve);
-				}*/
 			}
 		}
 		
@@ -441,11 +426,17 @@ public class AIPlayer {
 				Logger.debug("planTree: need to smelt for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.smelt);
 				workTreePlan.addChild(smeltTree);
+				workTreePlan.AddUseItem(smeltInger, -smeltInger.stackSize);
+				workTreePlan.AddUseItem(RecipesList.getSmeltingResult(smeltInger));
 			}
 			else{
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.craft);
 				workTreePlan.addChild(craftTree);
+				for (ItemStack itemStack : craftInger) {
+					workTreePlan.AddUseItem(itemStack, -itemStack.stackSize);
+				}
+				workTreePlan.AddUseItem(RecipesList.getRecipes(item).getRecipeOutput());
 			}
 			for (int i = 0 ; i < gotoNum ; i++){
 				plan.removeLoc();
@@ -457,14 +448,9 @@ public class AIPlayer {
 			for (Object object : usedItems) {
 				plan.removeLast();
 			}
-			/*if (needTool){
-				plan.add(toolKind, WorkPlan.Type.tool);
-			}*/
 			togoTree.set(blocksLoc);
 			workTreePlan.addChild(togoTree);
-			/*if (needTool){
-				workTreePlan.addChild(toolKind, WorkTreePlan.Type.tool);
-			}*/
+			workTreePlan.AddUseItem(item, blocksLoc.length);
 			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
 			return goGetHeur;
 		}
