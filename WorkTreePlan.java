@@ -92,7 +92,7 @@ public class WorkTreePlan {
 	private int StackInTree(ItemStack item){
 		WorkTreePlan tempParent = this;
 		while (tempParent.getParent() != null){
-			tempParent = getParent();
+			tempParent = tempParent.getParent();
 		}
 		return stackSize(tempParent, item);
 	}
@@ -100,12 +100,12 @@ public class WorkTreePlan {
 	///Get stack form the tree
 	private int stackSize(WorkTreePlan plan, ItemStack item){
 		int toReturn = 0;
-		for (Object object : invetoryChange) {
+		for (Object object : plan.invetoryChange) {
 			if (Util.idItemEqual(item, (ItemStack)object)){
 				toReturn += ((ItemStack)object).stackSize;
 			}
 		}
-		for (Object object : childs) {
+		for (Object object : plan.childs) {
 			toReturn += stackSize((WorkTreePlan)object, item);
 		}
 		return toReturn;
