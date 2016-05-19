@@ -326,7 +326,7 @@ public class AIPlayer {
 		boolean needToSmelt = false;
 		
 		//Check if the player already have the item
-		if (plan.canUsedItem(item, inve)){
+		if (workTreePlan.haveItem(inve, item)){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
 			workTreePlan.AddUseItem(item, -item.stackSize );
 			plan.addUsedItem(item);
@@ -427,7 +427,7 @@ public class AIPlayer {
 				plan.add(item, WorkPlan.Type.smelt);
 				workTreePlan.addChild(smeltTree);
 				workTreePlan.AddUseItem(smeltInger, -smeltInger.stackSize);
-				workTreePlan.AddUseItem(RecipesList.getSmeltingResult(smeltInger));
+				workTreePlan.AddUseItem(RecipesList.getSmeltingResult(smeltInger), smeltInger.stackSize);
 			}
 			else{
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
