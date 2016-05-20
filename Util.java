@@ -25,7 +25,7 @@ public class Util{
 	public static int CRAFT = 2;
 	public static int CANT_GET = -1;
 	public static double Max = Integer.MAX_VALUE;
-	public static int EMPTY_ID = 0;
+	public static int EMPTY_ID = UserSetting.AirBlockId;
 	
 	public static final String PICAXE_NAME = "pickaxe";
 	public static final String SHOVEL_NAME = "shovel";

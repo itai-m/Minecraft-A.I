@@ -13,7 +13,7 @@ public class WorkTreePlan {
 	private Object todo;
 	private List childs;
 	private WorkTreePlan parent = null;
-	private List invetoryChange;
+	private static List invetoryChange;
 	
 	private static AIWorld world = null;
 	
@@ -33,15 +33,13 @@ public class WorkTreePlan {
 	///Constructor
 	public WorkTreePlan(Object todo, Type type){
 		set(todo,type);
-		this.childs = new ArrayList<WorkTreePlan>();
-		this.invetoryChange = new ArrayList<ItemStack>();
+		initLists();
 	}
 	
 	///Constructor
 	public WorkTreePlan(Object todo, Type type, WorkTreePlan parent){
 		set(todo,type);
-		this.childs = new ArrayList<WorkTreePlan>();
-		this.invetoryChange = new ArrayList<ItemStack>();
+		initLists();
 		setParent(parent);
 	}
 	
@@ -49,15 +47,24 @@ public class WorkTreePlan {
 	public WorkTreePlan(){
 		set(Type.nothing);
 		this.todo = null;
-		this.childs = new ArrayList<WorkTreePlan>();
-		this.invetoryChange = new ArrayList<ItemStack>();
+		initLists();
 	}
 	
 	///Constructor
 	public WorkTreePlan(String text){
 		set(Type.nothing);
 		set(text);
+		initLists();
+	}
+	
+	///Init the Lists
+	private void initLists(){
 		this.childs = new ArrayList<WorkTreePlan>();
+		//this.invetoryChange = new ArrayList<ItemStack>();
+	}
+	
+	///init the inventory Change list
+	public void initInveChange(){
 		this.invetoryChange = new ArrayList<ItemStack>();
 	}
 	
@@ -81,33 +88,52 @@ public class WorkTreePlan {
 	///Check if already have the item
 	public boolean haveItem(AIinventory inve, ItemStack item){
 		int inventoryStack = inve.stackSize(item);
-		int treeStack = StackInTree(item);
+		int treeStack = stackInTree(item);
+		Logger.debug("StackTree: " + treeStack + ", inveStack: " + inventoryStack + ", " + item.getDisplayName(), Logger.LOG);
 		if (inventoryStack + treeStack >= item.stackSize){
 			return true;
 		}
 		return false;
 	}
 	
+	private int stackInTree(ItemStack item){
+		int toReturn = 0;
+		for (Object object : invetoryChange) {
+			if (Util.idItemEqual(item, (ItemStack)object)){
+				toReturn += ((ItemStack)object).stackSize;
+			}
+		}
+		return toReturn;
+	}
+	
 	///Stack Size of an item in all the tree
-	private int StackInTree(ItemStack item){
+	private int stackInTree2(ItemStack item){
+		int toReturn = 0;
 		WorkTreePlan tempParent = this;
 		while (tempParent.getParent() != null){
 			tempParent = tempParent.getParent();
+			toReturn += stackSize(tempParent, item);
 		}
-		return stackSize(tempParent, item);
+		return toReturn;
 	}
 	
 	///Get stack form the tree
 	private int stackSize(WorkTreePlan plan, ItemStack item){
 		int toReturn = 0;
+		//Logger.debug(plan.printByType(),Logger.LOG);
 		for (Object object : plan.invetoryChange) {
+			//Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
 			if (Util.idItemEqual(item, (ItemStack)object)){
+				Logger.debug("got one " + item.getDisplayName() , Logger.LOG);
 				toReturn += ((ItemStack)object).stackSize;
 			}
 		}
-		for (Object object : plan.childs) {
-			toReturn += stackSize((WorkTreePlan)object, item);
+		for (int i = 0; i < plan.childs.size() ; i++){
+			toReturn += stackSize((WorkTreePlan)plan.childs.get(i), item);
 		}
+		/*for (Object object : plan.childs) {
+			toReturn += stackSize((WorkTreePlan)object, item);
+		}*/
 		return toReturn;
 	}
 	
@@ -207,6 +233,9 @@ public class WorkTreePlan {
 	
 	///Return one insteps in the tree
 	private String printByType(){
+		if (todo == null){
+			return "the object is null";
+		}
 		switch (type) {
 		case nothing:
 			if(todo == null){

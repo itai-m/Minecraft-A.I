@@ -295,6 +295,7 @@ public class AIPlayer {
 		WorkTreePlan workTreePlan = new WorkTreePlan(item.getDisplayName());
 		WorkPlan plan = new WorkPlan();
 		workTreePlan.setWorld(world);
+		workTreePlan.initInveChange();
 		plan.addLoc(getLocation());
 		if (planTree (item, world, plan, inve, workTreePlan) == Util.Max){
 			Logger.debug("Cant get this item", Logger.LOG);
