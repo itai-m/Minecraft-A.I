@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -125,10 +126,15 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
+			IRecipe craftInger = RecipesList.getRecipes(item);
 			int id = Item.getIdFromItem(item.getItem());
-			Logger.debug("Test: " + item.getItem().getMetadata(0) , Logger.LOG);
-			Logger.debug("Test: " + Item.getItemFromBlock(Block.getBlockFromItem(item.getItem())), Logger.LOG);
-			//Logger.debug("test: " + Util.toolForItem(item) + " " + Util.getMinToolToCraft(item));
+			if (craftInger == null){
+				Logger.debug("Test: null"  , Logger.LOG);
+			}
+			else{
+				Logger.debug("Test: " +  craftInger.getRecipeOutput().getDisplayName(), Logger.LOG);
+			}
+			
 		}
 		Logger.debug("End Test");
 	}

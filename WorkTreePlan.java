@@ -13,7 +13,7 @@ public class WorkTreePlan {
 	private Object todo;
 	private List childs;
 	private WorkTreePlan parent = null;
-	private static List invetoryChange;
+	private List invetoryChange;
 	
 	private static AIWorld world = null;
 	
@@ -60,7 +60,7 @@ public class WorkTreePlan {
 	///Init the Lists
 	private void initLists(){
 		this.childs = new ArrayList<WorkTreePlan>();
-		//this.invetoryChange = new ArrayList<ItemStack>();
+		initInveChange();
 	}
 	
 	///init the inventory Change list
@@ -70,7 +70,19 @@ public class WorkTreePlan {
 	
 	///Add a item that need to be used
 	public void AddUseItem(ItemStack item){
-		invetoryChange.add(item);
+		boolean found = false;
+		for (Object object : invetoryChange) {
+			if (Util.idItemEqual(item, (ItemStack)object)){
+				((ItemStack)object).stackSize += item.stackSize;
+				found = true;
+				/*if (((ItemStack)object).stackSize == 0){
+					invetoryChange.remove(object);
+				}*/
+			}
+		}
+		if (!found){
+			invetoryChange.add(item.copy());
+		}
 	}
 	
 	///Add a item that need to be used
@@ -86,17 +98,15 @@ public class WorkTreePlan {
 	}
 	
 	///Check if already have the item
-	public boolean haveItem(AIinventory inve, ItemStack item){
+	public int haveItem(AIinventory inve, ItemStack item){
 		int inventoryStack = inve.stackSize(item);
 		int treeStack = stackInTree(item);
-		Logger.debug("StackTree: " + treeStack + ", inveStack: " + inventoryStack + ", " + item.getDisplayName(), Logger.LOG);
-		if (inventoryStack + treeStack >= item.stackSize){
-			return true;
-		}
-		return false;
+		
+		Logger.debug("StackTree: " + treeStack + ", inveStack: " + inventoryStack + ", " + item.getDisplayName() + " whit " + item.stackSize, Logger.LOG);
+		return (inventoryStack + treeStack - item.stackSize);
 	}
 	
-	private int stackInTree(ItemStack item){
+	private int stackInTree2(ItemStack item){
 		int toReturn = 0;
 		for (Object object : invetoryChange) {
 			if (Util.idItemEqual(item, (ItemStack)object)){
@@ -107,7 +117,7 @@ public class WorkTreePlan {
 	}
 	
 	///Stack Size of an item in all the tree
-	private int stackInTree2(ItemStack item){
+	private int stackInTree(ItemStack item){
 		int toReturn = 0;
 		WorkTreePlan tempParent = this;
 		while (tempParent.getParent() != null){

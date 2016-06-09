@@ -303,7 +303,6 @@ public class AIPlayer {
 		}
 		Logger.debug(plan.toString());
 		Logger.debug(workTreePlan.toString(), Logger.LOG);
-		//return doWorkPlan(plan, inve, world);
 		return doWorkTreePlan(workTreePlan, inve, world);
 	} 
 	
@@ -325,14 +324,16 @@ public class AIPlayer {
 		boolean needTool = false;
 		int toolKind = -1;
 		boolean needToSmelt = false;
+		boolean tryToCraft = false;
 		
 		//Check if the player already have the item
-		if (workTreePlan.haveItem(inve, item)){
+		if ((item.stackSize = workTreePlan.haveItem(inve, item)) >= 0){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
-			workTreePlan.AddUseItem(item, -item.stackSize );
+			Logger.debug("LOG " + workTreePlan.toString());
 			plan.addUsedItem(item);
 			return 0;
 		}
+		item.stackSize *= -1;
 		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
@@ -350,9 +351,11 @@ public class AIPlayer {
 		else{
 			usedItems.clear();
 			gotoNum = plan.countLoc();
+			tryToCraft = true;
 			for (ItemStack itemStack : craftInger) {
 				double tempHeur = planTree(itemStack, world, plan, inve, craftTree);
 				craftHeur += tempHeur;
+				workTreePlan.AddUseItem(itemStack, -itemStack.stackSize);
 				if (tempHeur ==  0){
 					usedItems.add(itemStack);
 				}
@@ -381,7 +384,6 @@ public class AIPlayer {
 			}
 			if (needTool){
 				toolTree.set(toolKind);
-				togoTree.addChild(toolTree);
 			}
 			//Find the nearest blocks of this kind
 			blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE, plan.GetLoctionArr());
@@ -434,9 +436,6 @@ public class AIPlayer {
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.craft);
 				workTreePlan.addChild(craftTree);
-				for (ItemStack itemStack : craftInger) {
-					workTreePlan.AddUseItem(itemStack, -itemStack.stackSize);
-				}
 				workTreePlan.AddUseItem(RecipesList.getRecipes(item).getRecipeOutput());
 			}
 			for (int i = 0 ; i < gotoNum ; i++){
@@ -450,9 +449,18 @@ public class AIPlayer {
 				plan.removeLast();
 			}
 			togoTree.set(blocksLoc);
+			if (needTool){
+				togoTree.addChild(toolTree);	
+			}
+			
 			workTreePlan.addChild(togoTree);
 			workTreePlan.AddUseItem(item, blocksLoc.length);
 			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
+			if (tryToCraft){
+				for (ItemStack itemStack : craftInger) {
+					Logger.debug("LOG: need to REMOVE " + itemStack.getDisplayName(), Logger.LOG);
+				}
+			}
 			return goGetHeur;
 		}
 	}
@@ -460,7 +468,7 @@ public class AIPlayer {
 	///Do the WorkTreePlan
 	private boolean doWorkTreePlan(WorkTreePlan plan, AIinventory inve, AIWorld world){
 		boolean succeded = true;
-		for (int i = plan.childrenLenght() - 1; i >= 0 ; i--){
+		for (int i = 0; i < plan.childrenLenght() ; i++){
 			succeded = succeded && doWorkTreePlan(plan.getChild(i), inve, world);
 		}
 		succeded = succeded && doNodeInWorkTree(plan.getTodo(), plan.getType(), inve, world);
