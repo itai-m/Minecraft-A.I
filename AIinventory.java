@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
@@ -248,21 +249,42 @@ public class AIinventory{
 		}
 	}
 	
+	///Remove an item in selected index
+	public void removeItem(int index){
+		inventory.mainInventory[index] = null;
+	}
+	
 	///Check if its have better tool
 	public boolean betterTool(ItemStack item){
 		String tool = "";
-		int toolLevel;
+		int toolLevel, invetoryToolLevel = 0;
 		for (String key : item.getItem().getToolClasses(item) ){
 			 tool= key;
 		}
 		toolLevel = item.getItem().getHarvestLevel(item, tool);
 		if (tool.contains(PICAXE_NAME)){
-			return (toolLevel <= getBestPickaxe());
+			invetoryToolLevel = getBestPickaxe();
 		} else if (tool.contains(SHOVEL_NAME)){
-			return (toolLevel <= getBestShovel());
+			invetoryToolLevel= getBestShovel();
 		} else if (tool.contains(AXE_NAME)){
-			return (toolLevel <= getBestAxe());
+			invetoryToolLevel= getBestAxe();
 		} 
+		if (getCurrentItem() == null){
+			return false;
+		}
+		if (toolLevel <= invetoryToolLevel){
+			if (getDurability(inventory.currentItem) > item.stackSize){
+				return true;
+			}
+			else{
+				ItemStack tempPlace = inventory.getCurrentItem().copy();
+				removeItem(inventory.currentItem);
+				boolean find = betterTool(item);
+				addItem(tempPlace);
+				return find;
+			}
+		}
+		
 		return false;
 	}
 	
@@ -489,6 +511,17 @@ public class AIinventory{
 		}
 		decItem(RecipesList.getSmeltingItem(item));
 		return addItem(item);
+	}
+	
+	///Get the current item in use
+	public ItemStack getCurrentItem(){
+		return inventory.getCurrentItem();
+	}
+	
+	///Get the durability of an item
+	public int getDurability(int index){
+		ItemStack item = inventory.getStackInSlot(index);
+		return item.getMaxDamage() - item.getItemDamage();
 	}
 	
 }

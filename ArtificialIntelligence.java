@@ -120,21 +120,14 @@ public class ArtificialIntelligence{
 		if (numberS == null){
 			numberS = "0";
 		}
-		ItemStack item = Util.getItemStack(numberS);
+		ItemStack item = inventory.getCurrentItem();
+		//ItemStack item = Util.getItemStack(numberS);
 		Logger.debug("Start Test whit " + numberS);
 		if (item == null){
 			Logger.debug("no id");
 		}
 		else{
-			IRecipe craftInger = RecipesList.getRecipes(item);
-			int id = Item.getIdFromItem(item.getItem());
-			if (craftInger == null){
-				Logger.debug("Test: null"  , Logger.LOG);
-			}
-			else{
-				Logger.debug("Test: " +  craftInger.getRecipeOutput().getDisplayName(), Logger.LOG);
-			}
-			
+			Logger.debug("Test: " +  item.getItemDamage() + " " + item.getMaxItemUseDuration() + " " + item.getMaxDamage(), Logger.LOG);
 		}
 		Logger.debug("End Test");
 	}
