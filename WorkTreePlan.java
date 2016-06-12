@@ -3,6 +3,8 @@ package com.custommods.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 
@@ -19,6 +21,8 @@ public class WorkTreePlan {
 	
 	private final boolean USE_ITEM_PRINT = false;
 	private final boolean OBJECT_PRINT = true;
+	
+	private final int NOT_FOUND = -1;
 	
 	///Get the type of the object
 	public Type getType() {
@@ -201,6 +205,16 @@ public class WorkTreePlan {
 		set(todo);
 	}
 	
+	///Remove the current node
+	public void remove(){
+		getParent().removeChild(this);
+	}
+	
+	///Remove a child
+	public void removeChild(WorkTreePlan plan){
+		childs.remove(plan);
+	}
+	
 	///Return a string with the tree to the children
 	public String toString(){
 		return "\n" + print("", true, OBJECT_PRINT) + "\n" + print("", true, USE_ITEM_PRINT);
@@ -299,4 +313,41 @@ public class WorkTreePlan {
 		return toReturn;
 	}
 	
+	///Union a similar node in the tree
+	public void unionTree(){
+		List items = new ArrayList<WorkTreePlan>();
+		union(this,items);
+	}
+	
+	///Do the recursive union
+	private void union(WorkTreePlan plan,List items){
+		if (plan.getType() == Type.moveTo){
+			int index;
+			if ((index = blockInList(items, plan)) == NOT_FOUND){
+				items.add(plan);
+			}
+			else{
+				union((WorkTreePlan)items.get(index), plan);
+				plan.remove();
+			}
+		}
+		for (Object object : childs) {
+			union((WorkTreePlan)object, items);
+		}
+	}
+	
+	///Check if the block is the list, if found return the number in the list otherwise return NOT_FOUND  
+	private int blockInList(List items, WorkTreePlan plan){
+		for (int i = 0; i < items.size() ; i++) {
+			if (((WorkTreePlan)items.get(i)).blockId() == plan.blockId()){
+				return i;
+			}
+		}
+		return NOT_FOUND;
+	}
+	
+	///Union two locations
+	private void union(WorkTreePlan plan1, WorkTreePlan plan2){
+		plan1.set(ArrayUtils.addAll((Vec3[])plan1.getTodo(), (Vec3[])plan2.getTodo()));
+	}
 }
