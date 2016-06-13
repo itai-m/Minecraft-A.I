@@ -136,7 +136,7 @@ public class WorkTreePlan {
 		int toReturn = 0;
 		//Logger.debug(plan.printByType(),Logger.LOG);
 		for (Object object : plan.invetoryChange) {
-			//Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
+			Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
 			if (Util.idItemEqual(item, (ItemStack)object)){
 				Logger.debug("got one " + item.getDisplayName() , Logger.LOG);
 				toReturn += ((ItemStack)object).stackSize;
@@ -165,16 +165,15 @@ public class WorkTreePlan {
 	///Add child, return the child if succeed otherwise null
 	public WorkTreePlan addChild(Object todo, Type type){
 		WorkTreePlan child = new WorkTreePlan(todo, type);
-		if (childs.add(child)){
-			return child;
-		}
-		return null;
+		return addChild(child);
 	}
 	
 	///Add child, return the child if succeed otherwise null
 	public WorkTreePlan addChild(WorkTreePlan treePlan){
-		if (childs.add(treePlan)){
-			return treePlan;
+		if (!childs.contains(treePlan)){
+			if (childs.add(treePlan)){
+				return treePlan;
+			}
 		}
 		return null;
 	}
@@ -226,6 +225,17 @@ public class WorkTreePlan {
 			return world.dropBlockId(((Vec3[])todo)[0]);
 		}
 		return Util.CANT_GET;
+	}
+	
+	///Return the string of for the top node
+	public String printFromParent(){
+		WorkTreePlan tempNode = this;
+		String toReturn = "";
+		while (tempNode.getParent() != null){
+			toReturn += tempNode.printByType();
+			tempNode = tempNode.getParent();
+		}
+		return tempNode.toString();
 	}
 	
 	//Return a string of a tree

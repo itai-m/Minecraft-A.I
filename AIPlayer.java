@@ -326,11 +326,12 @@ public class AIPlayer {
 		boolean needToSmelt = false;
 		boolean tryToCraft = false;
 		
+		
 		//Check if the player already have the item
 		if ((item.stackSize = workTreePlan.haveItem(inve, item)) >= 0){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
 			Logger.debug("LOG " + workTreePlan.toString());
-			plan.addUsedItem(item);
+			//plan.addUsedItem(item);
 			return 0;
 		}
 		item.stackSize *= -1;
@@ -339,7 +340,7 @@ public class AIPlayer {
 		if (smeltInger !=null){
 			Logger.debug("PlanTree: can use smelt to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
-			craftHeur = planTree(smeltInger, world, plan, inve, smeltTree);
+			craftHeur = planTree(smeltInger.copy(), world, plan, inve, smeltTree);
 			needToSmelt = true;
 		}
 		
@@ -352,8 +353,8 @@ public class AIPlayer {
 			usedItems.clear();
 			gotoNum = plan.countLoc();
 			tryToCraft = true;
-			for (ItemStack itemStack : craftInger) {
-				double tempHeur = planTree(itemStack, world, plan, inve, craftTree);
+			for (ItemStack itemStack : craftInger) {		
+				double tempHeur = planTree(itemStack.copy(), world, plan, inve, craftTree);
 				craftHeur += tempHeur;
 				workTreePlan.AddUseItem(itemStack, -itemStack.stackSize);
 				if (tempHeur ==  0){
@@ -363,7 +364,7 @@ public class AIPlayer {
 			gotoNum = gotoNum - plan.countLoc();
 			for (Object object : usedItems) {
 				Logger.debug("remove used: " + ((ItemStack) object).getDisplayName());
-				plan.removeUsedItem((ItemStack) object);
+				//plan.removeUsedItem((ItemStack) object);
 			}
 		}
 		
@@ -376,7 +377,7 @@ public class AIPlayer {
 			needTool = true;
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-				goGetHeur = planTree( tempTool, world, plan, inve, toolTree);
+				goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
 				toolKind = getToolType(tempTool);
 			}
 			else if ((toolKind = Util.toolForItem(item)) == Util.CANT_GET){
@@ -400,7 +401,7 @@ public class AIPlayer {
 					tempTool = Util.getMinToolToCraft(world.getBlock(blocksLoc[0]));
 					if (!inve.betterTool(item)){
 						Logger.debug("PlanTree: second check - tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-						goGetHeur = planTree( tempTool, world, plan, inve, toolTree);
+						goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
 						toolTree.set(getToolType(tempTool));
 						togoTree.addChild(toolTree);
 					}
