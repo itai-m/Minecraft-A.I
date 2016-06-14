@@ -296,6 +296,7 @@ public class AIPlayer {
 		WorkPlan plan = new WorkPlan();
 		workTreePlan.setWorld(world);
 		workTreePlan.initInveChange();
+		workTreePlan.CheckItems(inve);
 		plan.addLoc(getLocation());
 		if (planTree (item, world, plan, inve, workTreePlan) == Util.Max){
 			Logger.debug("Cant get this item", Logger.LOG);
@@ -338,9 +339,16 @@ public class AIPlayer {
 		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
+			
+			//Check if need to craft a furnace
+			if (!WorkTreePlan.isCraftFurnace()){
+				ItemStack furnance = new ItemStack(Item.getItemById(UserSetting.FurnaceId), 1);
+				craftHeur += planTree(furnance, world, plan, inve, smeltTree);
+			}
+			
 			Logger.debug("PlanTree: can use smelt to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
-			craftHeur = planTree(smeltInger.copy(), world, plan, inve, smeltTree);
+			craftHeur += planTree(smeltInger.copy(), world, plan, inve, smeltTree);
 			needToSmelt = true;
 		}
 		
@@ -353,6 +361,14 @@ public class AIPlayer {
 			usedItems.clear();
 			gotoNum = plan.countLoc();
 			tryToCraft = true;
+			
+			//Check if need to craft a crafting table
+			if (!WorkTreePlan.isCraftCraftingTable()){
+				WorkTreePlan.craftCraftingTable();
+				ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
+				craftHeur = planTree(craftingTable, world, plan, inve, craftTree);
+			}
+			
 			for (ItemStack itemStack : craftInger) {		
 				double tempHeur = planTree(itemStack.copy(), world, plan, inve, craftTree);
 				craftHeur += tempHeur;
@@ -375,6 +391,7 @@ public class AIPlayer {
 		else{
 			
 			needTool = true;
+			Logger.debug(item.getDisplayName() + " " + item.getItem().getUnlocalizedName() + " have better tool: " + inve.betterTool(item), Logger.LOG);
 			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);

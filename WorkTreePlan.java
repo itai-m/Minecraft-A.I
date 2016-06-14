@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 
@@ -18,6 +19,8 @@ public class WorkTreePlan {
 	private List invetoryChange;
 	
 	private static AIWorld world = null;
+	private static boolean craftCraftingTable = false;
+	private static boolean craftFurnace = false;
 	
 	private final boolean USE_ITEM_PRINT = false;
 	private final boolean OBJECT_PRINT = true;
@@ -34,10 +37,38 @@ public class WorkTreePlan {
 		return todo;
 	}
 
+	///Check if there is a crafting table
+	public static boolean isCraftCraftingTable() {
+		return craftCraftingTable;
+	}
+
+	///Call when is get a crafting table
+	public static void craftCraftingTable() {
+		WorkTreePlan.craftCraftingTable = true;
+	}
+
+	///Check if there is a furnace
+	public static boolean isCraftFurnace() {
+		return craftFurnace;
+	}
+
+	///Call when is get a furnace
+	public static void craftFurnace() {
+		WorkTreePlan.craftFurnace = true;
+	}
+
 	///Constructor
 	public WorkTreePlan(Object todo, Type type){
 		set(todo,type);
 		initLists();
+	}
+	
+	///Check if there is items in the inventory
+	public void CheckItems(AIinventory inve){
+		ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
+		ItemStack furnance = new ItemStack(Item.getItemById(UserSetting.FurnaceId), 1);
+		craftCraftingTable = haveItem(inve, craftingTable) >= 0;
+		craftFurnace = haveItem(inve, furnance) >= 0;
 	}
 	
 	///Constructor
@@ -136,7 +167,7 @@ public class WorkTreePlan {
 		int toReturn = 0;
 		//Logger.debug(plan.printByType(),Logger.LOG);
 		for (Object object : plan.invetoryChange) {
-			Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
+			//Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
 			if (Util.idItemEqual(item, (ItemStack)object)){
 				Logger.debug("got one " + item.getDisplayName() , Logger.LOG);
 				toReturn += ((ItemStack)object).stackSize;

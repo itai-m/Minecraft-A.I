@@ -127,7 +127,7 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("Test: " +  item.getItemDamage() + " " + item.getMaxItemUseDuration() + " " + item.getMaxDamage(), Logger.LOG);
+			Logger.debug("Test: " + inventory.betterTool(item), Logger.LOG);
 		}
 		Logger.debug("End Test");
 	}

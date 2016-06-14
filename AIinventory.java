@@ -259,19 +259,26 @@ public class AIinventory{
 		String tool = "";
 		int toolLevel, invetoryToolLevel = 0;
 		for (String key : item.getItem().getToolClasses(item) ){
+			Logger.debug("sssssss: " + key);
 			 tool= key;
 		}
 		toolLevel = item.getItem().getHarvestLevel(item, tool);
+		Logger.debug("ssss1ss: " + tool);
 		if (tool.contains(PICAXE_NAME)){
-			invetoryToolLevel = getBestPickaxe();
+			Logger.debug("p");
+			invetoryToolLevel = usePickaxe();
 		} else if (tool.contains(SHOVEL_NAME)){
-			invetoryToolLevel= getBestShovel();
+			Logger.debug("s");
+			invetoryToolLevel= useShovel();
 		} else if (tool.contains(AXE_NAME)){
-			invetoryToolLevel= getBestAxe();
+			Logger.debug("a");
+			invetoryToolLevel= useAxe();
 		} 
 		if (getCurrentItem() == null){
 			return false;
 		}
+		Logger.debug("--------Item: " + item.getDisplayName() + " " + toolLevel + " " + invetoryToolLevel, Logger.LOG);
+		
 		if (toolLevel <= invetoryToolLevel){
 			if (getDurability(inventory.currentItem) > item.stackSize){
 				return true;
@@ -402,7 +409,7 @@ public class AIinventory{
 		
 	///Get best axe from inventory, return the kind of the axe, if not found return NOT_FOUND
 	public int useAxe(){
-		int kind = getBestShovel();
+		int kind = getBestAxe();
 		switch (kind) {
 		case DIAMOND:
 			changeCurrentItemTo(DIAMOND_AXE);
