@@ -259,11 +259,9 @@ public class AIinventory{
 		String tool = "";
 		int toolLevel, invetoryToolLevel = 0;
 		for (String key : item.getItem().getToolClasses(item) ){
-			Logger.debug("sssssss: " + key);
 			 tool= key;
 		}
 		toolLevel = item.getItem().getHarvestLevel(item, tool);
-		Logger.debug("ssss1ss: " + tool);
 		if (tool.contains(PICAXE_NAME)){
 			Logger.debug("p");
 			invetoryToolLevel = usePickaxe();
@@ -276,9 +274,7 @@ public class AIinventory{
 		} 
 		if (getCurrentItem() == null){
 			return false;
-		}
-		Logger.debug("--------Item: " + item.getDisplayName() + " " + toolLevel + " " + invetoryToolLevel, Logger.LOG);
-		
+		}		
 		if (toolLevel <= invetoryToolLevel){
 			if (getDurability(inventory.currentItem) > item.stackSize){
 				return true;

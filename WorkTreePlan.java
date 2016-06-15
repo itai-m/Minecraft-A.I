@@ -14,7 +14,7 @@ public class WorkTreePlan {
 	public static enum Type {smeltStart, smeltEnd, craft, tool, moveTo, nothing};
 	private Type type;
 	private Object todo;
-	private List childs;
+	private WorkTreePlan[] childs;
 	private WorkTreePlan parent = null;
 	private List invetoryChange;
 	
@@ -94,7 +94,7 @@ public class WorkTreePlan {
 	
 	///Init the Lists
 	private void initLists(){
-		this.childs = new ArrayList<WorkTreePlan>();
+		this.childs = new WorkTreePlan[10];
 		initInveChange();
 	}
 	
@@ -169,12 +169,14 @@ public class WorkTreePlan {
 		for (Object object : plan.invetoryChange) {
 			//Logger.debug("looking for " + item.getDisplayName() + " and this is " + ((ItemStack)object).getDisplayName(), Logger.LOG);
 			if (Util.idItemEqual(item, (ItemStack)object)){
-				Logger.debug("got one " + item.getDisplayName() , Logger.LOG);
+				//Logger.debug("got one " + item.getDisplayName() , Logger.LOG);
 				toReturn += ((ItemStack)object).stackSize;
 			}
 		}
-		for (int i = 0; i < plan.childs.size() ; i++){
-			toReturn += stackSize((WorkTreePlan)plan.childs.get(i), item);
+		for (int i = 0; i < plan.childs.length ; i++){
+			if (plan.childs[i]!=null){
+				toReturn += stackSize((WorkTreePlan)plan.childs[i], item);
+			}
 		}
 		/*for (Object object : plan.childs) {
 			toReturn += stackSize((WorkTreePlan)object, item);
@@ -194,29 +196,30 @@ public class WorkTreePlan {
 	}
 	
 	///Add child, return the child if succeed otherwise null
-	public WorkTreePlan addChild(Object todo, Type type){
+	public int addChild(Object todo, Type type){
 		WorkTreePlan child = new WorkTreePlan(todo, type);
 		return addChild(child);
 	}
 	
 	///Add child, return the child if succeed otherwise null
-	public WorkTreePlan addChild(WorkTreePlan treePlan){
-		if (!childs.contains(treePlan)){
-			if (childs.add(treePlan)){
-				return treePlan;
+	public int addChild(WorkTreePlan treePlan){
+		for (int i=0 ; i < childs.length ; i++){
+			if (childs[i] == null){
+				childs[i] = treePlan;
+				return i;
 			}
 		}
-		return null;
+		return NOT_FOUND;
 	}
 	
 	///Get the number of children
 	public int childrenLenght(){
-		return childs.size();
+		return childs.length;
 	}
 	
 	///Get child in location
 	public WorkTreePlan getChild(int index){
-		return (WorkTreePlan) childs.get(index);
+		return (WorkTreePlan) childs[index];
 	}
 	
 	///Set the object
@@ -237,12 +240,13 @@ public class WorkTreePlan {
 	
 	///Remove the current node
 	public void remove(){
-		getParent().removeChild(this);
+		
 	}
 	
 	///Remove a child
-	public void removeChild(WorkTreePlan plan){
-		childs.remove(plan);
+	public void removeChild(int index){
+		childs[index].setParent(null);
+		childs[index] = null;
 	}
 	
 	///Return a string with the tree to the children
@@ -290,8 +294,10 @@ public class WorkTreePlan {
 	    	toReturn += printUseItem() + "\n";
 	    }
 	
-	    for (int i = 0; i < childs.size() ; i++){
-	    	toReturn += ((WorkTreePlan) childs.get(i)).print(indent, i == childs.size() - 1, whoToPrint);
+	    for (int i = 0; i < childs.length ; i++){
+	    	if (childs[i] != null){
+	    		toReturn += ((WorkTreePlan) childs[i]).print(indent, i == childs.length - 1, whoToPrint);
+	    	}
 	    }
 	    return toReturn;
 	}

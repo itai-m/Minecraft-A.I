@@ -337,6 +337,11 @@ public class AIPlayer {
 		}
 		item.stackSize *= -1;
 		
+		int craftNum = workTreePlan.addChild(craftTree);
+		int smeltNum = workTreePlan.addChild(smeltTree);
+		int togoNum = workTreePlan.addChild(togoTree);
+		
+		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
 			
@@ -418,9 +423,10 @@ public class AIPlayer {
 					tempTool = Util.getMinToolToCraft(world.getBlock(blocksLoc[0]));
 					if (!inve.betterTool(item)){
 						Logger.debug("PlanTree: second check - tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
+						togoTree.addChild(toolTree);
 						goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
 						toolTree.set(getToolType(tempTool));
-						togoTree.addChild(toolTree);
+						
 					}
 				}
 				
@@ -446,15 +452,22 @@ public class AIPlayer {
 			if (needToSmelt){
 				Logger.debug("planTree: need to smelt for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.smelt);
-				workTreePlan.addChild(smeltTree);
+				//workTreePlan.addChild(smeltTree);
+				workTreePlan.removeChild(togoNum);
+				workTreePlan.removeChild(craftNum);
 				workTreePlan.AddUseItem(smeltInger, -smeltInger.stackSize);
 				workTreePlan.AddUseItem(RecipesList.getSmeltingResult(smeltInger), smeltInger.stackSize);
 			}
 			else{
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
 				plan.add(item, WorkPlan.Type.craft);
-				workTreePlan.addChild(craftTree);
-				workTreePlan.AddUseItem(RecipesList.getRecipes(item).getRecipeOutput());
+				//workTreePlan.addChild(craftTree);
+				workTreePlan.removeChild(togoNum);
+				workTreePlan.removeChild(smeltNum);
+				Logger.debug("starnge:" + RecipesList.getRecipes(item) + " " + item.stackSize, Logger.LOG);
+				ItemStack newItem = item.copy();
+				newItem.stackSize = 1;
+				workTreePlan.AddUseItem(RecipesList.getRecipes(newItem).getRecipeOutput());
 			}
 			for (int i = 0 ; i < gotoNum ; i++){
 				plan.removeLoc();
@@ -471,7 +484,9 @@ public class AIPlayer {
 				togoTree.addChild(toolTree);	
 			}
 			
-			workTreePlan.addChild(togoTree);
+			//workTreePlan.addChild(togoTree);
+			workTreePlan.removeChild(smeltNum);
+			workTreePlan.removeChild(craftNum);
 			workTreePlan.AddUseItem(item, blocksLoc.length);
 			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
 			if (tryToCraft){
@@ -487,7 +502,9 @@ public class AIPlayer {
 	private boolean doWorkTreePlan(WorkTreePlan plan, AIinventory inve, AIWorld world){
 		boolean succeded = true;
 		for (int i = 0; i < plan.childrenLenght() ; i++){
-			succeded = succeded && doWorkTreePlan(plan.getChild(i), inve, world);
+			if (plan.getChild(i) != null){
+				succeded = succeded && doWorkTreePlan(plan.getChild(i), inve, world);
+			}
 		}
 		succeded = succeded && doNodeInWorkTree(plan.getTodo(), plan.getType(), inve, world);
 		return succeded;
@@ -505,6 +522,7 @@ public class AIPlayer {
 			return smeltItem(inve, (ItemStack)obj, world);
 		case craft:
 			Logger.debug("craft - " + ((ItemStack)obj).getDisplayName());
+			((ItemStack)obj).stackSize = 1;
 			return craftItem(inve, (ItemStack)obj, world);
 		case tool:
 			Logger.debug("use tool: " + obj, Logger.LOG);
