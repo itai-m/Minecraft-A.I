@@ -120,8 +120,8 @@ public class ArtificialIntelligence{
 		if (numberS == null){
 			numberS = "0";
 		}
-		ItemStack item = inventory.getCurrentItem();
-		//ItemStack item = Util.getItemStack(numberS);
+		//ItemStack item = inventory.getCurrentItem();
+		ItemStack item = Util.getItemStack(numberS);
 		Logger.debug("Start Test whit " + numberS);
 		if (item == null){
 			Logger.debug("no id");

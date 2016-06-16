@@ -167,6 +167,12 @@ public class AIPlayer {
 	///Move the player to a point in the world
 	public boolean moveToPoint(Vec3 dest, AIWorld world){
 		Logger.debug("Start the Path Finding");
+		Logger.debug("b: " + dest);
+		Vec3 newDest = MinecraftWorldInfo.checkFirstNotAirBlock(dest);
+		Logger.debug("a: " + newDest + " and dist: " + newDest.distanceTo(dest));
+//		if (newDest.distanceTo(dest) != 0){
+//			moveToPoint(newDest, world);
+//		}
 		PathFinder pathFinder = new PathFinder(getLocation(), dest, world.getWorldInfo());
 		Queue<Step> stepsToGoal = pathFinder.findPath();
 		if (null == stepsToGoal || stepsToGoal.size() <= 0){
@@ -396,8 +402,7 @@ public class AIPlayer {
 		else{
 			
 			needTool = true;
-			Logger.debug(item.getDisplayName() + " " + item.getItem().getUnlocalizedName() + " have better tool: " + inve.betterTool(item), Logger.LOG);
-			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(item)){
+			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(tempTool.copy())){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
 				goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
 				toolKind = getToolType(tempTool);

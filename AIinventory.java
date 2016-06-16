@@ -263,13 +263,10 @@ public class AIinventory{
 		}
 		toolLevel = item.getItem().getHarvestLevel(item, tool);
 		if (tool.contains(PICAXE_NAME)){
-			Logger.debug("p");
 			invetoryToolLevel = usePickaxe();
 		} else if (tool.contains(SHOVEL_NAME)){
-			Logger.debug("s");
 			invetoryToolLevel= useShovel();
 		} else if (tool.contains(AXE_NAME)){
-			Logger.debug("a");
 			invetoryToolLevel= useAxe();
 		} 
 		if (getCurrentItem() == null){
