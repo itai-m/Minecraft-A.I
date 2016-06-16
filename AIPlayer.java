@@ -94,33 +94,6 @@ public class AIPlayer {
 			return CANT_HARVEST;
 		}
 	}
-	
-	/*///Harvest a Block by the player
-	public boolean harvestBlock(int blockId, AIWorld world){
-		int tick = UserSetting.MaxTickesForHarvest;
-		Vec3 des = world.findNearestBlock(player.getPosition(0), blockId, UserSetting.BLOCK_SEARCH_SIZE);
-		System.out.println(des);
-		if (des == null){
-			return false;
-		}
-		if (Objective.blockNearPlayer(this, world, blockId)){
-			System.out.println("test");
-			while (tick > 0 && !world.isBlockAir(des)){
-				Minecraft.getMinecraft().renderEngine.tick();
-				System.out.println(tick);
-				//Minecraft.getMinecraft().playerController.clickBlock((int)des.xCoord, (int)des.yCoord, (int)des.zCoord, 2);
-				Minecraft.getMinecraft().playerController.onPlayerDamageBlock((int)des.xCoord, (int)des.yCoord, (int)des.zCoord, 2);
-				player.swingItem();
-				tick--;
-			}
-			//TODO: harvestBlock
-			return true;
-		}
-		else{
-			return false;
-		}
-		
-	}*/
 		
 	///Place a block in the world
 	public boolean placeBlock(AIWorld world, Vec3 place){
@@ -204,8 +177,6 @@ public class AIPlayer {
 
 		while (WalkMod.pathNavigator.isRun()){
 			Util.waitAndTick();
-			//Logger.debug("" + Minecraft.getMinecraft().getIntegratedServer().getTickCounter() + " " + Minecraft.getMinecraft().getIntegratedServer().isServerRunning());
-			//Logger.debug("running");
 		}
 		for (int i = 0 ; i < 10 ; i++){
 			Util.waitAndTick();
@@ -250,34 +221,6 @@ public class AIPlayer {
 			//TODO: go to get the furnace
 		}
 		return inve.smeltItem(item);
-		
-		/*
-		Vec3 furnaceLoc = world.findNearestBlock(getLocation(), Block.getBlockFromName(furnacerBlock), (int)UserSetting.rechDistance);
-		inve.decItem(inge);
-		TileEntityFurnace furnaceEntity = world.getFurnaceEntity(furnaceLoc);
-		
-		
-		System.out.println(furnaceEntity.getInventoryName());
-		System.out.println(furnaceEntity.getSizeInventory());
-		System.out.println(furnaceEntity.getDistanceFrom(getLocation().xCoord, getLocation().yCoord, getLocation().zCoord));
-		System.out.println(furnaceEntity.getStackInSlot(0));
-		System.out.println(furnaceEntity.getStackInSlot(1));
-		System.out.println(furnaceEntity.getStackInSlot(2));
-		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(0));
-		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(1));
-		System.out.println(furnaceEntity.getAccessibleSlotsFromSide(2));
-		System.out.println(furnaceEntity.getInventoryStackLimit());
-		furnaceEntity.setInventorySlotContents(0, new ItemStack(Block.getBlockById(4)));
-		furnaceEntity.setInventorySlotContents(1, new ItemStack(Block.getBlockById(5)));
-		//furnaceEntity.setInventorySlotContents(2, new ItemStack(Block.getBlockById(3)));
-		furnaceEntity.updateContainingBlockInfo();
-		furnaceEntity.updateEntity();
-		System.out.println(furnaceEntity.isUseableByPlayer(player));
-		furnaceEntity.validate();*/
-		
-		
-		
-		//return true;
 	}
 	
 	///Return the tool type
@@ -299,22 +242,20 @@ public class AIPlayer {
 	///Get an item
 	public boolean getItem(ItemStack item, AIWorld world, AIinventory inve){
 		WorkTreePlan workTreePlan = new WorkTreePlan(item.getDisplayName());
-		WorkPlan plan = new WorkPlan();
 		workTreePlan.setWorld(world);
-		workTreePlan.initInveChange();
+		workTreePlan.init();
 		workTreePlan.CheckItems(inve);
-		plan.addLoc(getLocation());
-		if (planTree (item, world, plan, inve, workTreePlan) == Util.Max){
+		workTreePlan.addLoc(getLocation());
+		if (planTree (item, world, inve, workTreePlan) == Util.Max){
 			Logger.debug("Cant get this item", Logger.LOG);
 			return false;
 		}
-		Logger.debug(plan.toString());
 		Logger.debug(workTreePlan.toString(), Logger.LOG);
 		return doWorkTreePlan(workTreePlan, inve, world);
 	} 
 	
 	///The tree  of the plan
-	private double planTree(ItemStack item,AIWorld world, WorkPlan plan, AIinventory inve, WorkTreePlan workTreePlan){
+	private double planTree(ItemStack item,AIWorld world, AIinventory inve, WorkTreePlan workTreePlan){
 		List<ItemStack> craftInger = RecipesList.getIngredientList(item);
 		ItemStack smeltInger = RecipesList.getSmeltingItem(item);
 		double craftHeur = 0;
@@ -327,40 +268,37 @@ public class AIPlayer {
 		WorkTreePlan togoTree = new WorkTreePlan(null, WorkTreePlan.Type.moveTo, workTreePlan);
 		WorkTreePlan smeltTree = new WorkTreePlan(item, WorkTreePlan.Type.smeltStart, workTreePlan);
 		WorkTreePlan toolTree = new WorkTreePlan(null, WorkTreePlan.Type.tool, togoTree);
-		List usedItems = new ArrayList<ItemStack>();
 		boolean needTool = false;
 		int toolKind = -1;
 		boolean needToSmelt = false;
-		boolean tryToCraft = false;
 		
+		int smeltNum;
+		int craftNum;
+		int togoNum;
 		
 		//Check if the player already have the item
 		if ((item.stackSize = workTreePlan.haveItem(inve, item)) >= 0){
 			Logger.debug("PlanTree: allready have " + item.getDisplayName());
-			Logger.debug("LOG " + workTreePlan.toString());
-			//plan.addUsedItem(item);
 			return 0;
 		}
 		item.stackSize *= -1;
 		
-		int craftNum = workTreePlan.addChild(craftTree);
-		int smeltNum = workTreePlan.addChild(smeltTree);
-		int togoNum = workTreePlan.addChild(togoTree);
+		
 		
 		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
+			smeltNum = workTreePlan.addChild(smeltTree);
 			
 			//Check if need to craft a furnace
-			if (!WorkTreePlan.isCraftFurnace()){
-				ItemStack furnance = new ItemStack(Item.getItemById(UserSetting.FurnaceId), 1);
-				craftHeur += planTree(furnance, world, plan, inve, smeltTree);
-			}
-			
+			ItemStack furnance = new ItemStack(Item.getItemById(UserSetting.FurnaceId), 1);
+			//craftHeur += planTree(furnance, world, inve, smeltTree);
+
 			Logger.debug("PlanTree: can use smelt to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
-			craftHeur += planTree(smeltInger.copy(), world, plan, inve, smeltTree);
+			craftHeur += planTree(smeltInger.copy(), world, inve, smeltTree);
 			needToSmelt = true;
+			workTreePlan.removeChild(smeltNum);
 		}
 		
 		//Check if the item can made by crafting
@@ -369,30 +307,20 @@ public class AIPlayer {
 			craftHeur = Util.Max;
 		}
 		else{
-			usedItems.clear();
-			gotoNum = plan.countLoc();
-			tryToCraft = true;
+			craftNum = workTreePlan.addChild(craftTree);
+			gotoNum = workTreePlan.countLoc();
 			
 			//Check if need to craft a crafting table
-			if (!WorkTreePlan.isCraftCraftingTable()){
-				WorkTreePlan.craftCraftingTable();
-				ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
-				craftHeur = planTree(craftingTable, world, plan, inve, craftTree);
-			}
+			ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
+			//craftHeur = planTree(craftingTable, world, inve, craftTree);
 			
 			for (ItemStack itemStack : craftInger) {		
-				double tempHeur = planTree(itemStack.copy(), world, plan, inve, craftTree);
+				double tempHeur = planTree(itemStack.copy(), world, inve, craftTree);
 				craftHeur += tempHeur;
 				workTreePlan.AddUseItem(itemStack, -itemStack.stackSize);
-				if (tempHeur ==  0){
-					usedItems.add(itemStack);
-				}
 			}
-			gotoNum = gotoNum - plan.countLoc();
-			for (Object object : usedItems) {
-				Logger.debug("remove used: " + ((ItemStack) object).getDisplayName());
-				//plan.removeUsedItem((ItemStack) object);
-			}
+			gotoNum = gotoNum - workTreePlan.countLoc();
+			workTreePlan.removeChild(craftNum);
 		}
 		
 		//Check if need an tool to mine
@@ -400,21 +328,21 @@ public class AIPlayer {
 			goGetHeur = Util.Max;
 		}
 		else{
-			
-			needTool = true;
-			if (!Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) && !inve.betterTool(tempTool.copy())){
+			togoNum = workTreePlan.addChild(togoTree);
+			//Logger.debug("Tool is: " + tempTool.getDisplayName() + " Need Tool: " + Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) + " " + inve.betterTool(tempTool.copy()), Logger.LOG);
+			if (!(Util.idItemEqual(tempTool, Util.getItemStack(Util.EMPTY_ID)) || inve.betterTool(tempTool.copy()))){
 				Logger.debug("PlanTree: tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-				goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
+				togoTree.addChild(toolTree);
+				goGetHeur = planTree( tempTool.copy(), world, inve, toolTree);
 				toolKind = getToolType(tempTool);
+				toolTree.set(toolKind);
+				needTool = true;
 			}
-			else if ((toolKind = Util.toolForItem(item)) == Util.CANT_GET){
+			else {
 				needTool = false;
 			}
-			if (needTool){
-				toolTree.set(toolKind);
-			}
 			//Find the nearest blocks of this kind
-			blocksLoc = world.findNearestBlocks(plan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE, plan.GetLoctionArr());
+			blocksLoc = world.findNearestBlocks(workTreePlan.peekLoc(), Item.getIdFromItem(item.getItem()), item.stackSize, UserSetting.BLOCK_SEARCH_SIZE, workTreePlan.GetLoctionArr());
 			
 			//Check if there is a block near the player
 			if (blocksLoc ==null){
@@ -426,12 +354,14 @@ public class AIPlayer {
 				//second check for the tool need to the mining
 				if (!needTool){
 					tempTool = Util.getMinToolToCraft(world.getBlock(blocksLoc[0]));
-					if (!inve.betterTool(item)){
-						Logger.debug("PlanTree: second check - tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
-						togoTree.addChild(toolTree);
-						goGetHeur = planTree( tempTool.copy(), world, plan, inve, toolTree);
-						toolTree.set(getToolType(tempTool));
-						
+					if (tempTool.getItem() != null){
+						if (!inve.betterTool(tempTool)){
+							Logger.debug("PlanTree: second check - tool need to mine " + item.getDisplayName() + " is: " + tempTool.getDisplayName());
+							togoTree.addChild(toolTree);
+							goGetHeur = planTree( tempTool.copy(), world, inve, toolTree);
+							toolTree.set(getToolType(tempTool));
+							
+						}
 					}
 				}
 				
@@ -439,11 +369,12 @@ public class AIPlayer {
 				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 					Logger.debug("planTree: goto block to " + blocksLoc[i]);
 				}
-				goGetHeur += Util.getHeuristic(plan.peekLoc(), blocksLoc[0]);
+				goGetHeur += Util.getHeuristic(workTreePlan.peekLoc(), blocksLoc[0]);
 				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
 					goGetHeur += Util.getHeuristic(blocksLoc[i], blocksLoc[i+1]);
 				}
 			}
+			workTreePlan.removeChild(togoNum);
 		}
 		
 		Logger.debug(item.getDisplayName() + ": craftHeur: " + craftHeur + " goGetHeur: " + goGetHeur);
@@ -456,49 +387,28 @@ public class AIPlayer {
 		if (craftHeur < goGetHeur){
 			if (needToSmelt){
 				Logger.debug("planTree: need to smelt for: " + item.getDisplayName());
-				plan.add(item, WorkPlan.Type.smelt);
-				//workTreePlan.addChild(smeltTree);
-				workTreePlan.removeChild(togoNum);
-				workTreePlan.removeChild(craftNum);
+				workTreePlan.addChild(smeltTree);
 				workTreePlan.AddUseItem(smeltInger, -smeltInger.stackSize);
 				workTreePlan.AddUseItem(RecipesList.getSmeltingResult(smeltInger), smeltInger.stackSize);
 			}
 			else{
 				Logger.debug("planTree: need to craft for: " + item.getDisplayName());
-				plan.add(item, WorkPlan.Type.craft);
-				//workTreePlan.addChild(craftTree);
-				workTreePlan.removeChild(togoNum);
-				workTreePlan.removeChild(smeltNum);
-				Logger.debug("starnge:" + RecipesList.getRecipes(item) + " " + item.stackSize, Logger.LOG);
+				workTreePlan.addChild(craftTree);
 				ItemStack newItem = item.copy();
 				newItem.stackSize = 1;
 				workTreePlan.AddUseItem(RecipesList.getRecipes(newItem).getRecipeOutput());
 			}
 			for (int i = 0 ; i < gotoNum ; i++){
-				plan.removeLoc();
+				workTreePlan.removeLoc();
 			}
 			return craftHeur;
 		}
 		else{
 			Logger.debug("planTree: need to go get: " + item.getDisplayName());
-			for (Object object : usedItems) {
-				plan.removeLast();
-			}
 			togoTree.set(blocksLoc);
-			if (needTool){
-				togoTree.addChild(toolTree);	
-			}
-			
-			//workTreePlan.addChild(togoTree);
-			workTreePlan.removeChild(smeltNum);
-			workTreePlan.removeChild(craftNum);
+			workTreePlan.addChild(togoTree);
 			workTreePlan.AddUseItem(item, blocksLoc.length);
-			plan.addLoc(blocksLoc[blocksLoc.length - 1]);
-			if (tryToCraft){
-				for (ItemStack itemStack : craftInger) {
-					Logger.debug("LOG: need to REMOVE " + itemStack.getDisplayName(), Logger.LOG);
-				}
-			}
+			workTreePlan.addLoc(blocksLoc[blocksLoc.length - 1]);
 			return goGetHeur;
 		}
 	}
@@ -549,39 +459,4 @@ public class AIPlayer {
 		return false;
 	}
 	
-	///Do the workPlan
-	private boolean doWorkPlan(WorkPlan plan, AIinventory inve, AIWorld world){
-		boolean succeeded = true;
-		while (!plan.isEmpty()){
-			WorkPlan.Type type = plan.peekFirstType();
-			Object obj = plan.pullFirst();
-			if (type == WorkPlan.Type.craft){
-				Logger.debug("doWorkPlan: craft - " + ((ItemStack)obj).getDisplayName());
-				succeeded = succeeded && craftItem(inve, (ItemStack)obj, world);
-				Logger.debug("doWorkPlan: craft: " + ((ItemStack)obj).getDisplayName() + " craft success: " + succeeded);
-			}
-			else if (obj instanceof Queue){
-				Logger.debug("doWorkPlan: goto");
-				walkOnPath((Queue<Step>)obj);
-			}
-			else if (type == WorkPlan.Type.tool){
-				Logger.debug("doWorkPlan: use tool: " + obj);
-				if ((Integer)obj != AIinventory.NOT_FOUND){
-					inve.useTool((Integer)obj);
-				}
-				else{
-					Logger.debug("doWorkPlan: item not found to use.");
-				}
-			}
-			else if (type == WorkPlan.Type.smelt){
-				Logger.debug("doWorkPlan: smelt:" + ((ItemStack)obj).getDisplayName() );
-				succeeded = succeeded && smeltItem(inve, (ItemStack)obj, world);
-				Logger.debug("doWorkPlan: smelt: " + ((ItemStack)obj).getDisplayName() + " smelt success: " + succeeded);
-			}
-			else{
-				Logger.debug("doWorkPlan: not reguzie");
-			}
-		}
-		return succeeded;
-	}
 }

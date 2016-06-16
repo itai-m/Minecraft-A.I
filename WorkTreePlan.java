@@ -21,11 +21,23 @@ public class WorkTreePlan {
 	private static AIWorld world = null;
 	private static boolean craftCraftingTable = false;
 	private static boolean craftFurnace = false;
+	private static List locationList;
 	
 	private final boolean USE_ITEM_PRINT = false;
 	private final boolean OBJECT_PRINT = true;
 	
 	private final int NOT_FOUND = -1;
+	
+	///Init the WorkTreePlan
+	public void init(){
+		initLocationList();
+		initInveChange();
+	}
+	
+	///Init the location list
+	public void initLocationList(){
+		locationList = new ArrayList<Vec3>();
+	}
 	
 	///Get the type of the object
 	public Type getType() {
@@ -157,9 +169,8 @@ public class WorkTreePlan {
 		WorkTreePlan tempParent = this;
 		while (tempParent.getParent() != null){
 			tempParent = tempParent.getParent();
-			toReturn += stackSize(tempParent, item);
 		}
-		return toReturn;
+		return stackSize(tempParent, item);
 	}
 	
 	///Get stack form the tree
@@ -396,5 +407,44 @@ public class WorkTreePlan {
 	///Union two locations
 	private void union(WorkTreePlan plan1, WorkTreePlan plan2){
 		plan1.set(ArrayUtils.addAll((Vec3[])plan1.getTodo(), (Vec3[])plan2.getTodo()));
+	}
+	
+	///Add location to the locationList
+	public void addLoc(Vec3 loc){
+		locationList.add(loc);
+	}
+	
+	///Peek location from the locationList
+	public Vec3 peekLoc(){
+		return (Vec3) locationList.get(locationList.size()-1);
+	}
+	
+	///Pull location from the locationList
+	public Vec3 pullLoc(){
+		Vec3 toReturn = peekLoc();
+		removeLoc();
+		return toReturn;
+	}
+	
+	///Remove the last form the locationList
+	public void removeLoc(){
+		locationList.remove(locationList.size() - 1);
+	}
+	
+	///Count the number of location
+	public int countLoc(){
+		return locationList.size();
+	}
+	
+	///Return array of all the location in the location list
+	public Vec3[] GetLoctionArr(){
+		Vec3[] toReturn = new Vec3[locationList.size()];
+		int conter = 0;
+		for (Object object : locationList) {
+			if (object instanceof Vec3){
+				toReturn[conter++] = (Vec3)object;
+			}
+		}
+		return toReturn;
 	}
 }

@@ -127,7 +127,9 @@ public class ArtificialIntelligence{
 			Logger.debug("no id");
 		}
 		else{
-			Logger.debug("Test: " + inventory.betterTool(item), Logger.LOG);
+			ItemStack tool = Util.getMinToolToCraft(item);
+			Logger.debug("min tool: " + tool.getDisplayName(), Logger.LOG);
+			Logger.debug("Test: " + inventory.betterTool(tool), Logger.LOG);
 		}
 		Logger.debug("End Test");
 	}
