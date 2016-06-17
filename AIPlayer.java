@@ -288,6 +288,7 @@ public class AIPlayer {
 		
 		//Check if the item can made by melting
 		if (smeltInger !=null){
+			gotoNum = workTreePlan.countLoc();
 			smeltNum = workTreePlan.addChild(smeltTree);
 			
 			//Check if need to craft a furnace
@@ -299,6 +300,7 @@ public class AIPlayer {
 			craftHeur += planTree(smeltInger.copy(), world, inve, smeltTree);
 			needToSmelt = true;
 			workTreePlan.removeChild(smeltNum);
+			gotoNum = gotoNum - workTreePlan.countLoc();
 		}
 		
 		//Check if the item can made by crafting
@@ -408,7 +410,10 @@ public class AIPlayer {
 			togoTree.set(blocksLoc);
 			workTreePlan.addChild(togoTree);
 			workTreePlan.AddUseItem(item, blocksLoc.length);
-			workTreePlan.addLoc(blocksLoc[blocksLoc.length - 1]);
+			//workTreePlan.addLoc(blocksLoc[blocksLoc.length - 1]);
+			for (int i = 0; i < blocksLoc.length ; i++){
+				workTreePlan.addLoc(blocksLoc[i]);
+			}
 			return goGetHeur;
 		}
 	}

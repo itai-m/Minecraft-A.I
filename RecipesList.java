@@ -103,6 +103,24 @@ public class RecipesList {
 				}
 			}
 		}
+		else if (irecipe instanceof ShapelessRecipes){
+			ShapelessRecipes recipe = (ShapelessRecipes) irecipe;
+			ArrayList<ItemStack> itemList = (ArrayList<ItemStack>)(recipe.recipeItems);
+			for (ItemStack itemInList : itemList) {
+				if (itemInList !=null){
+					boolean find = false;
+					for (ItemStack itemStack : toReturn) {
+						if (itemStack.getItem().equals(itemInList.getItem())){
+							find = true;
+							itemStack.stackSize++;
+						}
+					}
+					if (!find){
+						toReturn.add((ItemStack) itemInList.copy());
+					}
+				}
+			}
+		}
 		
 		return toReturn;
 	}
@@ -118,16 +136,9 @@ public class RecipesList {
             {
                 return null;
             }
-
-            if (entry != null){
-            	//Logger.debug("key: " + ((ItemStack)entry.getKey()).getDisplayName());
-            	//Logger.debug(((ItemStack)entry.getValue()).getDisplayName());
-            	//Logger.debug(outPut.getDisplayName());
-            }
             entry = (Entry)iterator.next();
         }
         while (!Util.idItemEqual(outPut, (ItemStack)entry.getValue()));
-        //while (Item.getIdFromItem(((ItemStack)entry.getKey()).getItem()) == Item.getIdFromItem(input.getItem()));
         
         return (ItemStack)entry.getKey();
 	}
