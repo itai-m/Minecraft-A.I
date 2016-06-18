@@ -367,9 +367,9 @@ public class AIPlayer {
 				for (int i = 0 ; i < blocksLoc.length  ; i++){ 
 					Logger.debug("planTree: goto block to " + blocksLoc[i]);
 				}
-				goGetHeur += Util.getHeuristic(workTreePlan.peekLoc(), blocksLoc[0]);
+				goGetHeur += Util.getHeuristic(workTreePlan.peekLoc(), blocksLoc[0], world);
 				for (int i = 0 ; i < blocksLoc.length -1 ; i++){
-					goGetHeur += Util.getHeuristic(blocksLoc[i], blocksLoc[i+1]);
+					goGetHeur += Util.getHeuristic(blocksLoc[i], blocksLoc[i+1], world);
 				}
 			}
 			workTreePlan.removeChild(togoNum);

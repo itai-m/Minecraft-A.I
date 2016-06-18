@@ -13,5 +13,5 @@ public class UserSetting {
 	public static int EnchantingTableId = Block.getIdFromBlock(Block.getBlockFromName("enchanting_table"));
 	public static int CraftingTableId = Block.getIdFromBlock(Block.getBlockFromName("crafting_table"));
 	public static int FurnaceId = Block.getIdFromBlock(Block.getBlockFromName("furnace"));
-	public static double MaxDistanceLook = 50;
+	public static double MaxDistanceLook = 40;
 }

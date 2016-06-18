@@ -38,8 +38,8 @@ public class Util{
 	}
 	
 	///Get heuristic from distance
-	public static double getHeuristic(Vec3 from, Vec3 to){
-		return (from.distanceTo(to));
+	public static double getHeuristic(Vec3 from, Vec3 to, AIWorld world){
+		return world.getMinimalDistance(from, to);
 	}
 	
 	///Check if need better to Craft or to mine an item, return true for craft and false for mine

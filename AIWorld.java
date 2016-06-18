@@ -32,6 +32,11 @@ public class AIWorld{
 		worldInfo = new NeighborCollector(minecraftWorldInfo);
 	}
 	
+	///Return the Minimal Distance for two point in the world
+	public double getMinimalDistance(Vec3 pos, Vec3 goal) {
+		return worldInfo.getMinimalDistance(pos, goal);
+	}
+	
 	///Return the nearest block by name
 	public Vec3 findNearestBlock(Vec3 startLoc, String Blockname, int max){
 		return findNearestBlock(startLoc, Block.getIdFromBlock(Block.getBlockFromName(Blockname)), max);
