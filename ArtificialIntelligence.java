@@ -56,6 +56,7 @@ public class ArtificialIntelligence{
 		this.player = new AIPlayer(player);
 		this.inventory = new AIinventory(player.inventory);
 		this.world = new AIWorld(Minecraft.getMinecraft().theWorld);
+		this.player.sendMessage("Successfully Start");
 	}
 	
 	///Handle the get command

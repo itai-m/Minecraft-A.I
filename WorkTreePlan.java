@@ -27,6 +27,7 @@ public class WorkTreePlan {
 	private final boolean OBJECT_PRINT = true;
 	
 	private final int NOT_FOUND = -1;
+	private final int MAX_NUMBER_OF_CHILDES = 10;
 	
 	///Init the WorkTreePlan
 	public void init(){
@@ -104,13 +105,13 @@ public class WorkTreePlan {
 		initLists();
 	}
 	
-	///Init the Lists
+	///Initialize the Lists
 	private void initLists(){
-		this.childs = new WorkTreePlan[10];
+		this.childs = new WorkTreePlan[MAX_NUMBER_OF_CHILDES];
 		initInveChange();
 	}
 	
-	///init the inventory Change list
+	///Initialize the inventory Change list
 	public void initInveChange(){
 		this.invetoryChange = new ArrayList<ItemStack>();
 	}

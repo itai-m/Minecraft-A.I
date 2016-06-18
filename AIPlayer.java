@@ -200,9 +200,6 @@ public class AIPlayer {
 		if (!Objective.canCraft(item, inve)){
 			return false;
 		}
-		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName("crafting_table"))){
-			//TODO: need to go to the crafting_table
-		}
 		return inve.craftItem(item);
 	}
 	
@@ -216,9 +213,6 @@ public class AIPlayer {
 		String furnacerBlock = "furnace";
 		if (!Objective.canSmelt(item, inve)){
 			return false;
-		}
-		if (!Objective.blockNearPlayer(this, world, Block.getBlockFromName(furnacerBlock))){
-			//TODO: go to get the furnace
 		}
 		return inve.smeltItem(item);
 	}
@@ -293,7 +287,7 @@ public class AIPlayer {
 			
 			//Check if need to craft a furnace
 			ItemStack furnance = new ItemStack(Item.getItemById(UserSetting.FurnaceId), 1);
-			//craftHeur += planTree(furnance, world, inve, smeltTree);
+			craftHeur += planTree(furnance, world, inve, smeltTree);
 
 			Logger.debug("PlanTree: can use smelt to get " + item.getDisplayName());
 			smeltInger.stackSize = item.stackSize;
@@ -313,8 +307,10 @@ public class AIPlayer {
 			gotoNum = workTreePlan.countLoc();
 			
 			//Check if need to craft a crafting table
-			ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
-			//craftHeur = planTree(craftingTable, world, inve, craftTree);
+			if (workTreePlan.getType() != WorkTreePlan.Type.craft){
+				ItemStack craftingTable = new ItemStack(Item.getItemById(UserSetting.CraftingTableId), 1);
+				craftHeur = planTree(craftingTable, world, inve, craftTree);
+			}
 			
 			for (ItemStack itemStack : craftInger) {		
 				double tempHeur = planTree(itemStack.copy(), world, inve, craftTree);
