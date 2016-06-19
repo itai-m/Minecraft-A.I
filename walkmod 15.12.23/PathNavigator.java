@@ -4,6 +4,8 @@ import java.awt.event.InputEvent;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.custommods.ai.UserSetting;
+import com.custommods.ai.Util;
 import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import net.minecraft.block.Block;
@@ -43,6 +45,14 @@ public class PathNavigator {
 	private Vec3 targetVec = null;
 	private int pollFlag = 0;
 	private int mineStepDelayedJumpFlag = -1;
+	
+	public final int WOODEN_PICKAXE = 270;
+	public final int STONE_PICKAXE = 274;
+	public final int IRON_PICKAXE = 257;
+	public final int GOLDEN_PICKAXE = 285;
+	public final int DIAMOND_PICKAXE = 278;
+	public final static int NOT_FOUND = -1;
+
 
 	private MineSpot currentMine = null;
 
@@ -165,6 +175,10 @@ public class PathNavigator {
 			if (event.side == Side.SERVER){
 				if (null == currentMine)
 					setCurrentBlockToMine(player);
+				
+				///Switch to a pickaxe in the inventory
+				usePickaxe(player);
+				
 				World world = event.player.worldObj;
 				// Mine, and if mined change to the next one.
 				Vec3 mineLocation = currentMine.getLocation();
@@ -278,7 +292,8 @@ public class PathNavigator {
 			ItemStack stack = inventory.mainInventory[i];
 
 			if (stack != null && stack.getItem() != null
-					&& stack.getItem() instanceof ItemBlock) {
+					&& stack.getItem() instanceof ItemBlock
+					&& Item.getIdFromItem(stack.getItem()) == UserSetting.DirtID) {
 				itemStack = stack;
 				itemStackSlot = i;
 				break;
@@ -368,6 +383,53 @@ public class PathNavigator {
 	
 	public boolean isRun(){
 		return (run || WalkMod.isWalk);
+	}
+	
+	///Use the best pickaxe in the inventory
+	public void usePickaxe(EntityPlayer player){
+		InventoryPlayer inventory = player.inventory;
+		ItemStack[] inveArr = inventory.mainInventory; 
+		int IronLoc = NOT_FOUND;
+		int StoneLoc = NOT_FOUND;
+		int WoodenLoc = NOT_FOUND;
+		for (int i = 0; i < inveArr.length ; i++) {
+			if (inveArr[i] != null){
+				if (Item.getIdFromItem(inveArr[i].getItem()) == DIAMOND_PICKAXE){
+					swap(inventory.currentItem, i, inventory);
+					return;
+				}
+				else if (Item.getIdFromItem(inveArr[i].getItem()) == IRON_PICKAXE){
+					IronLoc = i;
+				}
+				else if (Item.getIdFromItem(inveArr[i].getItem()) == STONE_PICKAXE){
+					StoneLoc = i;
+				}
+				else if (Item.getIdFromItem(inveArr[i].getItem()) == WOODEN_PICKAXE){
+					WoodenLoc = i;
+				}
+			}
+		}
+		if (IronLoc != NOT_FOUND){
+			swap(inventory.currentItem, IronLoc, inventory);
+			return;
+		}
+		else if (StoneLoc != NOT_FOUND){
+			swap(inventory.currentItem, StoneLoc, inventory);
+			return;
+		}
+		else if (WoodenLoc != NOT_FOUND){
+			swap(inventory.currentItem, WoodenLoc, inventory);
+			return;
+		}
+	}
+	
+	///Swap two item in the inventory
+	private void swap(int x, int y, InventoryPlayer inventory){
+		if (x != y){
+			ItemStack other = inventory.mainInventory[x];
+			inventory.mainInventory[x] = inventory.mainInventory[y];
+			inventory.mainInventory[y] = other;
+		}
 	}
 
 }

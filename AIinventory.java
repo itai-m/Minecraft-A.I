@@ -101,6 +101,7 @@ public class AIinventory{
 		}
 		return size;
 	}
+	
 	///Check if in the inventory have the item
 	public boolean haveItem(ItemStack item){
 		if (!inventory.hasItem(item.getItem())){

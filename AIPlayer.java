@@ -245,6 +245,8 @@ public class AIPlayer {
 			return false;
 		}
 		Logger.debug(workTreePlan.toString(), Logger.LOG);
+		//workTreePlan.unionTree();
+		Logger.debug(workTreePlan.toString(), Logger.LOG);
 		return doWorkTreePlan(workTreePlan, inve, world);
 	} 
 	
