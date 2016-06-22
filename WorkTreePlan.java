@@ -378,21 +378,30 @@ public class WorkTreePlan {
 		union(this,items);
 	}
 	
-	///Do the recursive union
-	private void union(WorkTreePlan plan,List items){
-		if (plan.getType() == Type.moveTo){
-			int index;
-			if ((index = blockInList(items, plan)) == NOT_FOUND){
-				items.add(plan);
+	///Do the recursive union, return true if need to remove him, otherwise false
+	private boolean union(WorkTreePlan plan,List items){
+		if (plan != null){
+			if (plan.getType() == Type.moveTo){
+				int index;
+				if ((index = blockInList(items, plan)) == NOT_FOUND){
+					items.add(plan);
+				}
+				else{
+					union((WorkTreePlan)items.get(index), plan);
+					plan.remove();
+					plan = null;
+					return true;
+				}
 			}
-			else{
-				union((WorkTreePlan)items.get(index), plan);
-				plan.remove();
+			if (plan != null){
+				for (int i = 0; i < childrenLenght(); i++) {
+					if (union((WorkTreePlan)plan.getChild(i), items)){
+						plan.removeChild(i);
+					}
+				}
 			}
 		}
-		for (Object object : childs) {
-			union((WorkTreePlan)object, items);
-		}
+		return false;
 	}
 	
 	///Check if the block is the list, if found return the number in the list otherwise return NOT_FOUND  
